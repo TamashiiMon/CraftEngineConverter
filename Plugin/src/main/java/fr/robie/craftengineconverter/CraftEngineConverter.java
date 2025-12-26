@@ -8,6 +8,7 @@ import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.FoliaCompatibilityManager;
 import fr.robie.craftengineconverter.common.builder.TimerBuilder;
 import fr.robie.craftengineconverter.common.configuration.Configuration;
+import fr.robie.craftengineconverter.common.enums.Plugins;
 import fr.robie.craftengineconverter.common.format.ClassicMeta;
 import fr.robie.craftengineconverter.common.format.ComponentMeta;
 import fr.robie.craftengineconverter.common.format.MessageFormatter;
@@ -16,17 +17,20 @@ import fr.robie.craftengineconverter.common.logger.Logger;
 import fr.robie.craftengineconverter.common.tag.ITagResolver;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.converter.nexo.NexoConverter;
+import fr.robie.craftengineconverter.hooks.nexo.NexoBlockConverter;
+import fr.robie.craftengineconverter.hooks.nexo.NexoFurnitureConverter;
 import fr.robie.craftengineconverter.hooks.packetevent.PacketEventHook;
 import fr.robie.craftengineconverter.loader.MessageLoader;
 import fr.robie.craftengineconverter.utils.TagResolver;
 import fr.robie.craftengineconverter.utils.command.CommandManager;
 import fr.robie.craftengineconverter.utils.manager.InternalTemplateManager;
-import fr.robie.craftengineconverter.utils.plugins.Plugins;
 import fr.robie.craftengineconverter.utils.save.NoReloadable;
 import fr.robie.craftengineconverter.utils.save.Persist;
 import fr.robie.craftengineconverter.utils.save.PersistImp;
 import fr.robie.craftengineconverter.utils.save.Savable;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
@@ -121,6 +125,13 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
         } else {
             Logger.info("Auto-conversion is disabled. Use /cec convert to manually convert items.");
         }
+
+        if (Plugins.NEXO.isEnabled() && Configuration.nexoEnableHook){
+            this.registerListener(new NexoBlockConverter(this));
+            this.registerListener(new NexoFurnitureConverter(this));
+
+        }
+
         Logger.info("Plugin enabled !");
     }
 
@@ -134,7 +145,18 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
             this.packetLoader.onDisable();
         }
 
+        if (this.placementTracker != null ){
+            Logger.info("Conversion stats :");
+            Logger.info("Total blocks converted : " + this.placementTracker.getBlocksConverted() + " (Failed : " + this.placementTracker.getBlocksFailed() + ", Success rate : " + String.format("%.2f", this.placementTracker.getBlocksSuccessRate()) + "%)");
+            Logger.info("Total furniture converted : " + this.placementTracker.getFurnitureConverted() + " (Failed : " + this.placementTracker.getFurnitureFailed() + ", Success rate : " + String.format("%.2f", this.placementTracker.getFurnitureSuccessRate()) + "%)");
+            Logger.info("Grand total converted : " + this.placementTracker.getTotalConverted() + " (Failed : " + this.placementTracker.getTotalFailed() + ", Overall success rate : " + String.format("%.2f", this.placementTracker.getOverallSuccessRate()) + "%)");
+        }
+
         Logger.info("Plugin disabled !");
+    }
+
+    private void registerListener(@NotNull Listener listener){
+        this.getServer().getPluginManager().registerEvents(listener,this);
     }
 
     public CommandManager getCommandManager() {

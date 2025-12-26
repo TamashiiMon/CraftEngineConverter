@@ -3,8 +3,10 @@ package fr.robie.craftengineconverter.converter.nexo;
 import fr.robie.craftengineconverter.CraftEngineConverter;
 import fr.robie.craftengineconverter.common.CraftEngineImageUtils;
 import fr.robie.craftengineconverter.common.ImageConversion;
+import fr.robie.craftengineconverter.common.PluginNameMapper;
 import fr.robie.craftengineconverter.common.configuration.Configuration;
 import fr.robie.craftengineconverter.common.enums.ConverterOptions;
+import fr.robie.craftengineconverter.common.enums.Plugins;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.common.logger.Logger;
 import fr.robie.craftengineconverter.common.progress.BukkitProgressBar;
@@ -82,6 +84,8 @@ public class NexoConverter extends Converter {
 
         progress.start();
 
+        PluginNameMapper.getInstance().clearMappingsForPlugin(Plugins.NEXO);
+
         try {
             processConfigs(toConvert, outputBase, progress);
             toConvert.clear();
@@ -137,6 +141,7 @@ public class NexoConverter extends Converter {
                 if (!nexoItemConverter.isExcludeFromInventory()) {
                     itemsIds.add(finalItemId);
                 }
+                PluginNameMapper.getInstance().storeMapping(Plugins.NEXO, itemId, finalItemId);
             } catch (Exception e) {
                 Logger.debug("Failed to convert item: " + finalItemId, LogType.ERROR);
             }

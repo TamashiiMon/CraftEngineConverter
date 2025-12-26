@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.utils.plugins;
+package fr.robie.craftengineconverter.common.enums;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

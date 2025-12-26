@@ -78,6 +78,19 @@
                 <version>2.11.7</version>
                 <scope>provided</scope>
             </dependency>
+
+            <!-- Nexo -->
+            <dependency>
+                <groupId>com.nexomc</groupId>
+                <artifactId>nexo</artifactId>
+                <version>1.16.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>dev.triumphteam</groupId>
+                        <artifactId>triumph-gui</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -150,6 +163,13 @@
             <url>https://repo.codemc.io/repository/maven-releases/</url>
         </repository>
 
+        <!-- Nexo -->
+        <repository>
+            <id>nexo-repo</id>
+            <url>https://repo.nexomc.com/releases</url>
+        </repository>
+
+        <!-- Craft Engine -->
         <repository>
             <id>xiaomomi's plugins-releases</id>
             <name>XiaoMoMi's Plugin Repository</name>

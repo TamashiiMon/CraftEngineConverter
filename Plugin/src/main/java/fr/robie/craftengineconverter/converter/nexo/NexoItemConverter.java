@@ -316,8 +316,7 @@ public class NexoItemConverter extends ItemConverter {
     public void convertJukeboxPlayable() {
         String song = this.nexoItemSection.getString("Components.jukebox_playable.song_key");
         if (song != null && !song.isEmpty()) {
-
-            this.craftEngineItemUtils.getComponentsSection().set("minecraft:jukebox_playable",song);
+            this.craftEngineItemUtils.getComponentsSection().set("minecraft:jukebox_playable", Map.of("song", song));
         }
     }
 
@@ -563,11 +562,7 @@ public class NexoItemConverter extends ItemConverter {
         if (!nexoRemoveEffects.isEmpty()) {
             Map<String,Object> removeEffects = new HashMap<>();
             removeEffects.put("type","remove_effects");
-            List<Map<String,Object>> effectList = new ArrayList<>();
-            for (String key : nexoRemoveEffects){
-                effectList.add(getEffectMap(key,0,1,false,true,true));
-            }
-            removeEffects.put("effects",effectList);
+            removeEffects.put("effects",nexoRemoveEffects);
             ceDeathEffects.add(removeEffects);
         }
         boolean clearAllEffects = deathEffects.isConfigurationSection("CLEAR_ALL_EFFECTS");
@@ -729,7 +724,8 @@ public class NexoItemConverter extends ItemConverter {
         }
 
         if (!predicateItems.isEmpty()) {
-            this.craftEngineItemUtils.getComponentsSection().set("minecraft:" + componentName,predicateItems);
+            ConfigurationSection predicate = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(), "minecraft:" + componentName);
+            predicate.set("predicates", predicateItems);
         }
     }
 

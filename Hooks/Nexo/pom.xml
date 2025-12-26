@@ -9,12 +9,12 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>PacketEvent</artifactId>
+    <artifactId>Nexo</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.github.retrooper</groupId>
-            <artifactId>packetevents-spigot</artifactId>
+            <groupId>com.nexomc</groupId>
+            <artifactId>nexo</artifactId>
         </dependency>
     </dependencies>
 </project>

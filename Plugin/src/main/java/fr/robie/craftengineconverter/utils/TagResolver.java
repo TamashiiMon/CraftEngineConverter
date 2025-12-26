@@ -1,11 +1,11 @@
 package fr.robie.craftengineconverter.utils;
 
 import fr.robie.craftengineconverter.common.configuration.Configuration;
+import fr.robie.craftengineconverter.common.enums.Plugins;
 import fr.robie.craftengineconverter.common.tag.ITagResolver;
 import fr.robie.craftengineconverter.common.tag.TagProcessor;
 import fr.robie.craftengineconverter.hooks.placeholderapi.tag.PlaceholderAPITag;
 import fr.robie.craftengineconverter.tag.GlyphTagProcessor;
-import fr.robie.craftengineconverter.utils.plugins.Plugins;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

@@ -21,6 +21,13 @@ public class Configuration {
     public static ArmorConverter armorConverterType = ArmorConverter.COMPONENT;
     public static List<String> blacklistedPaths = new ArrayList<>();
 
+    public static boolean allowBlockConversionPropagation = true;
+    public static int maxBlockConversionPropagationDepth = 64;
+
+    public static boolean nexoEnableHook = true;
+    public static boolean nexoEnableBlockInteractionConversion = true;
+    public static boolean nexoEnableFurnitureInteractionConversion = true;
+
     // Formatting options
     public static boolean packetEventsFormatting = true;
 
@@ -251,7 +258,12 @@ public class Configuration {
         PLUGIN_MESSAGE_FORMATTING("formatting.plugin-message", true, v -> pluginMessageFormatting = (Boolean) v),
         TITLE_FORMATTING("formatting.title", true, v -> titleFormatting = (Boolean) v),
         GLYPH_TAG_ENABLED("tags.glyph.enabled", true, v -> glyphTagEnabled = (Boolean) v),
-        PLACEHOLDER_API_TAG_ENABLED("tags.placeholder-api.enabled", true, v -> placeholderAPITagEnabled = (Boolean) v)
+        PLACEHOLDER_API_TAG_ENABLED("tags.placeholder-api.enabled", true, v -> placeholderAPITagEnabled = (Boolean) v),
+        ALLOW_BLOCK_CONVERSION_PROPAGATION("allow-block-conversion-propagation", true, v -> allowBlockConversionPropagation = (Boolean) v),
+        MAX_BLOCK_CONVERSION_PROPAGATION_DEPTH("max-block-conversion-propagation-depth", 64, v -> maxBlockConversionPropagationDepth = (Integer) v),
+        NEXO_ENABLE_HOOK("nexo.enable-hook", true, v -> nexoEnableHook = (Boolean) v),
+        NEXO_BLOCK_INTERACTION_CONVERSION("nexo.enable-block-interaction-conversion", true, v -> nexoEnableBlockInteractionConversion = (Boolean) v),
+        NEXO_FURNITURE_INTERACTION_CONVERSION("nexo.enable-furniture-interaction-conversion", true, v -> nexoEnableFurnitureInteractionConversion = (Boolean) v),
         ;
 
         private final String path;

@@ -16,6 +16,7 @@
         <module>BOM</module>
         <module>PacketEvent</module>
         <module>PlaceholderAPI</module>
+        <module>Nexo</module>
     </modules>
 
     <dependencies>

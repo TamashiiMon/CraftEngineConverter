@@ -99,6 +99,8 @@
 
 ## ✅ Recently Completed
 
+- Interaction with furniture/block convert to CE equivalent
+- Fix Nexo JukeboxPlayableComponent && PlaceOn/Break
 - Multi-threaded pack conversion: just add the `--threads=<number>` argument to the command line
 - Dry-run mode for converters just need to add `--dryrun` argument to the command line
 - Configuration for progress bar display for converters
