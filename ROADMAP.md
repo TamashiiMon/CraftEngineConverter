@@ -53,7 +53,7 @@
 - [x] README.md
 - [x] CONTRIBUTING.md
 - [x] SECURITY_TESTING.md
-- [ ] Wiki pages
+- [x] [Wiki pages](https://1robie.gitbook.io/craftengineconverter)
 - [ ] Migration guides
 - [ ] FAQ section
 - [ ] API documentation & code examples
