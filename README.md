@@ -48,11 +48,11 @@ A powerful Minecraft plugin that converts configurations, items, and resources f
 
 ## 🔌 Supported Plugins
 
-| Plugin | Items | Glyphs | Emojis | Sounds | Packs | Recipes |
-|--------|-------|--------|--------|--------|-------|---------|
-| **Nexo** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **ItemsAdder** | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
-| **Oraxen** | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 | 🚧 |
+| Plugin         | Items | Glyphs | Emojis | Sounds | Packs | Recipes | Languages |
+|----------------|-------|--------|--------|--------|-------|---------|-----------|
+| **Nexo**       | ✅     | ✅      | ✅      | ✅      | ✅     | ✅       | ✅         |
+| **ItemsAdder** | 🚧    | 🚧     | 🚧     | 🚧     | 🚧    | 🚧      | ✅         |
+| **Oraxen**     | 🚧    | 🚧     | 🚧     | 🚧     | 🚧    | 🚧      | 🚧        |
 
 ✅ Fully Supported | 🚧 Work in Progress | ❌ Not Supported
 
