@@ -910,8 +910,8 @@ public class NexoConverter extends Converter {
 
         for (Map.Entry<String, Object> entry : nexoLangData.entrySet()) {
             try {
-                String translationKey = "translations." + craftEngineLangKey + "." + entry.getKey();
-                craftEngineLanguages.addData(translationKey, entry.getValue());
+                String translationKey = "translations\\n" + craftEngineLangKey + "\\n" + entry.getKey();
+                craftEngineLanguages.addData(translationKey, entry.getValue(), "\\n");
             } catch (Exception e) {
                 Logger.debug("Failed to convert translation: " + entry.getKey() + " in language: " + langKey, LogType.ERROR);
             }

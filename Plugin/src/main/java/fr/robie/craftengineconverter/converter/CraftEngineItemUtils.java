@@ -80,11 +80,4 @@ public class CraftEngineItemUtils extends ObjectUtils {
         return getOrCreateSection(craftEngineItemSection, "state");
     }
 
-    private ConfigurationSection getOrCreateSection(ConfigurationSection parent, String path) {
-        if (!parent.isConfigurationSection(path)) {
-            return parent.createSection(path);
-        }
-        return parent.getConfigurationSection(path);
-    }
-
 }

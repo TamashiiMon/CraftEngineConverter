@@ -518,6 +518,20 @@ public class SnakeUtils implements AutoCloseable {
         return (value instanceof List) ? (List<Object>) value : null;
     }
 
+    @NotNull
+    public List<String> getStringList(@NotNull String key){
+        List<Object> rawList = getList(key);
+        List<String> stringList = new ArrayList<>();
+        if (rawList != null){
+            for (Object item : rawList){
+                if (item != null){
+                    stringList.add(item.toString());
+                }
+            }
+        }
+        return stringList;
+    }
+
     /**
      * Checks if a key exists in the data.
      * Supports nested keys with dot notation.

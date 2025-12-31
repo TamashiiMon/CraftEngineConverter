@@ -146,7 +146,9 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
             this.packetLoader.onDisable();
         }
 
-        if (this.placementTracker != null ){
+        this.metrics.shutdown();
+
+        if (this.placementTracker != null){
             Logger.info("Conversion stats :");
             Logger.info("Total blocks converted : " + this.placementTracker.getBlocksConverted() + " (Failed : " + this.placementTracker.getBlocksFailed() + ", Success rate : " + String.format("%.2f", this.placementTracker.getBlocksSuccessRate()) + "%)");
             Logger.info("Total furniture converted : " + this.placementTracker.getFurnitureConverted() + " (Failed : " + this.placementTracker.getFurnitureFailed() + ", Success rate : " + String.format("%.2f", this.placementTracker.getFurnitureSuccessRate()) + "%)");

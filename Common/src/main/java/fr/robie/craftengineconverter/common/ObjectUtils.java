@@ -1,5 +1,6 @@
 package fr.robie.craftengineconverter.common;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,6 +88,14 @@ public class ObjectUtils {
         } catch (NumberFormatException e) {
             return defaultValue;
         }
+    }
+
+
+    protected ConfigurationSection getOrCreateSection(ConfigurationSection parent, String key) {
+        if (parent.isConfigurationSection(key)) {
+            return parent.getConfigurationSection(key);
+        }
+        return parent.createSection(key);
     }
 
     public int parseInt(Object value) {
