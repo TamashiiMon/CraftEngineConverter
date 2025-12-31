@@ -56,6 +56,11 @@ A powerful Minecraft plugin that converts configurations, items, and resources f
 
 ✅ Fully Supported | 🚧 Work in Progress | ❌ Not Supported
 
+## Translation Support
+
+- English (default)
+- French (fr)
+
 ## 📦 Requirements
 
 ### Server Requirements
