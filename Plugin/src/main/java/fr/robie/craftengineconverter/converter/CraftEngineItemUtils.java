@@ -1,7 +1,7 @@
 package fr.robie.craftengineconverter.converter;
 
-import fr.robie.craftengineconverter.common.ObjectUtils;
 import fr.robie.craftengineconverter.common.configuration.Configuration;
+import fr.robie.craftengineconverter.common.utils.ObjectUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

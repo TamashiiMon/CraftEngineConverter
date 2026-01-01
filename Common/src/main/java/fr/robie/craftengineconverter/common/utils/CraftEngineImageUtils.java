@@ -1,7 +1,7 @@
 package fr.robie.craftengineconverter.common.utils;
 
-import fr.robie.craftengineconverter.common.ImageConversion;
 import fr.robie.craftengineconverter.common.cache.SimpleCache;
+import fr.robie.craftengineconverter.common.records.ImageConversion;
 import net.momirealms.craftengine.bukkit.api.CraftEngineImages;
 import net.momirealms.craftengine.core.font.BitmapImage;
 import net.momirealms.craftengine.core.util.Key;

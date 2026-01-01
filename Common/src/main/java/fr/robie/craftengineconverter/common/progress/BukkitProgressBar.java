@@ -2,10 +2,10 @@ package fr.robie.craftengineconverter.common.progress;
 
 import com.tcoded.folialib.wrapper.task.WrappedTask;
 import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
-import fr.robie.craftengineconverter.common.ObjectUtils;
 import fr.robie.craftengineconverter.common.builder.TimerBuilder;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.common.logger.Logger;
+import fr.robie.craftengineconverter.common.utils.ObjectUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;

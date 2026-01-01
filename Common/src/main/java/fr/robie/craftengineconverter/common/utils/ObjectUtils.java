@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.common;
+package fr.robie.craftengineconverter.common.utils;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Contract;

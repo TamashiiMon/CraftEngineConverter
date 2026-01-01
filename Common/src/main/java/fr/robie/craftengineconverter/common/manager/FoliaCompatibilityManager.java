@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.common;
+package fr.robie.craftengineconverter.common.manager;
 
 import com.tcoded.folialib.FoliaLib;
 import com.tcoded.folialib.wrapper.task.WrappedTask;

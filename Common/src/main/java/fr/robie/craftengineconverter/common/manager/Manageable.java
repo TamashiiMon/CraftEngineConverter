@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.common;
+package fr.robie.craftengineconverter.common.manager;
 
 public interface Manageable {
     default void initialize() {

@@ -1,6 +1,6 @@
 package fr.robie.craftengineconverter.common.format;
 
-import fr.robie.craftengineconverter.common.ObjectUtils;
+import fr.robie.craftengineconverter.common.utils.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class TextFormatter extends ObjectUtils {
