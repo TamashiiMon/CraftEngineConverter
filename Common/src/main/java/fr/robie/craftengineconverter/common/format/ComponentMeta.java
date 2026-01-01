@@ -163,7 +163,7 @@ public class ComponentMeta implements MessageFormatter{
     }
 
     public Component getComponent(String message) {
-        return this.cache.get(message, () -> this.MINI_MESSAGE.deserialize(colorMiniMessage(message)).decoration(TextDecoration.ITALIC, false));
+        return this.cache.getOrDefault(message, () -> this.MINI_MESSAGE.deserialize(colorMiniMessage(message)).decoration(TextDecoration.ITALIC, false));
     }
 
     public static String getPlainText(Component component) {

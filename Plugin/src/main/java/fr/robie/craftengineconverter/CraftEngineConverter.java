@@ -55,7 +55,7 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
     private PacketLoader packetLoader;
 
     public CraftEngineConverter() {
-        new Logger(this.getDescription().getFullName());
+        new Logger(this.foliaCompatibilityManager.isPaper() ? this.getPluginMeta().getVersion() :this.getDescription().getFullName());
     }
 
     @Override

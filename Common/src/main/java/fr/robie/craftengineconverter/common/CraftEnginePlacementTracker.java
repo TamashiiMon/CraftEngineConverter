@@ -1,94 +1,72 @@
 package fr.robie.craftengineconverter.common;
 
+import fr.robie.craftengineconverter.common.stats.ConversionStatistics;
 import net.momirealms.craftengine.bukkit.api.CraftEngineBlocks;
 import net.momirealms.craftengine.bukkit.api.CraftEngineFurniture;
 import net.momirealms.craftengine.core.util.Key;
 import org.bukkit.Location;
 
 public class CraftEnginePlacementTracker {
-
-    private static class Statistics {
-        int converted = 0;
-        int failed = 0;
-
-        void incrementConverted() {
-            converted++;
-        }
-
-        void incrementFailed() {
-            failed++;
-        }
-
-        int getTotal() {
-            return converted + failed;
-        }
-
-        double getSuccessRate() {
-            int total = getTotal();
-            return total > 0 ? (converted * 100.0) / total : 0.0;
-        }
-    }
-
-    private final Statistics blocks = new Statistics();
-    private final Statistics furniture = new Statistics();
+    private final ConversionStatistics blocks = new ConversionStatistics();
+    private final ConversionStatistics furniture = new ConversionStatistics();
 
     public void placeBlock(String itemId, Location location) {
         if (CraftEngineBlocks.place(location, Key.of(itemId), false)) {
-            blocks.incrementConverted();
+            this.blocks.incrementConverted();
         } else {
-            blocks.incrementFailed();
+            this.blocks.incrementFailed();
         }
     }
 
     public void placeFurniture(String itemId, Location location) {
         if (CraftEngineFurniture.place(location, Key.of(itemId)) != null) {
-            furniture.incrementConverted();
+            this.furniture.incrementConverted();
         } else {
-            furniture.incrementFailed();
+            this.furniture.incrementFailed();
         }
     }
 
     // Blocks statistics
     public int getBlocksConverted() {
-        return blocks.converted;
+        return this.blocks.getConverted();
     }
 
     public int getBlocksFailed() {
-        return blocks.failed;
+        return this.blocks.getFailed();
     }
 
     public int getTotalBlocks() {
-        return blocks.getTotal();
+        return this.blocks.getTotal();
     }
 
     public double getBlocksSuccessRate() {
-        return blocks.getSuccessRate();
+        return this.blocks.getSuccessRate();
     }
 
     // Furniture statistics
     public int getFurnitureConverted() {
-        return furniture.converted;
+        return this.furniture.getConverted();
     }
 
     public int getFurnitureFailed() {
-        return furniture.failed;
+        return this.furniture.getFailed();
     }
 
     public int getTotalFurniture() {
-        return furniture.getTotal();
+        return this.furniture.getTotal();
     }
 
     public double getFurnitureSuccessRate() {
-        return furniture.getSuccessRate();
+        return this.furniture.getSuccessRate();
     }
 
     // Global statistics
     public int getTotalConverted() {
-        return blocks.converted + furniture.converted;
+        return this.blocks.getConverted() + this.furniture.getConverted();
     }
 
     public int getTotalFailed() {
-        return blocks.failed + furniture.failed;
+        return this.blocks.getFailed() + this.furniture.getFailed();
     }
 
     public int getGrandTotal() {
@@ -101,10 +79,8 @@ public class CraftEnginePlacementTracker {
     }
 
     public void reset() {
-        blocks.converted = 0;
-        blocks.failed = 0;
-        furniture.converted = 0;
-        furniture.failed = 0;
+        this.blocks.reset();
+        this.furniture.reset();
     }
 
     @Override
@@ -114,8 +90,8 @@ public class CraftEnginePlacementTracker {
                         "  Blocks: %d converted, %d failed (%.1f%% success)%n" +
                         "  Furniture: %d converted, %d failed (%.1f%% success)%n" +
                         "  Total: %d converted, %d failed (%.1f%% success)",
-                blocks.converted, blocks.failed, blocks.getSuccessRate(),
-                furniture.converted, furniture.failed, furniture.getSuccessRate(),
+                this.blocks.getConverted(), this.blocks.getFailed(), this.blocks.getSuccessRate(),
+                this.furniture.getConverted(), this.furniture.getFailed(), this.furniture.getSuccessRate(),
                 getTotalConverted(), getTotalFailed(), getOverallSuccessRate()
         );
     }

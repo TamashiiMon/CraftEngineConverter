@@ -1,15 +1,15 @@
-package fr.robie.craftengineconverter.common;
+package fr.robie.craftengineconverter.common.utils;
 
+import fr.robie.craftengineconverter.common.ImageConversion;
+import fr.robie.craftengineconverter.common.cache.SimpleCache;
 import net.momirealms.craftengine.bukkit.api.CraftEngineImages;
 import net.momirealms.craftengine.core.font.BitmapImage;
 import net.momirealms.craftengine.core.util.Key;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class CraftEngineImageUtils {
-    private static final Map<String, ImageConversion> imageNamesConversion = new HashMap<>();
+    private static final SimpleCache<String, ImageConversion> imageConversionCache = new SimpleCache<>();
 
     /**
      * Register an image name conversion from original to converted (with namespace)
@@ -17,7 +17,7 @@ public class CraftEngineImageUtils {
      * @param imageConversion The converted name with namespace (e.g., "nexo:custom_sword")
      */
     public static void register(String originalName, ImageConversion imageConversion) {
-        imageNamesConversion.put(originalName, imageConversion);
+        imageConversionCache.put(originalName, imageConversion);
     }
 
     /**
@@ -26,7 +26,7 @@ public class CraftEngineImageUtils {
      * @return The converted name with namespace, or null if not registered
      */
     public static ImageConversion getConverted(String originalName) {
-        return imageNamesConversion.get(originalName);
+        return imageConversionCache.get(originalName);
     }
 
     /**
@@ -35,7 +35,7 @@ public class CraftEngineImageUtils {
      * @return true if the name has been registered
      */
     public static boolean isRegistered(String originalName) {
-        return imageNamesConversion.containsKey(originalName);
+        return imageConversionCache.containsKey(originalName);
     }
 
     public static Optional<String> convert(String originalName) {
