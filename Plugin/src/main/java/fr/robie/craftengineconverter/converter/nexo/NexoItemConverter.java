@@ -10,6 +10,8 @@ import fr.robie.craftengineconverter.utils.FloatsUtils;
 import fr.robie.craftengineconverter.utils.Position;
 import fr.robie.craftengineconverter.utils.Tuple;
 import fr.robie.craftengineconverter.utils.enums.*;
+import fr.robie.craftengineconverter.utils.enums.nexo.NexoBestTool;
+import fr.robie.craftengineconverter.utils.enums.nexo.NexoMinimalType;
 import fr.robie.craftengineconverter.utils.loots.CraftEngineItemLoot;
 import fr.robie.craftengineconverter.utils.loots.ItemLoot;
 import fr.robie.craftengineconverter.utils.loots.MinecraftItemLoot;
@@ -1486,9 +1488,7 @@ public class NexoItemConverter extends ItemConverter {
                 noLimitedPlacingKeys.add(FurniturePlacement.CEILING);
             }
         } else {
-            noLimitedPlacingKeys.add(FurniturePlacement.GROUND);
-            noLimitedPlacingKeys.add(FurniturePlacement.WALL);
-            noLimitedPlacingKeys.add(FurniturePlacement.CEILING);
+            noLimitedPlacingKeys.addAll(List.of(FurniturePlacement.values()));
         }
         if (!noLimitedPlacingKeys.isEmpty()){
             if (isValidString(nexoBetterModel) || isValidString(nexoMEGModel)){

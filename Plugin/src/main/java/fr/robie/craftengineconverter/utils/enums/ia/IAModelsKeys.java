@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.utils.enums;
+package fr.robie.craftengineconverter.utils.enums.ia;
 
 import java.util.Collection;
 

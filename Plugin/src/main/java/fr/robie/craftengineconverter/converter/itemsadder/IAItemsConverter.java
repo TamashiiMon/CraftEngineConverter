@@ -4,10 +4,11 @@ import fr.robie.craftengineconverter.common.configuration.Configuration;
 import fr.robie.craftengineconverter.common.logger.Logger;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.converter.ItemConverter;
-import fr.robie.craftengineconverter.utils.enums.BlockParent;
-import fr.robie.craftengineconverter.utils.enums.IADirectionalMode;
-import fr.robie.craftengineconverter.utils.enums.IAModelsKeys;
-import fr.robie.craftengineconverter.utils.enums.Template;
+import fr.robie.craftengineconverter.utils.FloatsUtils;
+import fr.robie.craftengineconverter.utils.enums.*;
+import fr.robie.craftengineconverter.utils.enums.ia.IADirectionalMode;
+import fr.robie.craftengineconverter.utils.enums.ia.IAFurnitureEntityType;
+import fr.robie.craftengineconverter.utils.enums.ia.IAModelsKeys;
 import fr.robie.craftengineconverter.utils.manager.InternalTemplateManager;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -554,6 +555,159 @@ public class IAItemsConverter extends ItemConverter {
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void convertOther(){
+        ConfigurationSection behavioursSection = this.iaItemSection.getConfigurationSection("behaviours");
+        if (isNotNull(behavioursSection)){
+            for (String behaviourKey : behavioursSection.getKeys(false)){
+                switch (behaviourKey){
+                    case "furniture" -> {
+                        ConfigurationSection furnitureSection = behavioursSection.getConfigurationSection("furniture");
+                        if (isNotNull(furnitureSection)){
+                            this.convertFurniture(furnitureSection, behavioursSection);
+                        }
+                    }
+                    default -> {
+
+                    }
+                }
+            }
+        }
+    }
+
+    private void convertFurniture(ConfigurationSection furnitureSection, ConfigurationSection behavioursSection) {
+        IAFurnitureEntityType entityType = IAFurnitureEntityType.ITEM_DISPLAY;
+        try {
+            entityType = IAFurnitureEntityType.valueOf(furnitureSection.getString("entity","ITEM_DISPLAY").toUpperCase());
+        } catch (Exception ignored){
+        }
+        Set<FurniturePlacement> placements = new HashSet<>();
+        ConfigurationSection placeableSection = furnitureSection.getConfigurationSection("placeable_on");
+        if (isNotNull(placeableSection)){
+            boolean placeableOnFloor = placeableSection.getBoolean("floor", true);
+            boolean placeableOnCeiling = placeableSection.getBoolean("ceiling", true);
+            boolean placeableOnWall = placeableSection.getBoolean("wall", true);
+            if (placeableOnFloor){
+                placements.add(FurniturePlacement.GROUND);
+            }
+            if (placeableOnCeiling){
+                placements.add(FurniturePlacement.CEILING);
+            }
+            if (placeableOnWall){
+                placements.add(FurniturePlacement.WALL);
+            }
+        } else {
+            placements.addAll(List.of(FurniturePlacement.values()));
+        }
+        if (!placements.isEmpty()){
+            Billboard transformType = Billboard.FIXED;
+            ItemDisplayType displayType = ItemDisplayType.FIXED;
+
+            FloatsUtils displayTranslation = new FloatsUtils(3,new float[]{0f,0.5f,0f});;
+            FloatsUtils scale = new FloatsUtils(3, new float[]{1f,1f,1f});
+
+            ConfigurationSection displayTransformationSection = furnitureSection.getConfigurationSection("display_transformation");
+            if (isNotNull(displayTransformationSection)){
+                try {
+                    transformType = Billboard.valueOf(displayTransformationSection.getString("transform","FIXED").toUpperCase());
+                } catch (Exception exception){
+                    Logger.debug("[IAItemsConverter] Invalid billboard transform type for furniture item " + this.itemId+": " + displayTransformationSection.getString("transform"));
+                }
+                ConfigurationSection translationSection = displayTransformationSection.getConfigurationSection("translation");
+                if (isNotNull(translationSection)){
+                    double x = translationSection.getDouble("x");
+                    double y = translationSection.getDouble("y");
+                    double z = translationSection.getDouble("z");
+                    if (x != 0d){
+                        displayTranslation.setValue(0,(float)x);
+                    }
+                    if (y != 0d){
+                        displayTranslation.setValue(1,(float)y);
+                    }
+                    if (z != 0d) {
+                        displayTranslation.setValue(2, (float) z);
+                    }
+                }
+                ConfigurationSection scaleSection = displayTransformationSection.getConfigurationSection("scale");
+                if (isNotNull(scaleSection)){
+                    double x = scaleSection.getDouble("x",1.0);
+                    double y = scaleSection.getDouble("y",1.0);
+                    double z = scaleSection.getDouble("z",1.0);
+                    if (x != 1.0){
+                        scale.setValue(0,(float)x);
+                    }
+                    if (y != 1.0){
+                        scale.setValue(1,(float)y);
+                    }
+                    if (z != 1.0) {
+                        scale.setValue(2, (float) z);
+                    }
+                }
+            }
+
+            List<Map<String,Object>> elements = new ArrayList<>();
+            Map<String,Object> map = new HashMap<>();
+            map.put("item", this.itemId);
+            map.put("display-transform", displayType.name());
+            map.put("billboard", transformType.name());
+            map.put("translation", displayTranslation.toString());
+            map.put("scale", scale.toString());
+            elements.add(map);
+
+            double sitHeight = behavioursSection.getDouble("furniture_sit.sit_height", 0d);
+            List<Map<String,Object>> hitboxes = new ArrayList<>();
+            ConfigurationSection iaHitboxesSection = furnitureSection.getConfigurationSection("hitbox");
+
+            if (isNotNull(iaHitboxesSection)) {
+                parseItemsAdderHitboxes(iaHitboxesSection, hitboxes, sitHeight);
+            }
+            ConfigurationSection ceFurnitureSection = getOrCreateSection(this.craftEngineItemUtils.getBehaviorSection(), "furniture");
+            ConfigurationSection cePlacementSection = getOrCreateSection(ceFurnitureSection, "placement");
+
+            for (FurniturePlacement furniturePlacement : placements){
+                ConfigurationSection ceTypePlacementSection = cePlacementSection.createSection(furniturePlacement.name().toLowerCase());
+                ceTypePlacementSection.set("elements", elements);
+                if (!hitboxes.isEmpty()){
+                    ceTypePlacementSection.set("hitboxes", hitboxes);
+                }
+            }
+
+            ceFurnitureSection.set("loot", InternalTemplateManager.parseTemplate(Template.LOOT_TABLE_BASIC_DROP, "%type%","furniture_item","%item%", this.itemId));
+
+        }
+    }
+
+    private void parseItemsAdderHitboxes(ConfigurationSection iaHitboxesSection, List<Map<String,Object>> hitboxes, double seatPosition) {
+        if (iaHitboxesSection == null) return;
+
+        int length = iaHitboxesSection.getInt("length", 1);
+        int width = iaHitboxesSection.getInt("width", 1);
+        int height = iaHitboxesSection.getInt("height", 1);
+        int lengthOffset = iaHitboxesSection.getInt("length_offset", 0);
+        int widthOffset = iaHitboxesSection.getInt("width_offset", 0);
+        int heightOffset = iaHitboxesSection.getInt("height_offset", 0);
+
+        for (int x = 0; x < length; x++) {
+            for (int y = 0; y < height; y++) {
+                for (int z = 0; z < width; z++) {
+                    float posX = x + lengthOffset;
+                    float posY = y + heightOffset;
+                    float posZ = z + widthOffset;
+
+                    Map<String, Object> hitbox = new HashMap<>();
+                    hitbox.put("type", "barrier");
+                    hitbox.put("position", posX + "," + posY + "," + posZ);
+
+                    if (x == 0 && y == 0 && z == 0) {
+                        hitbox.put("seats", List.of("0,"+seatPosition+",0 0"));
+                    }
+
+                    hitboxes.add(hitbox);
                 }
             }
         }

@@ -99,6 +99,7 @@
 
 ## ✅ Recently Completed
 
+- ItemsAdder basic furniture conversion
 - ItemsAdder pack conversion
 - ItemsAdder recipe conversion
 - ItemsAdder song conversion

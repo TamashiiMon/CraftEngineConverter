@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.utils.enums;
+package fr.robie.craftengineconverter.utils.enums.ia;
 
 public enum IARecipesTypes {
     CRAFTING_TABLE,

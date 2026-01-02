@@ -12,7 +12,7 @@ import fr.robie.craftengineconverter.common.utils.CraftEngineImageUtils;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.utils.ConfigFile;
 import fr.robie.craftengineconverter.utils.SnakeUtils;
-import fr.robie.craftengineconverter.utils.enums.IARecipesTypes;
+import fr.robie.craftengineconverter.utils.enums.ia.IARecipesTypes;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
