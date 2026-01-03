@@ -49,6 +49,8 @@ public enum Message {
     COMMAND__CONVERTER__COMPLETE__SINGLE("§aConversion completed for §e%plugin%§a! In §c%time%§a."),
     COMMAND__CONVERTER__COMPLETE__ALL("§aConversion completed for all plugins! In §c%time%§a."),
     COMMAND__CONVERTER__DRY_RUN_NOTE("§eNote§7: This was a dry run, no changes were applied."),
+    COMMAND__CONVERTER__ALREADY_RUNNING("§cA conversion is already running. Please wait for it to complete before starting a new one. Or add --force to force start a new conversion (the previous one will be cancelled)."),
+    COMMAND__CONVERTER__FORCE_STOPPING("§eForce flag detected. Stopping all ongoing conversions..."),
     COMMAND__CONVERTER__THREADS__INFO("§aUsing §e%threads%§a threads for conversion."),
     COMMAND__CONVERTER__THREADS__ERROR_TOO_MANY("§cThe number of threads specified exceeds the number of available processors (%max%). Using the maximum available."),
 

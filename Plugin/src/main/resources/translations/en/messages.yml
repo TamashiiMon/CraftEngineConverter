@@ -51,6 +51,8 @@ command:
       single: "§aConversion completed for §e%plugin%§a! In §c%time%§a."
       all: "§aConversion completed for all plugins! In §c%time%§a."
     dry-run-note: "§eNote§7: This was a dry run, no changes were applied."
+    already-running: "§cA conversion is already running. Please wait for it to complete before starting a new one. Or add --force to force start a new conversion (the previous one will be cancelled)."
+    force-stopping: "§eForce flag detected. Stopping all ongoing conversions..."
     threads:
       info: "§aUsing §e%threads%§a threads for conversion."
       error-too-many: "§cThe number of threads specified exceeds the number of available processors (%max%). Using the maximum available."

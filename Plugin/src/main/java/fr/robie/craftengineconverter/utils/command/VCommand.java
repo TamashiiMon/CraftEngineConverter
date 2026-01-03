@@ -124,6 +124,13 @@ public abstract class VCommand extends Arguments {
     }
 
     /**
+     * @return the list of child VCommands
+     */
+    public List<VCommand> getSubVCommands() {
+        return subVCommands;
+    }
+
+    /**
      * @return the consoleCanUse
      */
     public boolean isConsoleCanUse() {
@@ -742,10 +749,52 @@ public abstract class VCommand extends Arguments {
     /**
      * Add list of aliases
      *
-     * @param aliases
+     * @param aliases Command aliases to add
      */
     public void addSubCommand(List<String> aliases) {
         this.subCommands.addAll(aliases);
+    }
+
+    /**
+     * Called when the plugin is being disabled.
+     * Override this method to perform cleanup tasks such as:
+     * - Cancelling running tasks
+     * - Clearing caches
+     * - Releasing resources
+     * <p></p>
+     * This method is automatically called recursively for all child commands
+     * by the CommandManager.disableCommands() method.
+     */
+    protected void onDisable() {
+        // Override this method in subclasses if needed
+    }
+
+    /**
+     * Called when the plugin is being loaded (onLoad phase).
+     * Override this method to perform early initialization tasks such as:
+     * - Loading configuration files
+     * - Initializing variables
+     * - Setting up dependencies that need to be available before plugin enable
+     * <p></p>
+     * This method is automatically called recursively for all child commands
+     * by the CommandManager.loadCommands() method.
+     */
+    protected void onLoad() {
+        // Override this method in subclasses if needed
+    }
+
+    /**
+     * Called when the plugin is being enabled (onEnable phase).
+     * Override this method to perform startup tasks such as:
+     * - Starting scheduled tasks
+     * - Registering event listeners specific to this command
+     * - Connecting to external services
+     * <p></p>
+     * This method is automatically called recursively for all child commands
+     * by the CommandManager.enableCommands() method.
+     */
+    protected void onEnable() {
+        // Override this method in subclasses if needed
     }
 
     /**

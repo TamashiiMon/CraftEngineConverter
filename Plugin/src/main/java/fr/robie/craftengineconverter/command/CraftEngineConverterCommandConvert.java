@@ -11,14 +11,13 @@ import fr.robie.craftengineconverter.utils.command.VCommand;
 import fr.robie.craftengineconverter.utils.permission.Permission;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CraftEngineConverterCommandConvert extends VCommand {
+    private final List<CompletableFuture<Void>> conversionTasks = new ArrayList<>();
+
     public CraftEngineConverterCommandConvert(CraftEngineConverter plugin) {
         super(plugin);
         this.setPermission(Permission.COMMAND_CONVERT);
@@ -33,18 +32,30 @@ public class CraftEngineConverterCommandConvert extends VCommand {
             return options;
         });
         this.addFlag("--dryrun");
+        this.addFlag("--force");
         this.addFlag("--threads", Integer.class, 1);
     }
 
     @Override
     protected CommandType perform(CraftEngineConverter plugin) {
+        boolean forceConversion = this.containFlag("--force");
+        if (!this.conversionTasks.isEmpty() && !forceConversion){
+            message(plugin,sender, Message.COMMAND__CONVERTER__ALREADY_RUNNING);
+            return CommandType.SUCCESS;
+        }
+
+        if (forceConversion){
+            message(plugin, sender, Message.COMMAND__CONVERTER__FORCE_STOPPING);
+            this.disableAllConversions();
+        }
+
         String targetPlugin = this.argAsString(0);
         ConverterOptions converterOption = argAsEnum(1, ConverterOptions.class, ConverterOptions.ALL);
-        boolean dryRun = this.containFlag("-dryrun");
+        boolean dryRun = this.containFlag("--dryrun");
         if (dryRun){
             message(plugin,sender, Message.COMMAND__CONVERTER__DRY_RUN_NOTE);
         }
-        int threads = this.getFlagValueAsInteger("threads");
+        int threads = this.getFlagValueAsInteger("--threads");
         if (threads < 1){
             threads = 1;
         } else if (threads > Runtime.getRuntime().availableProcessors()){
@@ -69,7 +80,9 @@ public class CraftEngineConverterCommandConvert extends VCommand {
                         message(plugin,sender, Message.COMMAND__CONVERTER__COMPLETE__ALL, "time", TimerBuilder.formatTimeAuto(endTime-startTime));
                         converterSettings.restoreBackup();
                     }
+                    this.conversionTasks.remove(voidCompletableFuture);
                 });
+                this.conversionTasks.add(voidCompletableFuture);
             }
         } else {
             Optional<Converter> optionalConverter = plugin.getConverter(targetPlugin);
@@ -84,7 +97,9 @@ public class CraftEngineConverterCommandConvert extends VCommand {
                     long endTime = System.currentTimeMillis();
                     message(plugin,sender, Message.COMMAND__CONVERTER__COMPLETE__SINGLE, "plugin", targetPlugin, "time", TimerBuilder.formatTimeAuto(endTime-startTime));
                     converterSettings.restoreBackup();
+                    this.conversionTasks.remove(voidCompletableFuture);
                 });
+                this.conversionTasks.add(voidCompletableFuture);
             } else {
                 message(plugin,sender, Message.COMMAND__CONVERTER__NOT_SUPPORTED, "plugin", targetPlugin);
             }
@@ -106,5 +121,19 @@ public class CraftEngineConverterCommandConvert extends VCommand {
             case RECIPES -> converter.convertRecipes(true, player);
             case SOUNDS -> converter.convertSounds(true, player);
         };
+    }
+
+    private void disableAllConversions() {
+        if (!this.conversionTasks.isEmpty()) {
+            for (CompletableFuture<Void> task : new ArrayList<>(this.conversionTasks)) {
+                task.cancel(true);
+            }
+            this.conversionTasks.clear();
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        this.disableAllConversions();
     }
 }

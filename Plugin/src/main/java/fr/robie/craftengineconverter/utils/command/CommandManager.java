@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class CommandManager extends CraftEngineConverterUtils implements CommandExecutor, TabCompleter, CommandManagerInt {
     private static CommandMap commandMap;
@@ -41,6 +42,58 @@ public class CommandManager extends CraftEngineConverterUtils implements Command
      */
     public CommandManager(CraftEngineConverter corePlugin) {
         this.plugin = corePlugin;
+    }
+
+    /**
+     * Load all commands by calling their onLoad method recursively.
+     * This method should be called when the plugin is being loaded.
+     */
+    public void loadCommands() {
+        applyToCommands(VCommand::onLoad);
+    }
+
+    /**
+     * Enable all commands by calling their onEnable method recursively.
+     * This method should be called when the plugin is being enabled.
+     */
+    public void enableCommands() {
+        applyToCommands(VCommand::onEnable);
+    }
+
+    /**
+     * Disable all commands by calling their onDisable method recursively.
+     * This method is called when the plugin is being disabled.
+     */
+    public void disableCommands() {
+        applyToCommands(VCommand::onDisable);
+    }
+
+
+    /**
+     * Apply a consumer action to all registered commands recursively with simple start/end logging.
+     * The provided action should be safe (exceptions are caught and logged).
+     *
+     * @param action action to apply to each VCommand
+     */
+    private void applyToCommands(Consumer<VCommand> action) {
+        for (VCommand command : this.commands) {
+            applyRecursive(command, action);
+        }
+    }
+
+    private void applyRecursive(VCommand command, Consumer<VCommand> action) {
+        if (command == null) return;
+        try {
+            action.accept(command);
+        } catch (Exception e) {
+            Logger.showException("Error while applying command action to: " + command.getSyntax(), e);
+        }
+        List<VCommand> children = command.getSubVCommands();
+        if (children != null && !children.isEmpty()) {
+            for (VCommand child : children) {
+                applyRecursive(child, action);
+            }
+        }
     }
 
     /**

@@ -70,6 +70,8 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
         if (this.packetLoader != null){
             this.packetLoader.onLoad();
         }
+
+        this.commandManager.loadCommands();
     }
 
     @Override
@@ -99,6 +101,9 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
         this.commandManager.registerCommand("craftengineconverter",new CraftEngineConverterCommand(this),"cengineconverter","cec");
 
         this.commandManager.validCommands();
+
+        this.commandManager.enableCommands();
+
         registerConverter(new NexoConverter(this));
         registerConverter(new IAConverter(this));
 
@@ -147,6 +152,8 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
         }
 
         this.metrics.shutdown();
+
+        this.commandManager.disableCommands();
 
         if (this.placementTracker != null){
             Logger.info("Conversion stats :");
