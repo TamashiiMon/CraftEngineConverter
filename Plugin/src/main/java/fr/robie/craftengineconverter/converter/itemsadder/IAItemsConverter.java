@@ -262,6 +262,21 @@ public class IAItemsConverter extends ItemConverter {
                 slot = "feet";
             } else {
                 slot = equipmentSection.getString("slot");
+                if (!isValidString(slot)){
+                    Material material = this.craftEngineItemUtils.getMaterial();
+                    String materialName = material.name();
+                    if (materialName.endsWith("_HELMET") || materialName.endsWith("_SKULL") || materialName.endsWith("_HAT")){
+                        slot = "head";
+                    } else if (materialName.endsWith("_CHESTPLATE") || materialName.endsWith("_ELYTRA")){
+                        slot = "chest";
+                    } else if (materialName.endsWith("_LEGGINGS")){
+                        slot = "legs";
+                    } else if (materialName.endsWith("_BOOTS")){
+                        slot = "feet";
+                    } else {
+                        slot = null;
+                    }
+                }
             }
             if (isValidString(slot)){
                 ceEquipableSection.set("slot", slot);
@@ -723,7 +738,7 @@ public class IAItemsConverter extends ItemConverter {
                     float posZ = z + widthOffset;
 
                     Map<String, Object> hitbox = new HashMap<>();
-                    hitbox.put("type", "barrier");
+                    hitbox.put("type", "shulker");
                     hitbox.put("position", posX + "," + posY + "," + posZ);
 
                     if (x == 0 && y == 0 && z == 0) {

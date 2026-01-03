@@ -139,10 +139,10 @@ public class IAConverter extends Converter {
                 layer2 = cleanPath(layer2);
                 List<ArmorConverter> convertersToProcess = Configuration.armorConverterType.getComposition();
                 Map<ArmorConverter, ConfigurationSection> converterSections = ArmorConverter.createArmorConverterSections(getOrCreateSection(convertedConfig, "equipments"), namespaced(equipmentId, namespace));
-                addPackMapping(namespace, "textures/"+layer1, namespace, "textures/entity/equipment/humanoid/");
-                addPackMapping(namespace, "textures/"+layer2, namespace, "textures/entity/equipment/humanoid_leggings/");
-                String layer1FileName = getFileName(layer1);
-                String layer2FileName = getFileName(layer2);
+                String layer1FileName = namespace+"_"+equipmentId+"_"+getFileName(layer1);
+                String layer2FileName = namespace+"_"+equipmentId+"_"+getFileName(layer2);
+                addPackMapping(namespace, "textures/"+layer1+".png", namespace, "textures/entity/equipment/humanoid/",layer1FileName+".png");
+                addPackMapping(namespace, "textures/"+layer2+".png", namespace, "textures/entity/equipment/humanoid_leggings/",layer2FileName+".png");
                 for (ArmorConverter converter : convertersToProcess){
                     ConfigurationSection section = converterSections.get(converter);
                     if (isNotNull(section)){

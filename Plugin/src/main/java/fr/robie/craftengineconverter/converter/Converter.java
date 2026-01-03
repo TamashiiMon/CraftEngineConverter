@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public abstract class Converter extends YamlUtils {
     protected final CraftEngineConverter plugin;
     protected final String converterName;
     protected final ConverterSettings settings;
-    private final Map<String, List<PackMapping>> packMappings = new HashMap<>();
+    protected final Map<String, List<PackMapping>> packMappings = new HashMap<>();
 
     public Converter(CraftEngineConverter plugin, String converterName) {
         super(plugin);
@@ -84,9 +85,13 @@ public abstract class Converter extends YamlUtils {
         }
     }
 
-    public void addPackMapping(@NotNull String namespaceSource, @NotNull String originalPath, @NotNull String namespaceTarget, @NotNull String targetPath){
-        PackMapping mapping = new PackMapping(namespaceSource, originalPath, namespaceTarget, targetPath);
+    public void addPackMapping(@NotNull String namespaceSource, @NotNull String originalPath, @NotNull String namespaceTarget, @NotNull String targetPath, @Nullable String newName){
+        PackMapping mapping = new PackMapping(namespaceSource, originalPath, namespaceTarget, targetPath, newName);
         this.packMappings.computeIfAbsent(namespaceSource, k -> new ArrayList<>()).add(mapping);
+    }
+
+    public void addPackMapping(@NotNull String namespaceSource, @NotNull String originalPath, @NotNull String namespaceTarget, @NotNull String targetPath){
+        addPackMapping(namespaceSource, originalPath, namespaceTarget, targetPath, null);
     }
 
     public PackMapping resolvePackMapping(@NotNull String namespaceSource, @NotNull String originalPath){
@@ -108,7 +113,7 @@ public abstract class Converter extends YamlUtils {
 
         if (bestMatch != null) {
             String resolvedPath = bestMatch.apply(originalPath);
-            return new PackMapping(namespaceSource, originalPath, bestMatch.namespaceTarget(), resolvedPath);
+            return new PackMapping(namespaceSource, originalPath, bestMatch.namespaceTarget(), resolvedPath, bestMatch.newName());
         }
 
         return null;
@@ -228,7 +233,9 @@ public abstract class Converter extends YamlUtils {
                 String mappedFullPath = resolvedMapping.namespaceTarget() + "/" + resolvedMapping.targetPath();
 
                 if (file.isFile()) {
-                    targetFile = new File(destination, mappedFullPath + "/" + file.getName());
+                    // Use newName if provided, otherwise use original file name
+                    String fileName = resolvedMapping.newName() != null ? resolvedMapping.newName() : file.getName();
+                    targetFile = new File(destination, mappedFullPath + "/" + fileName);
                 } else {
                     targetFile = new File(destination, mappedFullPath);
                 }
@@ -352,7 +359,7 @@ public abstract class Converter extends YamlUtils {
         }
     }
 
-    public record PackMapping(String namespaceSource, String originalPath, String namespaceTarget, String targetPath){
+    public record PackMapping(String namespaceSource, String originalPath, String namespaceTarget, String targetPath, String newName){
         public boolean matches(String path) {
             if (originalPath.contains("*")) {
                 String regex = originalPath.replace("*", ".*");
