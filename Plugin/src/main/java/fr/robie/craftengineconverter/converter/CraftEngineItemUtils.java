@@ -76,11 +76,7 @@ public class CraftEngineItemUtils extends ObjectUtils {
         return getOrCreateSection(craftEngineItemSection, "behavior");
     }
 
-    public ConfigurationSection getStateSection() {
-        return getOrCreateSection(craftEngineItemSection, "state");
-    }
-
     public void setModel(Map<String, Object> model) {
-        getDataSection().set("model", model);
+        getGeneralSection().set("model", model);
     }
 }

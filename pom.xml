@@ -17,6 +17,15 @@
         <module>Plugin</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>dev-build</id>
+            <properties>
+                <dev.suffix>-Dev</dev.suffix>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -29,6 +38,9 @@
         <plugin.description>A plugin to convert configurations to CraftEngine format</plugin.description>
         <plugin.apiVersion>1.21</plugin.apiVersion>
         <plugin.mainClass>fr.robie.craftengineconverter.CraftEngineConverter</plugin.mainClass>
+
+        <plugin.finalVersion>${project.version}${dev.suffix}</plugin.finalVersion>
+        <dev.suffix/>
     </properties>
 
     <dependencyManagement>

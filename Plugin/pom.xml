@@ -12,7 +12,7 @@
     <artifactId>Plugin</artifactId>
 
     <build>
-        <finalName>CraftEngineConverter-${project.version}</finalName>
+        <finalName>CraftEngineConverter-${plugin.finalVersion}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

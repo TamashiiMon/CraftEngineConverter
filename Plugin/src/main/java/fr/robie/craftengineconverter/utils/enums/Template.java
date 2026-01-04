@@ -6,6 +6,8 @@ public enum Template {
     MODEL_CUBE_TOP("templates/model/cube_top", TemplateType.BLOCK),
     MODEL_CROSS("templates/model/block_cross", TemplateType.BLOCK),
 
+    BLOCK_MODEL("templates/model/block_model", TemplateType.BLOCK),
+
     MODEL_ITEM_GENERATED("templates/model/item_generated"),
 
     MODEL_3D_CROSSBOW("templates/model/items/3d_crossbow"),
