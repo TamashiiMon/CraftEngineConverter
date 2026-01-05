@@ -4,6 +4,7 @@ import fr.robie.craftengineconverter.CraftEngineConverter;
 import fr.robie.craftengineconverter.common.configuration.Configuration;
 import fr.robie.craftengineconverter.common.configuration.ConverterSettings;
 import fr.robie.craftengineconverter.common.enums.ConverterOptions;
+import fr.robie.craftengineconverter.common.enums.Plugins;
 import fr.robie.craftengineconverter.common.format.Message;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.common.logger.Logger;
@@ -31,14 +32,16 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class Converter extends YamlUtils {
     protected final CraftEngineConverter plugin;
+    protected final Plugins pluginType;
     protected final String converterName;
     protected final ConverterSettings settings;
     protected final Map<String, List<PackMapping>> packMappings = new HashMap<>();
 
-    public Converter(CraftEngineConverter plugin, String converterName) {
+    public Converter(CraftEngineConverter plugin, String converterName, Plugins pluginType) {
         super(plugin);
         this.plugin = plugin;
         this.converterName = converterName;
+        this.pluginType = pluginType;
         this.settings = new BasicConverterSettings();
     }
 
@@ -70,6 +73,10 @@ public abstract class Converter extends YamlUtils {
 
     public String getName() {
         return this.converterName;
+    }
+
+    public Plugins getPluginType() {
+        return this.pluginType;
     }
 
     @Contract("-> this")

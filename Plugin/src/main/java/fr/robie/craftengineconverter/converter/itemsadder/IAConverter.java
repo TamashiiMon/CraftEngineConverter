@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class IAConverter extends Converter {
     public IAConverter(CraftEngineConverter plugin) {
-        super(plugin, "ItemsAdder");
+        super(plugin, "ItemsAdder", Plugins.ITEMS_ADDER);
     }
 
     @Override

@@ -3,6 +3,63 @@ enable-debug: false
 # Language settings (available languages: EN, FR)
 language: "EN"
 
+# Each block has a usage limit for a block-state. This setting controls how those limits
+# usefull if you want to merge multiple plugin conversions together:
+# - "plugin": the limit is applied per-plugin. Different plugins can exceed the same
+#   limit independently (no cross-plugin enforcement).
+# - "global": the limit is shared across all plugins. If one plugin reaches the limit
+#   for a block-state, other plugins cannot apply that same block-state (prevents duplicates).
+# Choose "global" to prevent multiple plugins from affecting the same block-state; otherwise
+# choose "plugin" to allow per-plugin limits.
+block-state-limit:
+  type: PLUGIN
+  tintable-leaves:
+    start-limit: 0
+  waterlogged-tintable-leaves:
+    start-limit: 0
+  non-tintable-leaves:
+    start-limit: 0
+  waterlogged-non-tintable-leaves:
+    start-limit: 0
+  leaves:
+    start-limit: 0
+  waterlogged-leaves:
+    start-limit: 0
+  lower-tripwire:
+    start-limit: 0
+  higher-tripwire:
+    start-limit: 0
+  tripwire:
+    start-limit: 0
+  mushroom-stem:
+    start-limit: 0
+  red-mushroom-block:
+    start-limit: 0
+  brown-mushroom-block:
+    start-limit: 0
+  mushroom:
+    start-limit: 0
+  note-block:
+    start-limit: 0
+  solid:
+    start-limit: 0
+  cactus:
+    start-limit: 0
+  sugar-cane:
+    start-limit: 0
+  weeping-vine:
+    start-limit: 0
+  twisting-vine:
+    start-limit: 0
+  cave-vine:
+    start-limit: 0
+  sapling:
+    start-limit: 0
+  kelp:
+    start-limit: 0
+  chorus:
+    start-limit: 0
+
 # Auto-convert items on plugin enable
 auto-convert-on-startup: false
 

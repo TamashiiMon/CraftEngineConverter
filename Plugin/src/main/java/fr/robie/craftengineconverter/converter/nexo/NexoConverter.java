@@ -30,7 +30,7 @@ import java.util.zip.ZipInputStream;
 
 public class NexoConverter extends Converter {
     public NexoConverter(CraftEngineConverter plugin) {
-        super(plugin,"Nexo");
+        super(plugin,"Nexo",Plugins.NEXO);
     }
 
     @Override

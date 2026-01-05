@@ -1,8 +1,6 @@
 package fr.robie.craftengineconverter.common.configuration;
 
-import fr.robie.craftengineconverter.common.enums.ArmorConverter;
-import fr.robie.craftengineconverter.common.enums.ConverterOptions;
-import fr.robie.craftengineconverter.common.enums.Languages;
+import fr.robie.craftengineconverter.common.enums.*;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.common.logger.Logger;
 import fr.robie.craftengineconverter.common.progress.BukkitProgressBar;
@@ -17,6 +15,7 @@ import java.util.function.Consumer;
 public class Configuration {
     public static boolean enableDebug = false;
     public static Languages language = Languages.EN;
+    public static LimitType limitType = LimitType.PLUGIN;
     public static boolean autoConvertOnStartup = false;
     public static Material defaultMaterial = Material.PAPER;
     public static boolean disableDefaultItalic = true;
@@ -163,6 +162,15 @@ public class Configuration {
             options.setEmptyChar(emptyChar);
             options.setBarWidth(barWidth);
         }
+        for (CraftEngineBlockState blockStateLimit : CraftEngineBlockState.values()){
+            String path = "block-state-limit."+blockStateLimit.name().toLowerCase().replace("_", "-");
+            int startLimit = getOrAddInt(config, path + ".start-limit", blockStateLimit.getStart());
+            try {
+                blockStateLimit.setStart(startLimit);
+            } catch (Exception e) {
+                Logger.debug("Invalid start limit for " + blockStateLimit.name() + " in configuration.", LogType.WARNING);
+            }
+        }
         if (isUpdated){
             try {
                 config.save(file);
@@ -275,6 +283,15 @@ public class Configuration {
         NEXO_ENABLE_HOOK("nexo.enable-hook", true, v -> nexoEnableHook = (Boolean) v),
         NEXO_BLOCK_INTERACTION_CONVERSION("nexo.enable-block-interaction-conversion", true, v -> nexoEnableBlockInteractionConversion = (Boolean) v),
         NEXO_FURNITURE_INTERACTION_CONVERSION("nexo.enable-furniture-interaction-conversion", true, v -> nexoEnableFurnitureInteractionConversion = (Boolean) v),
+        BLOCK_STATE_LIMIT_TYPE("block-state-limit.type", "PLUGIN", v -> {
+            try {
+                String string = (String) v;
+                limitType = LimitType.valueOf(string.toUpperCase());
+            } catch (Exception e) {
+                Logger.debug("Invalid limit type in configuration, using PLUGIN as default.", LogType.WARNING);
+                limitType = LimitType.PLUGIN;
+            }
+        }),
         ;
 
         private final String path;

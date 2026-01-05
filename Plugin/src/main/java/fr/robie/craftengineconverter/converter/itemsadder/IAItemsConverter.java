@@ -1,6 +1,8 @@
 package fr.robie.craftengineconverter.converter.itemsadder;
 
 import fr.robie.craftengineconverter.common.configuration.Configuration;
+import fr.robie.craftengineconverter.common.enums.CraftEngineBlockState;
+import fr.robie.craftengineconverter.common.enums.Plugins;
 import fr.robie.craftengineconverter.common.logger.Logger;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.converter.ItemConverter;
@@ -16,6 +18,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -391,7 +394,10 @@ public class IAItemsConverter extends ItemConverter {
         ConfigurationSection stateSection = setupLogBlockState(behaviorSection);
         stateSection.set("appearances", InternalTemplateManager.parseTemplate(
                 Template.BLOCK_STATE_LOG_APPEARANCE,
-                "%model%", parsedTemplate
+                "%model%", parsedTemplate,
+                "%auto-state-x%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
+                "%auto-state-y%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
+                "%auto-state-z%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL)
         ));
 
         setupLogVariants(stateSection);
@@ -407,12 +413,16 @@ public class IAItemsConverter extends ItemConverter {
         ConfigurationSection behaviorSection = this.craftEngineItemUtils.getBehaviorSection();
         behaviorSection.set("type", "block_item");
         ConfigurationSection stateSection = getOrCreateSection(getOrCreateSection(behaviorSection, "block"), "states");
-        stateSection.set("auto-state", "note_block");
+        stateSection.set("auto-state", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL));
 
         setupFurnaceFacingProperty(stateSection);
         stateSection.set("appearances", InternalTemplateManager.parseTemplate(
                 Template.BLOCK_STATE_4_DIRECTIONS_APPEARANCE,
-                "%model%", parsedTemplate
+                "%model%", parsedTemplate,
+                "%auto-state-east%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
+                "%auto-state-west%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
+                "%auto-state-north%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
+                "%auto-state-south%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL)
         ));
 
         setupFurnaceVariants(stateSection);
@@ -478,7 +488,7 @@ public class IAItemsConverter extends ItemConverter {
                 getOrCreateSection(behaviorSection, "block"),
                 "states"
         );
-        stateSection.set("auto-state", "note_block");
+        stateSection.set("auto-state", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL));
 
         ConfigurationSection properties = getOrCreateSection(stateSection, "properties");
         ConfigurationSection axis = getOrCreateSection(properties, "axis");
@@ -657,6 +667,10 @@ public class IAItemsConverter extends ItemConverter {
         ConfigurationSection stateSection = getOrCreateSection(blockBehaviorSection, "state");
 
         String autoState = getAutoStateForPlacedModelType(placedModelType);
+        if (isNull(autoState)){
+            Logger.info("Limit reached for placed model type " + placedModelType + " for item " + this.itemId + ". Defaulting to SOLID auto-state.");
+            autoState = "solid";
+        }
 
         stateSection.set("auto-state", autoState);
         stateSection.set("model", InternalTemplateManager.parseTemplate(
@@ -668,6 +682,10 @@ public class IAItemsConverter extends ItemConverter {
     private void setupBlockStateFromTexture(ConfigurationSection blockBehaviorSection, IAPlacedModelTypes placedModelType, String texturePath){
         ConfigurationSection stateSection = getOrCreateSection(blockBehaviorSection, "state");
         String autoState = getAutoStateForPlacedModelType(placedModelType);
+        if (isNull(autoState)){
+            Logger.info("Limit reached for placed model type " + placedModelType + " for item " + this.itemId + ". Defaulting to SOLID auto-state.");
+            autoState = "solid";
+        }
         stateSection.set("auto-state", autoState);
         stateSection.set("model", InternalTemplateManager.parseTemplate(
                 Template.MODEL_CUBE_ALL,
@@ -676,13 +694,21 @@ public class IAItemsConverter extends ItemConverter {
         ));
     }
 
+    @Nullable
     private String getAutoStateForPlacedModelType(IAPlacedModelTypes placedModelType) {
-        return switch (placedModelType) {
-            case REAL_NOTE -> "note_block";
-            case REAL_TRANSPARENT -> "chorus";
-            case REAL_WIRE -> "tripwire";
-            default -> "mushroom";
+        Plugins plugin = this.getConverter().getPluginType();
+        CraftEngineBlockState blockState = switch (placedModelType) {
+            case REAL_NOTE -> CraftEngineBlockState.NOTE_BLOCK.getAvailableAndIncrement(plugin);
+            case REAL_TRANSPARENT -> CraftEngineBlockState.CHORUS.getAvailableAndIncrement(plugin);
+            case REAL_WIRE -> CraftEngineBlockState.TRIPWIRE.getAvailableAndIncrement(plugin);
+            case REAL -> CraftEngineBlockState.MUSHROOM.getAvailableAndIncrement(plugin);
+            default -> CraftEngineBlockState.SOLID.getAvailableAndIncrement(plugin);
         };
+        if (isNull(blockState)) {
+            return null;
+        }
+
+        return blockState.name().toLowerCase();
     }
 
     private void handleSimpleModelPath(@NotNull String namespacedModelPath) {
