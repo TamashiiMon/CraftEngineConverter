@@ -3,6 +3,7 @@ package fr.robie.craftengineconverter.hooks.nexo;
 import com.nexomc.nexo.api.NexoBlocks;
 import com.nexomc.nexo.api.events.custom_block.NexoBlockInteractEvent;
 import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
+import com.nexomc.nexo.utils.drops.Drop;
 import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.configuration.Configuration;
 import fr.robie.craftengineconverter.common.converter.BlockConverter;
@@ -67,7 +68,7 @@ public class NexoBlockConverter extends BlockConverter implements Listener {
 
     @Override
     public boolean removeBlockAt(Location location) {
-        return NexoBlocks.remove(location);
+        return NexoBlocks.remove(location, null, Drop.emptyDrop());
     }
 
 }

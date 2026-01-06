@@ -29,16 +29,17 @@ Download the latest version of **CraftEngineConverter** from one of the followin
 ### Step 2: Verification
 
 After starting your server, check the console logs for messages indicating that **CraftEngineConverter** has been enabled successfully. You should see output similar to the following:
-<code class="expression">space.vars.CODE_BLOCK_TRIPLEBACKTICKS</code> bash
-[xx:xx:xx INFO]: [CraftEngineConverter v<code class="expression">space.vars.PLUGIN_VERSION</code>] Enabling plugin ...
-[xx:xx:xx INFO]: [CraftEngineConverter v<code class="expression">space.vars.PLUGIN_VERSION</code>] Loading 1 commands
-[xx:xx:xx INFO]: [CraftEngineConverter v<code class="expression">space.vars.PLUGIN_VERSION</code>] Auto-conversion is enabled, starting conversion...
-[xx:xx:xx INFO]: [CraftEngineConverter v<code class="expression">space.vars.PLUGIN_VERSION</code>] Plugin enabled !
-<code class="expression">space.vars.CODE_BLOCK_TRIPLEBACKTICKS</code>
+``` bash
+[xx:xx:xx INFO]: [CraftEngineConverter v0.0.1] Enabling plugin ...
+[xx:xx:xx INFO]: [CraftEngineConverter v0.0.1] Loading 1 commands
+[xx:xx:xx INFO]: [CraftEngineConverter v0.0.1] Auto-conversion is enabled, starting conversion...
+[xx:xx:xx INFO]: [CraftEngineConverter v0.0.1] Plugin enabled !
+```
 
 If you see any errors, please refer to the [🐛 Common Issues](../troubleshooting/common-issues.md) page for troubleshooting tips.
 
 ## 🎉 You're All Set!
 
 You have successfully installed and set up **CraftEngineConverter**! You can now start converting configuration files from supported plugins into the CraftEngine format.
+All configuration files will be generated in the `plugins/CraftEngineConverter/converted/` directory. See [Nexo Converter](../converters/nexo-converter.md) or [ItemsAdder Converter](../converters/itemsadder-converter.md) for specific plugin conversion instructions.
 For more information on how to use the plugin, please refer to the [🔧 Main Configuration](../configuration/main-config.md) and [⌨️ Commands](../commands-permissions/commands.md) pages.

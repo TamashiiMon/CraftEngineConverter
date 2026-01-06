@@ -20,6 +20,7 @@ This page provides a comprehensive reference for all commands available in **Cra
   - **Usage**:
     Available plugin names:
       - `nexo`  
+      - `itemsadder`
     Available types:
       - `ALL` Default - Converts all supported configuration files.
       - `ITEMS` - Converts only item configurations.
@@ -31,5 +32,14 @@ This page provides a comprehensive reference for all commands available in **Cra
     Additional flags:
       - `--dryrun`: Simulates the conversion process without making any changes.
       - `--threads=<number>`: Specifies the number of threads to use for multi-threaded pack conversion. Default is 1.
+      - `--force`: Stops any ongoing conversion process and immediately starts a new one. Use this to override and restart conversions that are currently running.
     - **Usage Example**: `/craftengineconverter convert nexo ITEMS --dryrun --threads=4` or `/cec convert nexo ITEMS --dryrun --threads=4`
     - **Permissions**: `craftengineconverter.command.convert`
+
+3. `clearfilescache`
+   - **Description**: Clears the internal cache of files used during the conversion process.
+   - **Usage**:
+     Aditional flags:
+      - `--all`: Clears all cached files.
+   - **Usage Example**: `/craftengineconverter clearfilescache --all` or `/cec clearfilescache`, clears only files outdated (modified since last access).
+   - **Permissions**: `craftengineconverter.command.clearfilescache`

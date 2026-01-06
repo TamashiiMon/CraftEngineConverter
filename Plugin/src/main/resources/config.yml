@@ -3,14 +3,42 @@ enable-debug: false
 # Language settings (available languages: EN, FR)
 language: "EN"
 
-# Each block has a usage limit for a block-state. This setting controls how those limits
-# usefull if you want to merge multiple plugin conversions together:
-# - "plugin": the limit is applied per-plugin. Different plugins can exceed the same
-#   limit independently (no cross-plugin enforcement).
-# - "global": the limit is shared across all plugins. If one plugin reaches the limit
-#   for a block-state, other plugins cannot apply that same block-state (prevents duplicates).
-# Choose "global" to prevent multiple plugins from affecting the same block-state; otherwise
-# choose "plugin" to allow per-plugin limits.
+# Each block has a usage limit for a block-state. This setting controls how those limits are enforced when multiple plugins are installed:
+#  - "plugin": Each plugin gets its own separate limit. Different plugins can use the same block-states independently without affecting each other.
+#  - "global": All plugins share the same limit. Once any plugin uses up the limit for a block-state, other plugins cannot use it (prevents conflicts and duplicates).
+#
+# Choose "global" to prevent multiple plugins from using the same block-states; otherwise choose "plugin" to allow each plugin its own allocation.
+#
+# Note:
+#  - Block-states can have parent-child relationships.
+#  - A parent's limit automatically includes the limits of all its children.
+#    For example, if "note-block" (a child of "solid") has a limit of 10, then "solid" will have its own limit plus 10.
+#
+# Available block-state groups and their capacity:
+#  - SOLID (1338 available): Top-level group
+#      - MUSHROOM (189 available): Mushroom block variants
+#          - RED_MUSHROOM_BLOCK (63 available)
+#          - BROWN_MUSHROOM_BLOCK (63 available)
+#          - MUSHROOM_STEM (63 available)
+#      - NOTE_BLOCK (1149 available)
+#
+#  - TRIPWIRE (126 available): Tripwire variants
+#      - LOWER_TRIPWIRE (63 available)
+#      - HIGHER_TRIPWIRE (63 available)
+#
+#  - TINTABLE_LEAVES (65 available)
+#      - WATERLOGGED_TINTABLE_LEAVES (65 available)
+#
+#  - NON_TINTABLE_LEAVES (234 available)
+#      - WATERLOGGED_NON_TINTABLE_LEAVES (234 available)
+#
+#  - LEAVES (143 available)
+#      - WATERLOGGED_LEAVES (143 available)
+#
+#  - Independent blocks (not part of any shared group):
+#      - CACTUS (15), SUGAR_CANE (15)
+#      - WEEPING_VINE (50), TWISTING_VINE (50), CAVE_VINE (100)
+#      - SAPLING (8), KELP (25), CHORUS (0)
 block-state-limit:
   type: PLUGIN
   tintable-leaves:
@@ -84,6 +112,7 @@ formatting:
   action-bar: true
   plugin-message: true
   title: true
+  menu-title: true
 
 tag:
   nexo-glyph: # <glyph:old_name>

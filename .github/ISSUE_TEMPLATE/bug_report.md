@@ -26,7 +26,7 @@ If applicable, add screenshots or paste relevant server logs/error messages.
 **Server Environment:**
  - Server Software: [e.g. Paper, Spigot, Purpur]
  - Server Version: [e.g. 1.21.4]
- - Plugin Version: [e.g. 1.0.0]
+ - Plugin Version: [e.g. 0.0.1]
  - Java Version: [e.g. Java 21]
 
 **Conversion Details:**

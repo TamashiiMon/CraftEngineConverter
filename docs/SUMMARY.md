@@ -9,6 +9,8 @@
 ## Configuration
 
 * [🔧 Main Configuration](configuration/main-config.md)
+* [Nexo Converter](converters/nexo-converter.md)
+* [ItemsAdder Converter](converters/itemsadder-converter.md)
 
 ## Commands & Permissions
 

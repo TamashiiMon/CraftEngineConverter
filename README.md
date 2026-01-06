@@ -51,7 +51,7 @@ A powerful Minecraft plugin that converts configurations, items, and resources f
 | Plugin         | Items | Glyphs | Emojis | Sounds | Packs | Recipes | Languages |
 |----------------|-------|--------|--------|--------|-------|---------|-----------|
 | **Nexo**       | ✅     | ✅      | ✅      | ✅      | ✅     | ✅       | ✅         |
-| **ItemsAdder** | 🚧    | ✅      | 🚧     | ✅      | ✅     | ✅       | ✅         |
+| **ItemsAdder** | ✅     | ✅      | 🚧     | ✅      | ✅     | ✅       | ✅         |
 | **Oraxen**     | 🚧    | 🚧     | 🚧     | 🚧     | 🚧    | 🚧      | 🚧        |
 
 ✅ Fully Supported | 🚧 Work in Progress | ❌ Not Supported
