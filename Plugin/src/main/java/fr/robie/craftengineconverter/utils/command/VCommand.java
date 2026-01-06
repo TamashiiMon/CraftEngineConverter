@@ -2,8 +2,8 @@ package fr.robie.craftengineconverter.utils.command;
 
 import fr.robie.craftengineconverter.CraftEngineConverter;
 import fr.robie.craftengineconverter.common.format.Message;
+import fr.robie.craftengineconverter.common.permission.Permission;
 import fr.robie.craftengineconverter.utils.collection.CollectionBiConsumer;
-import fr.robie.craftengineconverter.utils.permission.Permission;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

@@ -31,6 +31,8 @@ public class Configuration {
 
     public static boolean itemsAdderEnableHook = true;
     public static boolean itemsAdderImgPlaceholderAPISupport = true;
+    public static boolean itemsAdderEnableBlockInteractionConversion = true;
+    public static boolean itemsAdderEnableFurnitureInteractionConversion = true;
 
     // Formatting options
     public static boolean packetEventsFormatting = true;
@@ -292,6 +294,8 @@ public class Configuration {
         NEXO_FURNITURE_INTERACTION_CONVERSION("nexo.enable-furniture-interaction-conversion", true, v -> nexoEnableFurnitureInteractionConversion = (Boolean) v),
         ITEMS_ADDER_ENABLE_HOOK("itemsadder.enable-hook", true, v -> itemsAdderEnableHook = (Boolean) v),
         ITEMS_ADDER_IMG_PLACEHOLDER_API_SUPPORT("itemsadder.img-placeholderapi-support", true, v -> itemsAdderImgPlaceholderAPISupport = (Boolean) v),
+        ITEMS_ADDER_BLOCK_INTERACTION_CONVERSION("itemsadder.enable-block-interaction-conversion", true, v -> itemsAdderEnableBlockInteractionConversion = (Boolean) v),
+        ITEMS_ADDER_FURNITURE_INTERACTION_CONVERSION("itemsadder.enable-furniture-interaction-conversion", true, v -> itemsAdderEnableFurnitureInteractionConversion = (Boolean) v),
         BLOCK_STATE_LIMIT_TYPE("block-state-limit.type", "PLUGIN", v -> {
             try {
                 String string = (String) v;

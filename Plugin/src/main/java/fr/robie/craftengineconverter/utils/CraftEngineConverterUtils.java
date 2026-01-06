@@ -1,7 +1,7 @@
 package fr.robie.craftengineconverter.utils;
 
+import fr.robie.craftengineconverter.common.permission.Permission;
 import fr.robie.craftengineconverter.utils.format.MessageUtils;
-import fr.robie.craftengineconverter.utils.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;

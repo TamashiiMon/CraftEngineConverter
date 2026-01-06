@@ -17,6 +17,7 @@
         <module>PacketEvent</module>
         <module>PlaceholderAPI</module>
         <module>Nexo</module>
+        <module>ItemsAdder</module>
     </modules>
 
     <dependencies>

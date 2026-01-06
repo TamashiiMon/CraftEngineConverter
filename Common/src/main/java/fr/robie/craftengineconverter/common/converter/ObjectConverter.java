@@ -4,7 +4,7 @@ import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.PluginNameMapper;
 import fr.robie.craftengineconverter.common.enums.Plugins;
 
-public class ObjectConverter {
+public abstract class ObjectConverter {
     protected final CraftEngineConverterPlugin plugin;
     protected final Plugins pluginType;
     protected final PluginNameMapper nameMapper;
@@ -22,6 +22,12 @@ public class ObjectConverter {
         this.pluginType = pluginType;
         this.nameMapper = PluginNameMapper.getInstance();
     }
+
+    public String getNewName(String oldName) {
+        return this.nameMapper.getNewName(this.pluginType, oldName);
+    }
+
+    public abstract boolean isRegistered(String itemId);
 
     protected static class ConversionCounter {
         private final int maxConversions;

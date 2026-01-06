@@ -98,12 +98,18 @@ max-block-conversion-propagation-depth: 64 # Maximum number of blocks to propaga
 
 nexo:
   enable-hook: true # Enable Nexo integration if Nexo is installed
+  # Require this permission to allow Nexo block interaction conversion : craftengineconverter.nexo.block.interact.conversion
   enable-block-interaction-conversion: true # When enabled, when you interact with a nexo block, it will convert the nexo block to their CE equivalent
+  # Require this permission to allow Nexo furniture interaction conversion : craftengineconverter.nexo.furniture.interact.conversion
   enable-furniture-interaction-conversion: true # When enabled, when you interact with a nexo furniture, it will convert the furniture to their CE equivalent
 
 itemsadder:
   enable-hook: true # Enable ItemsAdder integration if ItemsAdder is installed
   img-placeholderapi-support: true # Register a placeholder %img:old_name% to get the new image
+  # Require this permission to allow ItemsAdder block interaction conversion : craftengineconverter.itemsadder.block.interact.conversion
+  enable-block-interaction-conversion: true # When enabled, when you interact with an ItemsAdder block, it will convert the block to their CE equivalent
+  # Require this permission to allow ItemsAdder furniture interaction conversion : craftengineconverter.itemsadder.furniture.interact.conversion
+  enable-furniture-interaction-conversion: true # When enabled, when you interact with an ItemsAdder furniture, it will convert the furniture to their CE equivalent
 
 # Available colors:
 # BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE,

@@ -1,8 +1,7 @@
-package fr.robie.craftengineconverter.hooks.nexo;
+package fr.robie.craftengineconverter.hooks.itemsadder;
 
-import com.nexomc.nexo.api.NexoBlocks;
-import com.nexomc.nexo.api.events.custom_block.NexoBlockInteractEvent;
-import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
+import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.Events.CustomBlockInteractEvent;
 import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.configuration.Configuration;
 import fr.robie.craftengineconverter.common.converter.BlockConverter;
@@ -16,58 +15,57 @@ import org.bukkit.event.Listener;
 import java.util.HashSet;
 import java.util.Set;
 
-public class NexoBlockConverter extends BlockConverter implements Listener {
-
-    public NexoBlockConverter(CraftEngineConverterPlugin plugin) {
-        super(plugin, Plugins.NEXO);
+public class ItemsAdderBlockConverter extends BlockConverter implements Listener {
+    public ItemsAdderBlockConverter(CraftEngineConverterPlugin plugin){
+        super(plugin, Plugins.ITEMS_ADDER);
     }
 
     @EventHandler
-    public void onNexoBlockInteract(NexoBlockInteractEvent event) {
-        if (!Configuration.nexoEnableBlockInteractionConversion|| !event.getPlayer().hasPermission(Permission.NEXO_BLOCK_INTERACT_CONVERSION.asPermission())) return;
-        String itemID = event.getMechanic().getItemID();
-        String newName = this.getNewName(itemID);
+    public void onItemsAdderBlockInteract(CustomBlockInteractEvent event){
+        if (!Configuration.itemsAdderEnableBlockInteractionConversion || !event.getPlayer().hasPermission(Permission.ITEMSADDER_BLOCK_INTERACT_CONVERSION.asPermission())) return;
 
-        if (newName == null || !isRegistered(newName)) {
+        String namespacedID = event.getNamespacedID();
+        String newName = this.getNewName(namespacedID);
+
+        if (newName == null || !isRegistered(newName)){
             return;
         }
 
-        Block block = event.getBlock();
+        Block block = event.getBlockClicked();
         Location location = block.getLocation();
 
-        if (!removeBlockAt(location)) {
+        if (!removeBlockAt(location)){
             return;
         }
 
         this.placeBlock(newName, location);
         event.setCancelled(true);
-
         if (Configuration.allowBlockConversionPropagation && Configuration.maxBlockConversionPropagationDepth > 1) {
             Set<Location> processed = new HashSet<>();
             processed.add(location);
             ConversionCounter counter = new ConversionCounter(Configuration.maxBlockConversionPropagationDepth - 1);
             executeBlockConversion(block.getLocation(), processed, counter);
         }
+
     }
 
 
     @Override
     public boolean isCustomBlockAt(Location location) {
-        return NexoBlocks.customBlockMechanic(location) != null;
+        return CustomBlock.byAlreadyPlaced(location.getBlock()) != null;
     }
 
     @Override
     public String getNewNameForCustomBlock(Location location) {
-        CustomBlockMechanic mechanic = NexoBlocks.customBlockMechanic(location);
-        if (mechanic == null) {
+        CustomBlock customBlock = CustomBlock.byAlreadyPlaced(location.getBlock());
+        if (customBlock == null){
             return null;
         }
-        return this.getNewName(mechanic.getItemID());
+        return this.getNewName(customBlock.getNamespacedID());
     }
 
     @Override
     public boolean removeBlockAt(Location location) {
-        return NexoBlocks.remove(location);
+        return CustomBlock.remove(location);
     }
-
 }

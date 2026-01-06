@@ -20,6 +20,8 @@ import fr.robie.craftengineconverter.common.utils.CraftEngineImageUtils;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.converter.itemsadder.IAConverter;
 import fr.robie.craftengineconverter.converter.nexo.NexoConverter;
+import fr.robie.craftengineconverter.hooks.itemsadder.ItemsAdderBlockConverter;
+import fr.robie.craftengineconverter.hooks.itemsadder.ItemsAdderFurnitureConverter;
 import fr.robie.craftengineconverter.hooks.nexo.NexoBlockConverter;
 import fr.robie.craftengineconverter.hooks.nexo.NexoFurnitureConverter;
 import fr.robie.craftengineconverter.hooks.packetevent.PacketEventHook;
@@ -142,7 +144,10 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
         if (Plugins.NEXO.isEnabled() && Configuration.nexoEnableHook){
             this.registerListener(new NexoBlockConverter(this));
             this.registerListener(new NexoFurnitureConverter(this));
-
+        }
+        if (Plugins.ITEMS_ADDER.isEnabled() && Configuration.itemsAdderEnableHook){
+            this.registerListener(new ItemsAdderBlockConverter(this));
+            this.registerListener(new ItemsAdderFurnitureConverter(this));
         }
 
         Logger.info(Message.MESSAGE__PLUGIN__STARTUP__COMPLETE, "time", TimerBuilder.formatTimeAuto(System.currentTimeMillis() - startTime));

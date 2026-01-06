@@ -1,10 +1,15 @@
-package fr.robie.craftengineconverter.utils.permission;
+package fr.robie.craftengineconverter.common.permission;
 
 public enum Permission {
     COMMAND_USE("Allows the user to use the main command of the plugin."),
     COMMAND_RELOAD("Allows the user to reload the plugin configuration."),
-    COMMAND_CONVERT("Allows the user to convert assets for CraftEngine")
+    COMMAND_CONVERT("Allows the user to convert assets for CraftEngine"),
 
+    NEXO_BLOCK_INTERACT_CONVERSION("Allows the user to convert Nexo blocks on interaction"),
+    NEXO_FURNITURE_INTERACT_CONVERSION("Allows the user to convert Nexo furniture on interaction"),
+
+    ITEMSADDER_BLOCK_INTERACT_CONVERSION("Allows the user to convert ItemsAdder blocks on interaction"),
+    ITEMSADDER_FURNITURE_INTERACT_CONVERSION("Allows the user to convert ItemsAdder furniture on interaction")
     ;
     private final String description;
     private final String[] args;

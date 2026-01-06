@@ -6,10 +6,10 @@ import fr.robie.craftengineconverter.common.configuration.ConverterSettings;
 import fr.robie.craftengineconverter.common.enums.ConverterOptions;
 import fr.robie.craftengineconverter.common.enums.CraftEngineBlockState;
 import fr.robie.craftengineconverter.common.format.Message;
+import fr.robie.craftengineconverter.common.permission.Permission;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.utils.command.CommandType;
 import fr.robie.craftengineconverter.utils.command.VCommand;
-import fr.robie.craftengineconverter.utils.permission.Permission;
 import org.bukkit.entity.Player;
 
 import java.util.*;

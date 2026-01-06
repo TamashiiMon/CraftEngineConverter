@@ -2,6 +2,8 @@ package fr.robie.craftengineconverter.common.converter;
 
 import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.enums.Plugins;
+import net.momirealms.craftengine.bukkit.api.CraftEngineBlocks;
+import net.momirealms.craftengine.core.util.Key;
 import org.bukkit.Location;
 
 import java.util.Set;
@@ -28,7 +30,7 @@ public abstract class BlockConverter extends ObjectConverter {
             }
 
             String newName = this.getNewNameForCustomBlock(adjacentLoc);
-            if (newName == null) {
+            if (newName == null || !isRegistered(newName)) {
                 continue;
             }
 
@@ -40,13 +42,20 @@ public abstract class BlockConverter extends ObjectConverter {
         }
     }
 
+    @Override
+    public boolean isRegistered(String itemId) {
+        return CraftEngineBlocks.byId(Key.from(itemId)) != null;
+    }
+
     public abstract boolean isCustomBlockAt(Location location);
 
     public abstract String getNewNameForCustomBlock(Location location);
 
     public abstract boolean removeBlockAt(Location location);
 
-    public abstract void placeBlock(String itemId, Location location);
+    public void placeBlock(String itemId, Location location){
+        this.plugin.getPlacementTracker().placeBlock(itemId, location);
+    }
 
 
 }

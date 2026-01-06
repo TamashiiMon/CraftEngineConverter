@@ -1,6 +1,6 @@
 # 🗺️ ROADMAP - CraftEngineConverter
 
-> **Last Updated:** January 1, 2026
+> **Last Updated:** January 6, 2026
 > **Project Status:** 🟢 Active Development
 > **This file serves as the main project roadmap and development tracker.**
 
@@ -99,6 +99,8 @@
 
 ## ✅ Recently Completed
 
+- ItemsAdder interaction conversion (blocks/furniture)
+- ItemsAdder image placeholder support
 - ItemsAdder basic furniture conversion
 - ItemsAdder pack conversion
 - ItemsAdder recipe conversion

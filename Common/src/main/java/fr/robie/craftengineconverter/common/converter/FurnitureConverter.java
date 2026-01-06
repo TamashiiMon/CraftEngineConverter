@@ -2,6 +2,8 @@ package fr.robie.craftengineconverter.common.converter;
 
 import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.enums.Plugins;
+import net.momirealms.craftengine.bukkit.api.CraftEngineFurniture;
+import net.momirealms.craftengine.core.util.Key;
 import org.bukkit.Location;
 
 import java.util.Set;
@@ -18,13 +20,18 @@ public abstract class FurnitureConverter extends ObjectConverter {
             if (!adjacentLoc.isChunkLoaded() || !processed.add(adjacentLoc)) continue;
             if (!this.isFurnitureAt(adjacentLoc)) continue;
             String newName = this.getNewNameForFurniture(adjacentLoc);
-            if (newName == null) continue;
+            if (newName == null || !isRegistered(newName)) continue;
             if (this.removeFurnitureAt(adjacentLoc)){
                 this.placeFurniture(newName, adjacentLoc);
                 counter.increment();
                 executeFurnitureConversion(adjacentLoc, processed, counter);
             }
         }
+    }
+
+    @Override
+    public boolean isRegistered(String itemId){
+        return CraftEngineFurniture.byId(Key.from(itemId)) != null;
     }
 
     public abstract Location getExactEntityLocation(Location location);
@@ -35,5 +42,7 @@ public abstract class FurnitureConverter extends ObjectConverter {
 
     public abstract boolean removeFurnitureAt(Location location);
 
-    public abstract void placeFurniture(String itemId, Location location);
+    public void placeFurniture(String itemId, Location location) {
+        this.plugin.getPlacementTracker().placeFurniture(itemId, location);
+    }
 }

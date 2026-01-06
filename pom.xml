@@ -124,6 +124,14 @@
                 </exclusions>
                 <scope>provided</scope>
             </dependency>
+
+            <!-- ItemsAdder -->
+            <dependency>
+                <groupId>dev.lone</groupId>
+                <artifactId>api-itemsadder</artifactId>
+                <version>4.0.10</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -213,6 +221,12 @@
         <repository>
             <id>nexo-repo</id>
             <url>https://repo.nexomc.com/releases</url>
+        </repository>
+
+        <!-- ItemsAdder -->
+        <repository>
+            <id>matteodev</id>
+            <url>https://maven.devs.beer/</url>
         </repository>
 
         <!-- Craft Engine -->

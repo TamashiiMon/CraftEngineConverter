@@ -7,6 +7,7 @@ import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.configuration.Configuration;
 import fr.robie.craftengineconverter.common.converter.FurnitureConverter;
 import fr.robie.craftengineconverter.common.enums.Plugins;
+import fr.robie.craftengineconverter.common.permission.Permission;
 import org.bukkit.Location;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.EventHandler;
@@ -23,17 +24,17 @@ public class NexoFurnitureConverter extends FurnitureConverter implements Listen
     }
 
     @EventHandler
-    public void onFurnitureInteract(NexoFurnitureInteractEvent event){
-        if (!Configuration.nexoEnableFurnitureInteractionConversion) return;
+    public void onNexoFurnitureInteract(NexoFurnitureInteractEvent event){
+        if (!Configuration.nexoEnableFurnitureInteractionConversion || !event.getPlayer().hasPermission(Permission.NEXO_FURNITURE_INTERACT_CONVERSION.asPermission())) return;
         String itemID = event.getMechanic().getItemID();
-        String newName = this.nameMapper.getNewName(Plugins.NEXO, itemID);
-        if (newName == null) {
+        String newName = this.getNewName(itemID);
+        if (newName == null || !isRegistered(newName)) {
             return;
         }
         ItemDisplay baseEntity = event.getBaseEntity();
         NexoFurniture.remove(baseEntity);
         Location location = baseEntity.getLocation();
-        this.plugin.getPlacementTracker().placeFurniture(newName, location.add(0, -0.5, 0));
+        this.placeFurniture(newName, location.add(0, -0.5, 0));
         event.setCancelled(true);
 
         if (Configuration.allowBlockConversionPropagation && Configuration.maxBlockConversionPropagationDepth > 1) {
@@ -66,7 +67,7 @@ public class NexoFurnitureConverter extends FurnitureConverter implements Listen
         if (furnitureMechanic == null) {
             return null;
         }
-        return this.nameMapper.getNewName(Plugins.NEXO, furnitureMechanic.getItemID());
+        return this.getNewName(furnitureMechanic.getItemID());
     }
 
     @Override
@@ -74,8 +75,4 @@ public class NexoFurnitureConverter extends FurnitureConverter implements Listen
         return NexoFurniture.remove(location);
     }
 
-    @Override
-    public void placeFurniture(String itemId, Location location) {
-        this.plugin.getPlacementTracker().placeFurniture(itemId, location);
-    }
 }
