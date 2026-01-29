@@ -761,6 +761,14 @@ public class NexoItemConverter extends ItemConverter {
     }
 
     @Override
+    public void convertPaintingVariant(){
+        String paintingVariant = this.nexoItemSection.getString("Components.painting_variant");
+        if (isValidString(paintingVariant)) {
+            this.craftEngineItemUtils.getComponentsSection().set("minecraft:painting/variant", paintingVariant);
+        }
+    }
+
+    @Override
     public void convertItemTexture() {
         ConfigurationSection packSection = this.nexoItemSection.getConfigurationSection("Pack");
         if (packSection == null) return;
