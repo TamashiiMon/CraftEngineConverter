@@ -5,6 +5,9 @@ public enum Permission {
     COMMAND_RELOAD("Allows the user to reload the plugin configuration."),
     COMMAND_CONVERT("Allows the user to convert assets for CraftEngine"),
     COMMAND_CLEARFILESCACHE("Allows the user to clear the file cache used by the plugin."),
+    COMMAND_WORLDCONVERTER("Allows the user to convert world blocks from other plugins"),
+    COMMAND_WORLDCONVERTER_START("Allows the user to start a world conversion process"),
+    COMMAND_WORLDCONVERTER_CLEAR("Allows the user to clear processed chunks cache"),
 
     NEXO_BLOCK_INTERACT_CONVERSION("Allows the user to convert Nexo blocks on interaction"),
     NEXO_FURNITURE_INTERACT_CONVERSION("Allows the user to convert Nexo furniture on interaction"),

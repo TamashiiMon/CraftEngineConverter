@@ -132,8 +132,6 @@ nexo:
   # Require this permission to allow Nexo furniture interaction conversion : craftengineconverter.nexo.furniture.interact.conversion
   enable-furniture-interaction-conversion: true # When enabled, when you interact with a nexo furniture, it will convert the furniture to their CE equivalent
 
-  enable-chunk-load-conversion: false # When enabled, it will convert Nexo blocks/furnitures in loaded chunks to their CE equivalent (only furniture for the moment)
-
 itemsadder:
   enable-hook: true # Enable ItemsAdder integration if ItemsAdder is installed
   img-placeholderapi-support: true # Register a placeholder %img:old_name% to get the new image
@@ -141,6 +139,19 @@ itemsadder:
   enable-block-interaction-conversion: true # When enabled, when you interact with an ItemsAdder block, it will convert the block to their CE equivalent
   # Require this permission to allow ItemsAdder furniture interaction conversion : craftengineconverter.itemsadder.furniture.interact.conversion
   enable-furniture-interaction-conversion: true # When enabled, when you interact with an ItemsAdder furniture, it will convert the furniture to their CE equivalent
+
+world-converter:
+  enable: false # Enable world conversion feature (Requires server restart to take effect)
+  nexo:
+    enable: true # Enable Nexo world conversion without nexo plugin installed ! Just explore and let the lugin convert Nexo blocks and furnitures to CE equivalents
+  progress-bar-options:
+    progress-color: GREEN
+    empty-color: DARK_GRAY
+    percent-color: YELLOW
+    progress-char: █
+    empty-char: ░
+    bar-width: 50
+
 
 # Available colors:
 # BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE,

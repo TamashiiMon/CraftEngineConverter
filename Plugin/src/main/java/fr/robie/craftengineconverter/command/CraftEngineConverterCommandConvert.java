@@ -35,6 +35,7 @@ public class CraftEngineConverterCommandConvert extends VCommand {
         this.addFlag("--dryrun");
         this.addFlag("--force");
         this.addFlag("--threads", Integer.class, 1);
+        this.setTabCompletor();
     }
 
     @Override

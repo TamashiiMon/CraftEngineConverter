@@ -4,7 +4,10 @@ import fr.robie.craftengineconverter.common.enums.*;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.common.logger.Logger;
 import fr.robie.craftengineconverter.common.progress.BukkitProgressBar;
+import fr.robie.craftengineconverter.common.progress.ProgressBarUtils;
+import fr.robie.craftengineconverter.common.records.ProgressBarOption;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -35,14 +38,22 @@ public class Configuration {
     public static boolean itemsAdderEnableBlockInteractionConversion = true;
     public static boolean itemsAdderEnableFurnitureInteractionConversion = true;
 
+    // WorldConverter options
+
+    public static boolean worldConverterEnable = false;
+    public static boolean worldConverterNexoHook = true;
+    public static ProgressBarUtils worldConverterProgressBarOptions = ProgressBarOption.of(BukkitProgressBar.ProgressColor.GOLD);
+
+
     // Formatting options
     public static boolean packetEventsFormatting = true;
 
+    public static boolean menuTitleFormatting = true;
     public static boolean bossBarFormatting = true;
     public static boolean actionBarFormatting = true;
     public static boolean pluginMessageFormatting = true;
     public static boolean titleFormatting = true;
-    public static boolean menuTitleFormatting = true;
+
 
     // Tags options
     public static boolean glyphTagEnabled = true; // Nexo glyph tag
@@ -145,30 +156,11 @@ public class Configuration {
         for (ConverterOptions options : ConverterOptions.values()){
             if (options == ConverterOptions.ALL) continue;
             String path = "progress-bar-options." + options.name().toLowerCase().replace("_", "-");
-            String progressColor = getOrAddString(config, path + ".progress-color", options.getProgressColor().name());
-            String emptyColor = getOrAddString(config, path + ".empty-color", options.getEmptyColor().name());
-            String percentColor = getOrAddString(config, path + ".percent-color", options.getPercentColor().name());
-            char progressChar = getOrAddString(config, path + ".progress-char", String.valueOf(options.getProgressChar())).charAt(0);
-            char emptyChar = getOrAddString(config, path + ".empty-char", String.valueOf(options.getEmptyChar())).charAt(0);
-            int barWidth = getOrAddInt(config, path + ".bar-width", options.getBarWidth());
-            try {
-                options.setProgressColor(BukkitProgressBar.ProgressColor.valueOf(progressColor.toUpperCase()));
-            } catch (Exception e) {
-                Logger.debug("Invalid progress color for " + options.name() + " in configuration, valid values are: "+ String.join(",", getAvailableColors()), LogType.WARNING);
-            }
-            try {
-                options.setEmptyColor(BukkitProgressBar.ProgressColor.valueOf(emptyColor.toUpperCase()));
-            } catch (Exception e) {
-                Logger.debug("Invalid empty color for " + options.name() + " in configuration, valid values are: "+ String.join(",",getAvailableColors()), LogType.WARNING);
-            }
-            try {
-                options.setPercentColor(BukkitProgressBar.ProgressColor.valueOf(percentColor.toUpperCase()));
-            } catch (Exception e) {
-                Logger.debug("Invalid percent color for " + options.name() + " in configuration, valid values are: "+ String.join(",",getAvailableColors()), LogType.WARNING);
-            }
-            options.setProgressChar(progressChar);
-            options.setEmptyChar(emptyChar);
-            options.setBarWidth(barWidth);
+            loadProgressBarOption(config, options, path);
+        }
+        ConfigurationSection worldConverterProgressBarSection = config.getConfigurationSection("world-converter.progress-bar-options");
+        if (worldConverterProgressBarSection != null) {
+            loadProgressBarOption(config, worldConverterProgressBarOptions, "world-converter.progress-bar-options");
         }
         for (CraftEngineBlockState blockStateLimit : CraftEngineBlockState.values()){
             String path = "block-state-limit."+blockStateLimit.name().toLowerCase().replace("_", "-");
@@ -187,6 +179,33 @@ public class Configuration {
                 Logger.info("Could not save the configuration file: " + e.getMessage(), LogType.ERROR);
             }
         }
+    }
+
+    private void loadProgressBarOption(YamlConfiguration config, ProgressBarUtils options, String path) {
+        String progressColor = getOrAddString(config, path + ".progress-color", options.getProgressColor().name());
+        String emptyColor = getOrAddString(config, path + ".empty-color", options.getEmptyColor().name());
+        String percentColor = getOrAddString(config, path + ".percent-color", options.getPercentColor().name());
+        char progressChar = getOrAddString(config, path + ".progress-char", String.valueOf(options.getProgressChar())).charAt(0);
+        char emptyChar = getOrAddString(config, path + ".empty-char", String.valueOf(options.getEmptyChar())).charAt(0);
+        int barWidth = getOrAddInt(config, path + ".bar-width", options.getBarWidth());
+        try {
+            options.setProgressColor(BukkitProgressBar.ProgressColor.valueOf(progressColor.toUpperCase()));
+        } catch (Exception e) {
+            Logger.debug("Invalid progress color for " + options + " in configuration, valid values are: "+ String.join(",", getAvailableColors()), LogType.WARNING);
+        }
+        try {
+            options.setEmptyColor(BukkitProgressBar.ProgressColor.valueOf(emptyColor.toUpperCase()));
+        } catch (Exception e) {
+            Logger.debug("Invalid empty color for " + options + " in configuration, valid values are: "+ String.join(",",getAvailableColors()), LogType.WARNING);
+        }
+        try {
+            options.setPercentColor(BukkitProgressBar.ProgressColor.valueOf(percentColor.toUpperCase()));
+        } catch (Exception e) {
+            Logger.debug("Invalid percent color for " + options + " in configuration, valid values are: "+ String.join(",",getAvailableColors()), LogType.WARNING);
+        }
+        options.setProgressChar(progressChar);
+        options.setEmptyChar(emptyChar);
+        options.setBarWidth(barWidth);
     }
 
     private List<String> getAvailableColors(){
@@ -307,6 +326,8 @@ public class Configuration {
                 limitType = LimitType.PLUGIN;
             }
         }),
+        WORLD_CONVERTER_ENABLE("world-converter.enable", false, v -> worldConverterEnable = (Boolean) v),
+        WORLD_CONVERTER_NEXO_HOOK("world-converter.nexo.enable", true, v -> worldConverterNexoHook = (Boolean) v),
         ;
 
         private final String path;

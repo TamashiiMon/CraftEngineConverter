@@ -57,6 +57,15 @@ public enum Message {
     COMMAND__CLEAR_FILES_CACHE__DESCRIPTION("Clears the file cache used by the plugin. Add --all to clear all cached files else only stale files will be cleared."),
     COMMAND__CLEAR_FILES_CACHE__COMPLETE("§aCleared §e%cleared_files%§a files from the cache in §c%time%§a."),
 
+    COMMAND__WORLD_CONVERTER__DESCRIPTION("Converts world blocks from other plugins to CraftEngine format."),
+    COMMAND__WORLD_CONVERTER__START("§aStarting world conversion for §e%chunks%§a chunks..."),
+    COMMAND__WORLD_CONVERTER__COMPLETE("§aWorld conversion completed! Processed §e%chunks%§a chunks with §e%blocks%§a blocks converted in §c%time%§a."),
+    COMMAND__WORLD_CONVERTER__ALREADY_RUNNING("§cA world conversion is already running. Use --force to cancel the current conversion and start a new one."),
+    COMMAND__WORLD_CONVERTER__FORCE_STOPPING("§eForce flag detected. Stopping ongoing world conversion..."),
+
+    COMMAND__WORLD_CONVERTER__CLEAR__DESCRIPTION("Clears the processed chunks cache for world converter."),
+    COMMAND__WORLD_CONVERTER__CLEAR__COMPLETE("§aCleared §e%chunks%§a processed chunks from cache in §c%time%§a."),
+
 
     MESSAGE__PLUGIN__STARTUP("Enabling plugin ..."),
     MESSAGE__PLUGIN__STARTUP__COMPLETE("Plugin enabled in §c%time%§a!"),

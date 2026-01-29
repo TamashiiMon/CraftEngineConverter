@@ -59,6 +59,15 @@ command:
   clear-files-cache:
     description: "Clears the file cache used by the plugin. Add --all to clear all cached files else only stale files will be cleared."
     complete: "§aCleared §e%cleared_files%§a files from the cache in §c%time%§a."
+  world-converter:
+    description: "Converts world blocks from other plugins to CraftEngine format."
+    start: "§aStarting world conversion for §e%chunks%§a chunks..."
+    complete: "§aWorld conversion completed! Processed §e%chunks%§a chunks with §e%blocks%§a blocks converted in §c%time%§a."
+    already-running: "§cA world conversion is already running. Use --force to cancel the current conversion and start a new one."
+    force-stopping: "§eForce flag detected. Stopping ongoing world conversion..."
+    clear:
+      complete: "§aCleared §e%chunks%§a processed chunks from cache in §c%time%§a."
+      description: "Clears the processed chunks cache for world converter."
 
 messages:
   plugin:

@@ -56,7 +56,7 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
     private final CommandManager commandManager = new CommandManager(this);
     private final Gson gson = getGsonBuilder().create();
     private final InternalTemplateManager templateManager = new InternalTemplateManager(this);
-    private final WorldConverterManager worldConverterManager = new WorldConverterManager(this.placementTracker);
+    private final WorldConverterManager worldConverterManager = new WorldConverterManager(this);
     private final ITagResolver tagResolver = new TagResolver();
     private final MessageLoader messageLoader = new MessageLoader(this);
     private final FileCache fileCache = new FileCache();
@@ -150,12 +150,14 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
             Logger.info(Message.MESSAGES__AUTO_CONVERTER__STARTUP__DISABLED);
         }
 
-        this.registerListener(this.worldConverterManager);
+        if (Configuration.worldConverterEnable)
+            this.registerListener(this.worldConverterManager);
 
         if (Plugins.NEXO.isEnabled() && Configuration.nexoEnableHook){
             this.registerListener(new NexoBlockConverter(this));
             this.registerListener(new NexoFurnitureConverter(this));
-            this.worldConverterManager.registerConverter(new NexoWorldConverter(this));
+            if (Configuration.worldConverterEnable && Configuration.worldConverterNexoHook)
+                this.worldConverterManager.registerConverter(new NexoWorldConverter(this));
         }
         if (Plugins.ITEMS_ADDER.isEnabled() && Configuration.itemsAdderEnableHook){
             this.registerListener(new ItemsAdderBlockConverter(this));
@@ -176,6 +178,7 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
 
         CraftEngineImageUtils.clearCache();
         this.fileCache.clearAll();
+        this.worldConverterManager.cancelAllConversions();
 
         this.metrics.shutdown();
 

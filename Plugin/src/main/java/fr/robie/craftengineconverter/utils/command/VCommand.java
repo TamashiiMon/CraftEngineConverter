@@ -2,6 +2,7 @@ package fr.robie.craftengineconverter.utils.command;
 
 import fr.robie.craftengineconverter.CraftEngineConverter;
 import fr.robie.craftengineconverter.common.format.Message;
+import fr.robie.craftengineconverter.common.logger.Logger;
 import fr.robie.craftengineconverter.common.permission.Permission;
 import fr.robie.craftengineconverter.utils.collection.CollectionBiConsumer;
 import org.bukkit.command.CommandSender;
@@ -319,14 +320,18 @@ public abstract class VCommand extends Arguments {
 
     protected void addFlag(@NotNull String flag) {
         this.flagsArgs.add(new FlagValue<>(flag, false, String.class, null));
+        this.setTabCompletor();
     }
 
     protected void addFlag(@NotNull String flag, boolean hasValue) {
         this.flagsArgs.add(new FlagValue<>(flag, hasValue, String.class, null));
+        this.setTabCompletor();
+
     }
 
     protected <T> void addFlag(@NotNull String flag, @NotNull Class<T> type, @Nullable T defaultValue) {
         this.flagsArgs.add(new FlagValue<>(flag, true, type, defaultValue));
+        this.setTabCompletor();
     }
 
     /**
@@ -606,6 +611,9 @@ public abstract class VCommand extends Arguments {
         ).orElse(null);
 
         List<String> availableFlags = getAvailableFlags(parseResult.usedFlags, lastArg);
+
+        Logger.info("Tab Completion - Current Index: " + currentIndex + ", Completions: " +
+                (completions != null ? completions.toString() : "null") + ", Available Flags: " + availableFlags);
 
         return combineCompletions(completions, availableFlags, currentIndex);
     }

@@ -21,7 +21,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.MultipleFacing;
+import org.bukkit.block.data.type.Tripwire;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -1174,8 +1177,48 @@ public class NexoItemConverter extends ItemConverter {
         String state;
         if (nexoCustomBlockType.equals("CHORUSBLOCK")){
             state = "leaves";
+            if (customVariation >= 0){
+                BlockData blockData = Bukkit.createBlockData(Material.CHORUS_PLANT);
+                if (blockData instanceof MultipleFacing multipleFacing) {
+
+                    multipleFacing.setFace(BlockFace.NORTH, (customVariation & 0b000001) != 0);
+                    multipleFacing.setFace(BlockFace.SOUTH, (customVariation & 0b000010) != 0);
+                    multipleFacing.setFace(BlockFace.EAST,  (customVariation & 0b000100) != 0);
+                    multipleFacing.setFace(BlockFace.WEST,  (customVariation & 0b001000) != 0);
+                    multipleFacing.setFace(BlockFace.UP,    (customVariation & 0b010000) != 0);
+                    multipleFacing.setFace(BlockFace.DOWN,  (customVariation & 0b100000) != 0);
+
+                    BlockStatesMapper.getInstance().storeMapping(
+                        this.getConverter().getPluginType(),
+                        blockData,
+                        this.itemId
+                    );
+                }
+            }
         } else if (nexoCustomBlockType.equals("TRIPWIRE")){
             state = "tripwire";
+            if (customVariation >= 0){
+                BlockData blockData = Bukkit.createBlockData(Material.TRIPWIRE);
+                if (blockData instanceof Tripwire tripwire) {
+
+                    tripwire.setFace(BlockFace.NORTH, (customVariation & 0b0000001) != 0);
+                    tripwire.setFace(BlockFace.SOUTH, (customVariation & 0b0000010) != 0);
+                    tripwire.setFace(BlockFace.EAST,  (customVariation & 0b0000100) != 0);
+                    tripwire.setFace(BlockFace.WEST,  (customVariation & 0b0001000) != 0);
+
+                    tripwire.setAttached((customVariation & 0b0010000) != 0);
+
+                    tripwire.setDisarmed((customVariation & 0b0100000) != 0);
+
+                    tripwire.setPowered((customVariation & 0b1000000) != 0);
+
+                    BlockStatesMapper.getInstance().storeMapping(
+                        this.getConverter().getPluginType(),
+                        blockData,
+                        this.itemId
+                    );
+                }
+            }
         } else {
             state = "solid";
             if (customVariation >= 0){
