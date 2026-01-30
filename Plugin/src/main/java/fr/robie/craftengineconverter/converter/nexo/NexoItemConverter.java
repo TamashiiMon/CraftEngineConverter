@@ -983,6 +983,15 @@ public class NexoItemConverter extends ItemConverter {
     }
 
     @Override
+    public void convertMinimumAttackChargeComponent(){
+        double minAttackCharge = this.nexoItemSection.getDouble("Components.minimum_attack_charge", -1f);
+        if (minAttackCharge >= 0f) {
+            minAttackCharge = Math.max(0.0, Math.min(1.0, minAttackCharge));
+            this.craftEngineItemUtils.getComponentsSection().set("minecraft:minimum_attack_charge", minAttackCharge);
+        }
+    }
+
+    @Override
     public void convertItemTexture() {
         ConfigurationSection packSection = this.nexoItemSection.getConfigurationSection("Pack");
         if (packSection == null) return;

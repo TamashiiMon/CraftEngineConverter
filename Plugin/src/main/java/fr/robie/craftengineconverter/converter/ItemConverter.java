@@ -76,6 +76,7 @@ public abstract class ItemConverter extends ObjectUtils {
         convertSwingAnimationComponent();
         convertUseEffectsComponent();
         convertDamageTypeComponent();
+        convertMinimumAttackChargeComponent();
         convertItemTexture();
         convertOther();
     }
@@ -125,6 +126,7 @@ public abstract class ItemConverter extends ObjectUtils {
     public void convertSwingAnimationComponent(){}
     public void convertUseEffectsComponent(){}
     public void convertDamageTypeComponent(){}
+    public void convertMinimumAttackChargeComponent(){}
     public void convertItemTexture(){}
     public void convertExcludeFromInventory(){}
     public void convertOther(){}
