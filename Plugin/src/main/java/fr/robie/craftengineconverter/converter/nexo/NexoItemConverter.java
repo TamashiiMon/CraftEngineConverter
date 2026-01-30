@@ -774,7 +774,7 @@ public class NexoItemConverter extends ItemConverter {
         ConfigurationSection kineticSection = this.nexoItemSection.getConfigurationSection("Components.kinetic_weapon");
         if (isNull(kineticSection)) return;
 
-        ConfigurationSection ceKineticSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"kinetic_weapon");
+        ConfigurationSection ceKineticSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"minecraft:kinetic_weapon");
 
         long delayTicks = TimerBuilder.parseTimeToTicks(kineticSection.getString("delay","0t"));
         if (delayTicks > 0) {
@@ -842,7 +842,7 @@ public class NexoItemConverter extends ItemConverter {
         ConfigurationSection piercingSection = this.nexoItemSection.getConfigurationSection("Components.piercing_weapon");
         if (isNull(piercingSection)) return;
 
-        ConfigurationSection cePiercingSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"piercing_weapon");
+        ConfigurationSection cePiercingSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"minecraft:piercing_weapon");
 
         boolean dealsKnockback = piercingSection.getBoolean("deals_knockback", true);
         if (!dealsKnockback) {
@@ -870,7 +870,7 @@ public class NexoItemConverter extends ItemConverter {
         ConfigurationSection attackRangeSection = this.nexoItemSection.getConfigurationSection("Components.attack_range");
         if (isNull(attackRangeSection)) return;
 
-        ConfigurationSection ceAttackRangeSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"attack_range");
+        ConfigurationSection ceAttackRangeSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"minecraft:attack_range");
 
         String reach = attackRangeSection.getString("reach");
         double minReach = 0.0;
@@ -930,7 +930,7 @@ public class NexoItemConverter extends ItemConverter {
         ConfigurationSection swingAnimationSection = this.nexoItemSection.getConfigurationSection("Components.swing_animation");
         if (isNull(swingAnimationSection)) return;
 
-        ConfigurationSection ceSwingAnimationSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"swing_animation");
+        ConfigurationSection ceSwingAnimationSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"minecraft:swing_animation");
 
         String type = swingAnimationSection.getString("type", "whack");
         if (isValidString(type)) {
@@ -955,7 +955,7 @@ public class NexoItemConverter extends ItemConverter {
         ConfigurationSection useEffectsSection = this.nexoItemSection.getConfigurationSection("Components.use_effects");
         if (isNull(useEffectsSection)) return;
 
-        ConfigurationSection ceUseEffectsSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"use_effects");
+        ConfigurationSection ceUseEffectsSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"minecraft:use_effects");
 
         boolean canSprint = useEffectsSection.getBoolean("can_sprint", false);
         if (canSprint) {
@@ -971,6 +971,14 @@ public class NexoItemConverter extends ItemConverter {
         if (speedMultiplier != 0.2) {
             speedMultiplier = Math.max(0.0, Math.min(1.0, speedMultiplier));
             ceUseEffectsSection.set("speed_multiplier", speedMultiplier);
+        }
+    }
+
+    @Override
+    public void convertDamageTypeComponent(){
+        String damageType = this.nexoItemSection.getString("Components.damage_type");
+        if (isValidString(damageType)) {
+            this.craftEngineItemUtils.getComponentsSection().set("minecraft:damage_type", damageType);
         }
     }
 
