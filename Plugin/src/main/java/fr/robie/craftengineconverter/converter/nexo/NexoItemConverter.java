@@ -1,6 +1,7 @@
 package fr.robie.craftengineconverter.converter.nexo;
 
 import fr.robie.craftengineconverter.common.BlockStatesMapper;
+import fr.robie.craftengineconverter.common.builder.TimerBuilder;
 import fr.robie.craftengineconverter.common.configuration.Configuration;
 import fr.robie.craftengineconverter.common.enums.ArmorConverter;
 import fr.robie.craftengineconverter.common.logger.LogType;
@@ -765,6 +766,74 @@ public class NexoItemConverter extends ItemConverter {
         String paintingVariant = this.nexoItemSection.getString("Components.painting_variant");
         if (isValidString(paintingVariant)) {
             this.craftEngineItemUtils.getComponentsSection().set("minecraft:painting/variant", paintingVariant);
+        }
+    }
+
+    @Override
+    public void convertKineticComponent(){
+        ConfigurationSection kineticSection = this.nexoItemSection.getConfigurationSection("Components.kinetic_weapon");
+        if (isNull(kineticSection)) return;
+
+        ConfigurationSection ceKineticSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"kinetic_weapon");
+
+        long delayTicks = TimerBuilder.parseTimeToTicks(kineticSection.getString("delay","0t"));
+        if (delayTicks > 0) {
+            ceKineticSection.set("delay_ticks", delayTicks);
+        }
+
+        double damageMultiplier = kineticSection.getDouble("damage_multiplier",1.0);
+        if (damageMultiplier != 1.0){
+            ceKineticSection.set("damage_multiplier", damageMultiplier);
+        }
+
+        double forwardMovement = kineticSection.getDouble("forward_movement", 0.0);
+        if (forwardMovement != 0.0) {
+            ceKineticSection.set("forward_movement", forwardMovement);
+        }
+
+        String sound = kineticSection.getString("sound");
+        if (isValidString(sound)){
+            ceKineticSection.set("sound", sound);
+        }
+
+        String hitSound = kineticSection.getString("hit_sound");
+        if (isValidString(hitSound)){
+            ceKineticSection.set("hit_sound", hitSound);
+        }
+
+        ConfigurationSection dismountConditionsSection = kineticSection.getConfigurationSection("dismount_conditions");
+        if (dismountConditionsSection != null) {
+            ConfigurationSection ceDismountSection = getOrCreateSection(ceKineticSection, "dismount_conditions");
+            convertKineticConditions(dismountConditionsSection, ceDismountSection);
+        }
+
+        ConfigurationSection knockbackConditionsSection = kineticSection.getConfigurationSection("knockback_conditions");
+        if (knockbackConditionsSection != null) {
+            ConfigurationSection ceKnockbackSection = getOrCreateSection(ceKineticSection, "knockback_conditions");
+            convertKineticConditions(knockbackConditionsSection, ceKnockbackSection);
+        }
+
+        ConfigurationSection damageConditionsSection = kineticSection.getConfigurationSection("damage_conditions");
+        if (damageConditionsSection != null) {
+            ConfigurationSection ceDamageSection = getOrCreateSection(ceKineticSection, "damage_conditions");
+            convertKineticConditions(damageConditionsSection, ceDamageSection);
+        }
+    }
+
+    private void convertKineticConditions(ConfigurationSection nexoConditions, ConfigurationSection ceConditions) {
+        long maxDurationTicks = TimerBuilder.parseTimeToTicks(nexoConditions.getString("max_duration", "0t"));
+        if (maxDurationTicks > 0) {
+            ceConditions.set("max_duration_ticks", maxDurationTicks);
+        }
+
+        double minSpeed = nexoConditions.getDouble("min_speed", 0.0);
+        if (minSpeed > 0.0) {
+            ceConditions.set("min_speed", minSpeed);
+        }
+
+        double minRelativeSpeed = nexoConditions.getDouble("min_relative_speed", 0.0);
+        if (minRelativeSpeed > 0.0) {
+            ceConditions.set("min_relative_speed", minRelativeSpeed);
         }
     }
 

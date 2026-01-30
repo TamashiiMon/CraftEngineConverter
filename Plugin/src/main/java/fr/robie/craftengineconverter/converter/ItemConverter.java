@@ -70,6 +70,7 @@ public abstract class ItemConverter extends ObjectUtils {
         convertCanBreakComponent();
         convertOversizedInGui();
         convertPaintingVariant();
+        convertKineticComponent();
         convertItemTexture();
         convertOther();
     }
@@ -113,6 +114,7 @@ public abstract class ItemConverter extends ObjectUtils {
     public void convertCanBreakComponent(){}
     public void convertOversizedInGui(){}
     public void convertPaintingVariant(){}
+    public void convertKineticComponent(){}
     public void convertItemTexture(){}
     public void convertExcludeFromInventory(){}
     public void convertOther(){}

@@ -216,6 +216,69 @@ public class TimerBuilder {
         }
     }
 
+    /**
+     * Parse a time string and convert it to ticks (1 tick = 50ms = 1/20 second)
+     * Supports formats like:
+     * - 20t (20 ticks)
+     * - 20ms (20 milliseconds)
+     * - 20.2s (20.2 seconds = 20 seconds + 4 ticks)
+     * - 20.1m (20.1 minutes = 20 minutes + 6 seconds)
+     * - Also supports h (hours), d (days), w (weeks), mo (months)
+     *
+     * @param timeString the time string to parse
+     * @return the number of ticks
+     */
+    public static long parseTimeToTicks(String timeString) {
+        if (timeString == null || timeString.trim().isEmpty()) {
+            return 0L;
+        }
+
+        timeString = timeString.toLowerCase().trim();
+
+        // Check if it's a plain number (default to ticks)
+        if (isNumeric(timeString)) {
+            return Long.parseLong(timeString);
+        }
+
+        long totalTicks = 0L;
+
+        // Regex to match decimal numbers followed by unit
+        String regex = "(\\d+(?:\\.\\d+)?)\\s*([a-zA-Z]+)";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(timeString);
+
+        while (matcher.find()) {
+            try {
+                double value = Double.parseDouble(matcher.group(1));
+                String unit = matcher.group(2).toLowerCase();
+
+                long ticks = parseUnitToTicks(unit, value);
+                totalTicks += ticks;
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        return totalTicks;
+    }
+
+    /**
+     * Parse a unit and value to ticks
+     * 1 tick = 50ms = 1/20 second
+     */
+    private static long parseUnitToTicks(String unit, double value) {
+        return switch (unit) {
+            case "t", "tick", "ticks" -> (long) value;
+            case "ms", "milli", "millis", "millisecond", "milliseconds" -> (long) (value / 50.0);                 // 1 tick = 50ms
+            case "s", "sec", "second", "seconds", "seconde", "secondes" -> (long) (value * 20.0);                 // 1 second = 20 ticks
+            case "m", "min", "minute", "minutes" -> (long) (value * 20.0 * 60.0);                                 // 1 minute = 1200 ticks
+            case "h", "hour", "hours", "heure", "heures" -> (long) (value * 20.0 * 60.0 * 60.0);                  // 1 hour = 72000 ticks
+            case "d", "day", "days", "jour", "jours" -> (long) (value * 20.0 * 60.0 * 60.0 * 24.0);               // 1 day = 1728000 ticks
+            case "w", "week", "weeks", "semaine", "semaines" -> (long) (value * 20.0 * 60.0 * 60.0 * 24.0 * 7.0); // 1 week
+            case "mo", "month", "months", "mois" -> (long) (value * 20.0 * 60.0 * 60.0 * 24.0 * 30.0);            // 1 month (30 days)
+            default -> 0L;
+        };
+    }
+
     public static class Parser {
         private final String timeString;
         private TimeUnit defaultUnit = TimeUnit.SECOND;
