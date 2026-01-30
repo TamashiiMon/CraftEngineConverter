@@ -872,7 +872,6 @@ public class NexoItemConverter extends ItemConverter {
 
         ConfigurationSection ceAttackRangeSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"attack_range");
 
-        // Parse reach (can be "min..max" format or individual values)
         String reach = attackRangeSection.getString("reach");
         double minReach = 0.0;
         double maxReach = 3.0;
@@ -923,6 +922,31 @@ public class NexoItemConverter extends ItemConverter {
         if (mobFactor != 1.0) {
             mobFactor = Math.max(0.0, Math.min(2.0, mobFactor));
             ceAttackRangeSection.set("mob_factor", mobFactor);
+        }
+    }
+
+    @Override
+    public void convertSwingAnimationComponent(){
+        ConfigurationSection swingAnimationSection = this.nexoItemSection.getConfigurationSection("Components.swing_animation");
+        if (isNull(swingAnimationSection)) return;
+
+        ConfigurationSection ceSwingAnimationSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"swing_animation");
+
+        String type = swingAnimationSection.getString("type", "whack");
+        if (isValidString(type)) {
+            type = type.toLowerCase();
+            if (!type.equals("whack")) {
+                ceSwingAnimationSection.set("type", type);
+            }
+        }
+
+        long duration = TimerBuilder.parseTimeToTicks(swingAnimationSection.getString("duration", "6t"));
+        if (duration != 6) {
+            if (duration > 0) {
+                ceSwingAnimationSection.set("duration", (int) duration);
+            } else {
+                Logger.debug("Invalid duration value '" + duration + "' for swing_animation in item '" + this.itemId + "'. Must be positive. Using default (6).", LogType.WARNING);
+            }
         }
     }
 
