@@ -74,6 +74,7 @@ public abstract class ItemConverter extends ObjectUtils {
         convertPiercingWeaponComponent();
         convertAttackRangeComponent();
         convertSwingAnimationComponent();
+        convertUseEffectsComponent();
         convertItemTexture();
         convertOther();
     }
@@ -121,6 +122,7 @@ public abstract class ItemConverter extends ObjectUtils {
     public void convertPiercingWeaponComponent(){}
     public void convertAttackRangeComponent(){}
     public void convertSwingAnimationComponent(){}
+    public void convertUseEffectsComponent(){}
     public void convertItemTexture(){}
     public void convertExcludeFromInventory(){}
     public void convertOther(){}

@@ -951,6 +951,30 @@ public class NexoItemConverter extends ItemConverter {
     }
 
     @Override
+    public void convertUseEffectsComponent(){
+        ConfigurationSection useEffectsSection = this.nexoItemSection.getConfigurationSection("Components.use_effects");
+        if (isNull(useEffectsSection)) return;
+
+        ConfigurationSection ceUseEffectsSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"use_effects");
+
+        boolean canSprint = useEffectsSection.getBoolean("can_sprint", false);
+        if (canSprint) {
+            ceUseEffectsSection.set("can_sprint", true);
+        }
+
+        boolean interactVibrations = useEffectsSection.getBoolean("interact_vibrations", true);
+        if (!interactVibrations) {
+            ceUseEffectsSection.set("interact_vibrations", false);
+        }
+
+        double speedMultiplier = useEffectsSection.getDouble("speed_multiplier", 0.2);
+        if (speedMultiplier != 0.2) {
+            speedMultiplier = Math.max(0.0, Math.min(1.0, speedMultiplier));
+            ceUseEffectsSection.set("speed_multiplier", speedMultiplier);
+        }
+    }
+
+    @Override
     public void convertItemTexture() {
         ConfigurationSection packSection = this.nexoItemSection.getConfigurationSection("Pack");
         if (packSection == null) return;
