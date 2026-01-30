@@ -838,6 +838,34 @@ public class NexoItemConverter extends ItemConverter {
     }
 
     @Override
+    public void convertPiercingWeaponComponent(){
+        ConfigurationSection piercingSection = this.nexoItemSection.getConfigurationSection("Components.piercing_weapon");
+        if (isNull(piercingSection)) return;
+
+        ConfigurationSection cePiercingSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(),"piercing_weapon");
+
+        boolean dealsKnockback = piercingSection.getBoolean("deals_knockback", true);
+        if (!dealsKnockback) {
+            cePiercingSection.set("deals_knockback", false);
+        }
+
+        boolean dismounts = piercingSection.getBoolean("dismounts", false);
+        if (dismounts) {
+            cePiercingSection.set("dismounts", true);
+        }
+
+        String sound = piercingSection.getString("sound");
+        if (isValidString(sound)){
+            cePiercingSection.set("sound", sound);
+        }
+
+        String hitSound = piercingSection.getString("hit_sound");
+        if (isValidString(hitSound)){
+            cePiercingSection.set("hit_sound", hitSound);
+        }
+    }
+
+    @Override
     public void convertItemTexture() {
         ConfigurationSection packSection = this.nexoItemSection.getConfigurationSection("Pack");
         if (packSection == null) return;
