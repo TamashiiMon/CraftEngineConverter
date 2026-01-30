@@ -249,6 +249,7 @@ public class BukkitProgressBar extends ObjectUtils {
         }
     }
 
+    @SuppressWarnings("unused")
     public static class Builder {
         protected final int total;
         protected int current = 0;

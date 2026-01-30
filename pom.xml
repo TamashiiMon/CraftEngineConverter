@@ -139,6 +139,13 @@
                 <version>4.25.0</version>
                 <scope>provided</scope>
             </dependency>
+
+            <dependency>
+                <groupId>fr.maxlego08.sarah</groupId>
+                <artifactId>sarah</artifactId>
+                <version>1.21.3</version>
+                <scope>compile</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -246,6 +253,11 @@
             <id>xiaomomi's plugins-snapshots</id>
             <name>XiaoMoMi's Plugin Repository</name>
             <url>https://repo.momirealms.net/snapshots</url>
+        </repository>
+
+        <repository>
+            <id>groupez</id>
+            <url>https://repo.groupez.dev/releases</url>
         </repository>
 
 

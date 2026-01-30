@@ -112,3 +112,7 @@ buildNumber.properties
 # Common working directory
 run/
 /AGENTS.md
+.classpath
+.factorypath
+.project
+.settings/

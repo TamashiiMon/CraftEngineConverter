@@ -1,6 +1,8 @@
 package fr.robie.craftengineconverter.listener;
 
 import fr.robie.craftengineconverter.CraftEngineConverter;
+import fr.robie.craftengineconverter.api.BlockHistory;
+import fr.robie.craftengineconverter.api.database.StorageManager;
 import fr.robie.craftengineconverter.common.BlockStatesMapper;
 import fr.robie.craftengineconverter.common.CraftEnginePlacementTracker;
 import fr.robie.craftengineconverter.common.converter.WorldConverter;
@@ -35,10 +37,12 @@ public class WorldConverterManager implements Listener {
     private final CraftEnginePlacementTracker placementTracker;
     private final FoliaCompatibilityManager foliaCompatibilityManager;
     private final List<CompletableFuture<Void>> conversionTasks = new ArrayList<>();
+    private final StorageManager dataBaseManager;
 
     public WorldConverterManager(CraftEngineConverter plugin) {
         this.placementTracker = plugin.getPlacementTracker();
         this.foliaCompatibilityManager = plugin.getFoliaCompatibilityManager();
+        this.dataBaseManager = plugin.getStorageManager();
     }
 
     @EventHandler
@@ -72,7 +76,7 @@ public class WorldConverterManager implements Listener {
         }
 
         record BlockData(Location location, org.bukkit.block.data.BlockData blockData) {}
-        record BlockConversion(Location location, String ceEquivalent) {}
+        record BlockConversion(Location location, String ceEquivalent, String originalBlock) {}
 
         List<BlockData> blocksToCheck = new ArrayList<>();
         World world = chunk.getWorld();
@@ -109,7 +113,8 @@ public class WorldConverterManager implements Listener {
                     Plugins plugin = worldConverter.getPlugin();
                     String ceEquivalent = blockStatesMapper.getCeEquivalent(plugin, blockData.blockData());
                     if (ceEquivalent != null) {
-                        conversions.add(new BlockConversion(blockData.location(), ceEquivalent));
+                        String originalBlock = blockData.blockData().getAsString();
+                        conversions.add(new BlockConversion(blockData.location(), ceEquivalent, originalBlock));
                         break;
                     }
                 }
@@ -127,6 +132,22 @@ public class WorldConverterManager implements Listener {
                         for (BlockConversion conversion : batch) {
                             try {
                                 this.placementTracker.placeBlock(conversion.ceEquivalent(), conversion.location());
+                                
+                                if (this.dataBaseManager.isEnabled()) {
+                                    Location loc = conversion.location();
+                                    BlockHistory history = new BlockHistory(
+                                            loc.getWorld().getName(),
+                                            loc.getChunk().getX(),
+                                            loc.getChunk().getZ(),
+                                            loc.getBlockX(),
+                                            loc.getBlockY(),
+                                            loc.getBlockZ(),
+                                            conversion.originalBlock(),
+                                            conversion.ceEquivalent(),
+                                            false
+                                    );
+                                    this.dataBaseManager.insertBlockHistory(history);
+                                }
                             } catch (Exception e) {
                                 Logger.showException("error placing converted block at " + conversion.location(), e);
                             }

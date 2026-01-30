@@ -66,6 +66,16 @@ public enum Message {
     COMMAND__WORLD_CONVERTER__CLEAR__DESCRIPTION("Clears the processed chunks cache for world converter."),
     COMMAND__WORLD_CONVERTER__CLEAR__COMPLETE("§aCleared §e%chunks%§a processed chunks from cache in §c%time%§a."),
 
+    COMMAND__WORLD_CONVERTER__RESTORE__DESCRIPTION("Restores converted blocks to their original state."),
+    COMMAND__WORLD_CONVERTER__RESTORE__START("§aStarting block restoration..."),
+    COMMAND__WORLD_CONVERTER__RESTORE__SINGLE__SUCCESS("§aRestored block at §e%x%§a, §e%y%§a, §e%z%§a to original state."),
+    COMMAND__WORLD_CONVERTER__RESTORE__SINGLE__NOT_FOUND("§cNo conversion history found for block at §e%x%§a, §e%y%§a, §e%z%§a."),
+    COMMAND__WORLD_CONVERTER__RESTORE__SINGLE__ALREADY_REVERTED("§eBlock at §e%x%§a, §e%y%§a, §e%z%§a was already reverted."),
+    COMMAND__WORLD_CONVERTER__RESTORE__ALL__CONFIRM("§eThis will restore §c%blocks%§e converted blocks. Use §a--confirm§e to proceed."),
+    COMMAND__WORLD_CONVERTER__RESTORE__ALL__START("§aStarting restoration of §e%blocks%§a blocks..."),
+    COMMAND__WORLD_CONVERTER__RESTORE__ALL__COMPLETE("§aRestored §e%restored%§a/§e%total%§a blocks in §c%time%§a."),
+    COMMAND__WORLD_CONVERTER__RESTORE__DATABASE_DISABLED("§cDatabase is not enabled. Block restoration requires database history."),
+
 
     MESSAGE__PLUGIN__STARTUP("Enabling plugin ..."),
     MESSAGE__PLUGIN__STARTUP__COMPLETE("Plugin enabled in §c%time%§a!"),

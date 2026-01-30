@@ -2,6 +2,7 @@ package fr.robie.craftengineconverter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import fr.robie.craftengineconverter.api.database.StorageManager;
 import fr.robie.craftengineconverter.api.packet.PacketLoader;
 import fr.robie.craftengineconverter.behavior.BehaviorRegister;
 import fr.robie.craftengineconverter.command.CraftEngineConverterCommand;
@@ -22,6 +23,7 @@ import fr.robie.craftengineconverter.common.utils.CraftEngineImageUtils;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.converter.itemsadder.IAConverter;
 import fr.robie.craftengineconverter.converter.nexo.NexoConverter;
+import fr.robie.craftengineconverter.database.DataBaseManager;
 import fr.robie.craftengineconverter.hooks.itemsadder.ItemsAdderBlockConverter;
 import fr.robie.craftengineconverter.hooks.itemsadder.ItemsAdderFurnitureConverter;
 import fr.robie.craftengineconverter.hooks.nexo.NexoBlockConverter;
@@ -52,6 +54,7 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
 
     private final Map<String, Converter> converterMap = new HashMap<>();
 
+    private final StorageManager storageManager = new DataBaseManager(this);
     private final FoliaCompatibilityManager foliaCompatibilityManager = new FoliaCompatibilityManager(this);
     private final CommandManager commandManager = new CommandManager(this);
     private final Gson gson = getGsonBuilder().create();
@@ -104,10 +107,12 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
             return;
         }
         if (this.foliaCompatibilityManager.isPaper()){
-            messageFormatter = new ComponentMeta();
+            this.messageFormatter = new ComponentMeta();
         }
 
         this.reloadMessages();
+
+        this.storageManager.loadDatabase();
 
         this.templateManager.loadTemplates();
 
@@ -244,6 +249,10 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
 
     public WorldConverterManager getWorldConverterManager() {
         return this.worldConverterManager;
+    }
+
+    public StorageManager getStorageManager() {
+        return this.storageManager;
     }
 
     public Gson getGson() {

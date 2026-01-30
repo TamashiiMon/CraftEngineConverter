@@ -15,6 +15,7 @@ public class CraftEngineConverterCommandWorldConverter extends VCommand {
         this.addSubCommand("worldconverter", "wc");
         this.addSubCommand(new CraftEngineConverterCommandWorldConverterClear(plugin));
         this.addSubCommand(new CraftEngineConverterCommandWorldConverterStart(plugin));
+        this.addSubCommand(new CraftEngineConverterCommandWorldConverterRestore(plugin));
     }
 
     @Override

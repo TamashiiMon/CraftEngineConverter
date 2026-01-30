@@ -32,6 +32,7 @@
                                     <include>com.tcoded:FoliaLib</include>
                                     <include>org.bstats:bstats-bukkit</include>
                                     <include>org.bstats:bstats-base</include>
+                                    <include>fr.maxlego08.sarah:sarah</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -42,6 +43,10 @@
                                 <relocation>
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>fr.robie.craftengineconverter.lib.bstats</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>fr.maxlego08.sarah</pattern>
+                                    <shadedPattern>fr.robie.craftengineconverter.lib.sarah</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
@@ -103,6 +108,7 @@
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>2.5</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
