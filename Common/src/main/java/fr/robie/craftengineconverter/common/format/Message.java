@@ -63,8 +63,8 @@ public enum Message {
     COMMAND__WORLD_CONVERTER__ALREADY_RUNNING("§cA world conversion is already running. Use --force to cancel the current conversion and start a new one."),
     COMMAND__WORLD_CONVERTER__FORCE_STOPPING("§eForce flag detected. Stopping ongoing world conversion..."),
 
-    COMMAND__WORLD_CONVERTER__CLEAR__DESCRIPTION("Clears the processed chunks cache for world converter."),
-    COMMAND__WORLD_CONVERTER__CLEAR__COMPLETE("§aCleared §e%chunks%§a processed chunks from cache in §c%time%§a."),
+    COMMAND__WORLD_CONVERTER__CLEAR_CACHED_CHUNKS__DESCRIPTION("Clears the processed chunks cache for world converter."),
+    COMMAND__WORLD_CONVERTER__CLEAR_CACHED_CHUNKS__COMPLETE("§aCleared §e%chunks%§a processed chunks from cache in §c%time%§a."),
 
     COMMAND__WORLD_CONVERTER__RESTORE__DESCRIPTION("Restores converted blocks to their original state."),
     COMMAND__WORLD_CONVERTER__RESTORE__START("§aStarting block restoration..."),

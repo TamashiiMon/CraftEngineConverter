@@ -93,19 +93,26 @@ public class TypedCache<T> {
      */
     public void flush() {
         while (!this.cache.isEmpty()) {
-            List<T> batch = new ArrayList<>(this.cache.values());
-            List<String> keysToRemove = new ArrayList<>(this.cache.keySet());
-            
-            if (!batch.isEmpty()) {
-                try {
-                    this.batchProcessor.accept(batch);
-                    keysToRemove.forEach(this.cache::remove);
-                } catch (Exception e) {
-                    Logger.showException(
-                        "Failed to flush " + this.type.getSimpleName() + " objects",
-                        e
-                    );
-                    break;
+            List<T> all = new ArrayList<>(this.cache.values());
+            List<String> allKeys = new ArrayList<>(this.cache.keySet());
+            int size = all.size();
+            for (int i = 0; i < size; i += this.maxBatchSize) {
+                int end = Math.min(i + this.maxBatchSize, size);
+                List<T> batch = all.subList(i, end);
+                List<String> keysToRemove = allKeys.subList(i, end);
+                if (!batch.isEmpty()) {
+                    try {
+                        this.batchProcessor.accept(new ArrayList<>(batch));
+                        for (String k : new ArrayList<>(keysToRemove)) {
+                            this.cache.remove(k);
+                        }
+                    } catch (Exception e) {
+                        Logger.showException(
+                                "Failed to flush batch of " + this.type.getSimpleName() + " objects",
+                                e
+                        );
+                        return;
+                    }
                 }
             }
         }

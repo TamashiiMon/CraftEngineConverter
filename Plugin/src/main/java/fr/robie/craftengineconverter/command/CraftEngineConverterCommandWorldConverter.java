@@ -13,7 +13,7 @@ public class CraftEngineConverterCommandWorldConverter extends VCommand {
         this.setPermission(Permission.COMMAND_WORLDCONVERTER);
         this.setDescription(Message.COMMAND__WORLD_CONVERTER__DESCRIPTION);
         this.addSubCommand("worldconverter", "wc");
-        this.addSubCommand(new CraftEngineConverterCommandWorldConverterClear(plugin));
+        this.addSubCommand(new CraftEngineConverterCommandWorldConverterClearCachedChunks(plugin));
         this.addSubCommand(new CraftEngineConverterCommandWorldConverterStart(plugin));
         this.addSubCommand(new CraftEngineConverterCommandWorldConverterRestore(plugin));
     }

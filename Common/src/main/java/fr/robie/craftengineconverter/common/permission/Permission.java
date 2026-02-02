@@ -7,7 +7,7 @@ public enum Permission {
     COMMAND_CLEARFILESCACHE("Allows the user to clear the file cache used by the plugin."),
     COMMAND_WORLDCONVERTER("Allows the user to convert world blocks from other plugins"),
     COMMAND_WORLDCONVERTER_START("Allows the user to start a world conversion process"),
-    COMMAND_WORLDCONVERTER_CLEAR("Allows the user to clear processed chunks cache"),
+    COMMAND_WORLDCONVERTER_CLEAR_CACHED_CHUNKS("Allows the user to clear processed chunks cache"),
     COMMAND_WORLDCONVERTER_RESTORE("Allows the user to restore converted blocks to their original state"),
 
     NEXO_BLOCK_INTERACT_CONVERSION("Allows the user to convert Nexo blocks on interaction"),

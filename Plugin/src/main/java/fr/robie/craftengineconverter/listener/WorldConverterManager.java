@@ -26,10 +26,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class WorldConverterManager implements Listener {
@@ -59,13 +56,13 @@ public class WorldConverterManager implements Listener {
         int z = chunk.getZ();
         String worldName = chunk.getWorld().getName();
         ChunkPosition position = new ChunkPosition(worldName, x, z);
-        if (processedChunks.contains(position) || !chunk.isLoaded()) {
+        if (this.processedChunks.contains(position) || !chunk.isLoaded()) {
             if (progressBar != null) {
                 progressBar.increment();
             }
             return;
         }
-        processedChunks.add(position);
+        this.processedChunks.add(position);
 
         @NotNull Entity[] entities = chunk.getEntities();
         for (Entity entity : entities) {
@@ -244,7 +241,13 @@ public class WorldConverterManager implements Listener {
             return CompletableFuture.completedFuture(null);
         }
 
-        CompletableFuture<?>[] tasksArray = this.conversionTasks.toArray(new CompletableFuture[0]);
+        CompletableFuture<?>[] tasksArray = this.conversionTasks.stream()
+                .filter(Objects::nonNull)
+                .toArray(CompletableFuture[]::new);
+
+        if (tasksArray.length == 0) {
+            return CompletableFuture.completedFuture(null);
+        }
 
         return CompletableFuture.allOf(tasksArray)
                 .exceptionally(ex -> {
