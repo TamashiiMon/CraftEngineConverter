@@ -38,7 +38,7 @@ public class ItemsAdderBlockConverter extends BlockConverter implements Listener
             return;
         }
 
-        this.placeBlock(newName, location);
+        this.placeBlock(newName, location, null);
         event.setCancelled(true);
         if (Configuration.allowBlockConversionPropagation && Configuration.maxBlockConversionPropagationDepth > 1) {
             Set<Location> processed = new HashSet<>();

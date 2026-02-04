@@ -34,8 +34,9 @@ public abstract class BlockConverter extends ObjectConverter {
                 continue;
             }
 
+            String oldBlockState = adjacentLoc.getBlock().getBlockData().getAsString();
             if (this.removeBlockAt(adjacentLoc)) {
-                this.placeBlock(newName, adjacentLoc);
+                this.placeBlock(newName, adjacentLoc, oldBlockState);
                 counter.increment();
                 executeBlockConversion(adjacentLoc, processed, counter);
             }
@@ -53,9 +54,7 @@ public abstract class BlockConverter extends ObjectConverter {
 
     public abstract boolean removeBlockAt(Location location);
 
-    public void placeBlock(String itemId, Location location){
+    public void placeBlock(String itemId, Location location, String oldBlockState){
         this.plugin.getPlacementTracker().placeBlock(itemId, location);
     }
-
-
 }

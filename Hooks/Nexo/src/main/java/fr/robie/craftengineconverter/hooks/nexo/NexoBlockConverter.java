@@ -35,13 +35,14 @@ public class NexoBlockConverter extends BlockConverter implements Listener {
         }
 
         Block block = event.getBlock();
+        String blockState = block.getBlockData().getAsString();
         Location location = block.getLocation();
 
         if (!removeBlockAt(location)) {
             return;
         }
 
-        this.placeBlock(newName, location);
+        this.placeBlock(newName, location, blockState);
         event.setCancelled(true);
 
         if (Configuration.allowBlockConversionPropagation && Configuration.maxBlockConversionPropagationDepth > 1) {
@@ -68,7 +69,7 @@ public class NexoBlockConverter extends BlockConverter implements Listener {
     }
 
     @Override
-    public void placeBlock(String itemId, Location location){
+    public void placeBlock(String itemId, Location location, String oldBlockState){
         BlockHistory blockHistory = new BlockHistory(null,
                 location.getWorld().getName(),
                 location.getBlockX() >> 4,
@@ -76,9 +77,9 @@ public class NexoBlockConverter extends BlockConverter implements Listener {
                 location.getBlockX(),
                 location.getBlockY(),
                 location.getBlockZ(),
-                location.getBlock().getBlockData().getAsString(),
+                oldBlockState,
                 false);
-        super.placeBlock(itemId, location);
+        super.placeBlock(itemId, location, oldBlockState);
         this.serverProfile.addBlockHistory(blockHistory);
     }
 
