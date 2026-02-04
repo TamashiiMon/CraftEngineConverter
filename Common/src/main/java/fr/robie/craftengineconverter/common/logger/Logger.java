@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class Logger extends TextFormatter {
-
     private final String prefix;
     private static Logger logger;
 

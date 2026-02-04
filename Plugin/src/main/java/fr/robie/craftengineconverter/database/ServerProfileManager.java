@@ -2,6 +2,7 @@ package fr.robie.craftengineconverter.database;
 
 import fr.robie.craftengineconverter.CraftEngineConverter;
 import fr.robie.craftengineconverter.api.BlockHistory;
+import fr.robie.craftengineconverter.api.EntityHistory;
 import fr.robie.craftengineconverter.api.database.StorageManager;
 import fr.robie.craftengineconverter.api.profile.ServerProfile;
 import fr.robie.craftengineconverter.common.logger.LogType;
@@ -23,6 +24,7 @@ public class ServerProfileManager implements ServerProfile {
     private final StorageManager storageManager;
 
     private final Map<String, BlockHistory> activeBlockCache = new ConcurrentHashMap<>();
+    private final Map<String, EntityHistory> activeEntityCache = new ConcurrentHashMap<>();
 
     public ServerProfileManager(CraftEngineConverter plugin) {
         this.plugin = plugin;
@@ -43,7 +45,7 @@ public class ServerProfileManager implements ServerProfile {
         List<BlockHistory> allBlockHistories = this.storageManager.getAllActiveConversions();
         
         for (BlockHistory history : allBlockHistories) {
-            if (!history.isReverted()) {
+            if (Boolean.FALSE.equals(history.isReverted())) {
                 String key = createCacheKey(
                     history.getWorldName(),
                     history.getChunkX(),
@@ -53,6 +55,13 @@ public class ServerProfileManager implements ServerProfile {
                     history.getBlockZ()
                 );
                 this.activeBlockCache.put(key, history);
+            }
+        }
+
+        List<EntityHistory> allActiveEntityConversions = this.storageManager.getAllActiveEntityConversions();
+        for (EntityHistory entityHistory : allActiveEntityConversions) {
+            if (Boolean.FALSE.equals(entityHistory.isReverted())) {
+                this.activeEntityCache.put(entityHistory.getLocationString(), entityHistory);
             }
         }
 
@@ -88,7 +97,7 @@ public class ServerProfileManager implements ServerProfile {
      */
     @Override
     public void addBlockHistory(@NotNull BlockHistory blockHistory) {
-        if (!blockHistory.isReverted()) {
+        if (Boolean.FALSE.equals(blockHistory.isReverted())) {
             String key = createCacheKey(
                 blockHistory.getWorldName(), 
                 blockHistory.getChunkX(),
@@ -100,6 +109,14 @@ public class ServerProfileManager implements ServerProfile {
             this.activeBlockCache.put(key, blockHistory);
         }
         this.storageManager.upsertBlockHistory(blockHistory);
+    }
+
+    @Override
+    public void addEntityHistory(@NotNull EntityHistory entityHistory) {
+        if (Boolean.FALSE.equals(entityHistory.isReverted())) {
+            this.activeEntityCache.put(entityHistory.getLocationString(), entityHistory);
+        }
+        this.storageManager.upsertEntityHistory(entityHistory);
     }
 
     /**
@@ -120,6 +137,11 @@ public class ServerProfileManager implements ServerProfile {
         return this.activeBlockCache.containsKey(key);
     }
 
+    @Override
+    public boolean isEntityConverted(@NotNull String locationString) {
+        return this.activeEntityCache.containsKey(locationString);
+    }
+
     /**
      * Gets the current number of cached block conversions.
      *
@@ -128,6 +150,16 @@ public class ServerProfileManager implements ServerProfile {
     @Override
     public int getActiveBlockCount() {
         return activeBlockCache.size();
+    }
+
+    /**
+     * Gets the current number of cached entity conversions.
+     *
+     * @return The entity cache size
+     */
+    @Override
+    public int getActiveEntityCount() {
+        return activeEntityCache.size();
     }
 
     /**
@@ -155,6 +187,12 @@ public class ServerProfileManager implements ServerProfile {
         this.storageManager.markBlockAsReverted(history);
     }
 
+    @Override
+    public void markEntityAsReverted(@NotNull EntityHistory history) {
+        this.activeEntityCache.remove(history.getLocationString());
+        this.storageManager.markEntityAsReverted(history);
+    }
+
     /**
      * Gets all active (non-reverted) block conversions from the cache.
      *
@@ -163,5 +201,10 @@ public class ServerProfileManager implements ServerProfile {
     @Override
     public @NonNull Collection<BlockHistory> getAllActiveConversions() {
         return this.activeBlockCache.values();
+    }
+
+    @Override
+    public @NotNull Collection<EntityHistory> getAllActiveEntityConversions() {
+        return this.activeEntityCache.values();
     }
 }

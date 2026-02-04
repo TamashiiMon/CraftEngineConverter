@@ -69,17 +69,17 @@ command:
       description: "Clears the processed chunks cache for world converter."
       complete: "§aCleared §e%chunks%§a processed chunks from cache in §c%time%§a."
     restore:
-      description: "Restores converted blocks to their original state."
-      start: "§aStarting block restoration..."
+      description: "Restores converted blocks and entities to their original state."
+      start: "§aStarting restoration of §e%count%§a blocks/entities..."
       single:
-        success: "§aRestored block at §e%x%§a, §e%y%§a, §e%z%§a to original state."
-        not-found: "§cNo conversion history found for block at §e%x%§a, §e%y%§a, §e%z%§a."
-        already-reverted: "§eBlock at §e%x%§a, §e%y%§a, §e%z%§a was already reverted."
+        success: "§aRestored block/entity at §e%x%§a, §e%y%§a, §e%z%§a to original state."
+        not-found: "§cNo conversion history found for block/entity at §e%x%§a, §e%y%§a, §e%z%§a."
+        already-reverted: "§eBlock/entity at §e%x%§a, §e%y%§a, §e%z%§a was already reverted."
       all:
-        confirm: "§eThis will restore §c%blocks%§e converted blocks. Use §a--confirm§e to proceed."
-        start: "§aStarting restoration of §e%blocks%§a blocks..."
-        complete: "§aRestored §e%restored%§a/§e%total%§a blocks in §c%time%§a."
-      database-disabled: "§cDatabase is not enabled. Block restoration requires database history."
+        confirm: "§eThis will restore §c%count%§e converted blocks/entities. Use §a--confirm§e to proceed."
+        start: "§aStarting restoration of §e%count%§a blocks/entities..."
+        complete: "§aRestored §e%restored%§a/§e%total%§a blocks/entities in §c%time%§a."
+      database-disabled: "§cDatabase is not enabled. Restoration requires database history."
 
 
 messages:

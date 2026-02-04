@@ -2,6 +2,7 @@ package fr.robie.craftengineconverter.command;
 
 import fr.robie.craftengineconverter.CraftEngineConverter;
 import fr.robie.craftengineconverter.api.BlockHistory;
+import fr.robie.craftengineconverter.api.EntityHistory;
 import fr.robie.craftengineconverter.api.database.StorageManager;
 import fr.robie.craftengineconverter.api.profile.ServerProfile;
 import fr.robie.craftengineconverter.common.builder.TimerBuilder;
@@ -11,11 +12,13 @@ import fr.robie.craftengineconverter.common.permission.Permission;
 import fr.robie.craftengineconverter.utils.command.CommandType;
 import fr.robie.craftengineconverter.utils.command.VCommand;
 import net.momirealms.craftengine.bukkit.api.CraftEngineBlocks;
+import net.momirealms.craftengine.bukkit.api.CraftEngineFurniture;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntitySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,9 +48,11 @@ public class CraftEngineConverterCommandWorldConverterRestore extends VCommand {
         boolean confirm = this.containFlag("--confirm");
 
         // Get active conversions count from cache instead of database
-        int activeConversions = serverProfile.getActiveBlockCount();
+        int activeBlockConversions = serverProfile.getActiveBlockCount();
+        int activeEntityConversions = serverProfile.getActiveEntityCount();
+        int totalActiveConversions = activeBlockConversions + activeEntityConversions;
 
-        if (activeConversions == 0) {
+        if (totalActiveConversions == 0) {
             message(plugin, sender, Message.COMMAND__WORLD_CONVERTER__RESTORE__ALL__CONFIRM,
                     "blocks", 0);
             return CommandType.SUCCESS;
@@ -55,17 +60,20 @@ public class CraftEngineConverterCommandWorldConverterRestore extends VCommand {
 
         if (!confirm) {
             message(plugin, sender, Message.COMMAND__WORLD_CONVERTER__RESTORE__ALL__CONFIRM,
-                    "blocks", activeConversions);
+                    "blocks", totalActiveConversions);
             return CommandType.SUCCESS;
         }
 
         message(plugin, sender, Message.COMMAND__WORLD_CONVERTER__RESTORE__ALL__START,
-                "blocks", activeConversions);
+                "blocks", totalActiveConversions);
 
         long startTime = System.currentTimeMillis();
-        AtomicInteger restoredCount = new AtomicInteger(0);
-        AtomicInteger totalCount = new AtomicInteger(0);
+        AtomicInteger restoredBlockCount = new AtomicInteger(0);
+        AtomicInteger restoredEntityCount = new AtomicInteger(0);
+        AtomicInteger totalBlockCount = new AtomicInteger(0);
+        AtomicInteger totalEntityCount = new AtomicInteger(0);
 
+        // Restore blocks
         Collection<BlockHistory> allHistory = new ArrayList<>(serverProfile.getAllActiveConversions());
 
         final int BATCH_SIZE = 50;
@@ -77,7 +85,7 @@ public class CraftEngineConverterCommandWorldConverterRestore extends VCommand {
 
             plugin.getFoliaCompatibilityManager().runLater(() -> {
                 for (BlockHistory history : batch) {
-                    totalCount.incrementAndGet();
+                    totalBlockCount.incrementAndGet();
 
                     World world = Bukkit.getWorld(history.getWorldName());
                     if (world == null) {
@@ -99,7 +107,7 @@ public class CraftEngineConverterCommandWorldConverterRestore extends VCommand {
                     try {
                         restoreBlock(location, history);
                         serverProfile.markBlockAsReverted(history);
-                        restoredCount.incrementAndGet();
+                        restoredBlockCount.incrementAndGet();
                     } catch (Exception e) {
                         Logger.showException("Failed to restore block at " + location, e);
                     }
@@ -107,15 +115,55 @@ public class CraftEngineConverterCommandWorldConverterRestore extends VCommand {
             }, tickDelay);
         }
 
-        long totalDelayTicks = (long) Math.ceil((double) allHistory.size() / BATCH_SIZE);
+        Collection<EntityHistory> allEntityHistory = new ArrayList<>(serverProfile.getAllActiveEntityConversions());
+
+        for (int i = 0; i < allEntityHistory.size(); i += BATCH_SIZE) {
+            final int end = Math.min(i + BATCH_SIZE, allEntityHistory.size());
+            final List<EntityHistory> batch = new ArrayList<>(allEntityHistory).subList(i, end);
+            final long tickDelay = (allHistory.size() / BATCH_SIZE) + (i / BATCH_SIZE);
+
+            plugin.getFoliaCompatibilityManager().runLater(() -> {
+                for (EntityHistory entityHistory : batch) {
+                    totalEntityCount.incrementAndGet();
+
+                    Location location = entityHistory.getLocation();
+                    if (location == null) {
+                        continue;
+                    }
+
+                    World world = location.getWorld();
+                    if (world == null) {
+                        continue;
+                    }
+
+                    world.getNearbyEntities(location, 1, 1, 1).forEach(entity -> {
+                        if (CraftEngineFurniture.isFurniture(entity)) {
+                            CraftEngineFurniture.remove(entity);
+                        }
+                    });
+
+                    try {
+                        EntitySnapshot entitySnapshot = Bukkit.getEntityFactory().createEntitySnapshot(entityHistory.getNbt());
+                        entitySnapshot.createEntity(location);
+
+                        serverProfile.markEntityAsReverted(entityHistory);
+                        restoredEntityCount.incrementAndGet();
+                    } catch (Exception e) {
+                        Logger.showException("Failed to restore entity at " + location, e);
+                    }
+                }
+            }, tickDelay);
+        }
+
+        long totalDelayTicks = (long) Math.ceil((double) (allHistory.size() + allEntityHistory.size()) / BATCH_SIZE);
 
         plugin.getFoliaCompatibilityManager().runLater(() -> {
 
             long endTime = System.currentTimeMillis();
 
             message(plugin, sender, Message.COMMAND__WORLD_CONVERTER__RESTORE__ALL__COMPLETE,
-                    "restored", restoredCount.get(),
-                    "total", totalCount.get(),
+                    "restored", restoredBlockCount.get() + restoredEntityCount.get(),
+                    "total", totalBlockCount.get() + totalEntityCount.get(),
                     "time", TimerBuilder.formatTimeAuto(endTime - startTime));
         }, totalDelayTicks + 1);
 

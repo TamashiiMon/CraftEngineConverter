@@ -2,6 +2,7 @@ package fr.robie.craftengineconverter.listener;
 
 import fr.robie.craftengineconverter.CraftEngineConverter;
 import fr.robie.craftengineconverter.api.BlockHistory;
+import fr.robie.craftengineconverter.api.EntityHistory;
 import fr.robie.craftengineconverter.api.database.StorageManager;
 import fr.robie.craftengineconverter.api.profile.ServerProfile;
 import fr.robie.craftengineconverter.common.BlockStatesMapper;
@@ -65,13 +66,35 @@ public class WorldConverterManager implements Listener {
         this.processedChunks.add(position);
 
         @NotNull Entity[] entities = chunk.getEntities();
+        List<EntityHistory> entityHistories = new ArrayList<>();
+
         for (Entity entity : entities) {
             if (entity instanceof ItemDisplay itemDisplay){
+                Location loc = itemDisplay.getLocation();
+                String locationJson = new com.google.gson.Gson().toJson(loc.serialize());
+                String entityNbt = itemDisplay.getAsString();
                 for (WorldConverter converter : this.converters){
+
                     if (converter.applyItemDisplayConversion(position, itemDisplay)){
+
+                        if (!this.serverProfile.isEntityConverted(locationJson) && entityNbt != null) {
+                            EntityHistory entityHistory = new EntityHistory(
+                                null,
+                                locationJson,
+                                entityNbt,
+                                false
+                            );
+                            entityHistories.add(entityHistory);
+                        }
                         break;
                     }
                 }
+            }
+        }
+
+        if (this.storageManager.isEnabled() && !entityHistories.isEmpty()) {
+            for (EntityHistory entityHistory : entityHistories) {
+                this.serverProfile.addEntityHistory(entityHistory);
             }
         }
 

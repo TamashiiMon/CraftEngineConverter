@@ -6,7 +6,9 @@
 package fr.robie.craftengineconverter.api.database;
 
 import fr.robie.craftengineconverter.api.BlockHistory;
+import fr.robie.craftengineconverter.api.EntityHistory;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.Optional;
 
 public interface StorageManager {
@@ -19,11 +21,15 @@ public interface StorageManager {
      */
     void upsertBlockHistory(@NotNull BlockHistory blockHistory);
 
+    void upsertEntityHistory(@NotNull EntityHistory entityHistory);
+
     /**
      * Mark a block as reverted in persistent storage.
      * @param blockHistory The block conversion record to be marked reverted (not null).
      */
     void markBlockAsReverted(@NotNull BlockHistory blockHistory);
+
+    void markEntityAsReverted(@NotNull EntityHistory entityHistory);
 
     /**
      * Returns a single block history record for the given block.
@@ -63,6 +69,9 @@ public interface StorageManager {
      */
     @NotNull
     java.util.List<BlockHistory> getAllActiveConversions();
+
+    @NotNull
+    java.util.List<EntityHistory> getAllActiveEntityConversions();
 
     long getTotalConversions();
 

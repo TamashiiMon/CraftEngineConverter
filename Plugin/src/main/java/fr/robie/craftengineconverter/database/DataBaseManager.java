@@ -5,16 +5,20 @@ import fr.maxlego08.sarah.database.DatabaseType;
 import fr.maxlego08.sarah.logger.JULogger;
 import fr.maxlego08.sarah.logger.Logger;
 import fr.robie.craftengineconverter.api.BlockHistory;
+import fr.robie.craftengineconverter.api.EntityHistory;
 import fr.robie.craftengineconverter.api.database.StorageManager;
 import fr.robie.craftengineconverter.api.database.StorageType;
 import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.database.migrations.WorldBlockConverterHistorical;
+import fr.robie.craftengineconverter.database.migrations.WorldEntityConverterHistorical;
 import fr.robie.craftengineconverter.utils.TypedCache;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,6 +48,11 @@ public class DataBaseManager implements StorageManager {
                        history.getBlockY() + ":" +
                        history.getBlockZ()
         ));
+        this.caches.put(EntityHistory.class, new TypedCache<>(EntityHistory.class,
+                batch -> this.requestHelper.insertMultiple("world_entity_converter_historical", EntityHistory.class, batch),
+                MAX_BATCH_SIZE,
+                EntityHistory::getLocationString
+        ));
 
     }
 
@@ -69,6 +78,7 @@ public class DataBaseManager implements StorageManager {
 
         MigrationManager.setMigrationTableName("cec_migrations");
         MigrationManager.registerMigration(new WorldBlockConverterHistorical());
+        MigrationManager.registerMigration(new WorldEntityConverterHistorical());
 
         File file = new File(this.plugin.getDataFolder(), "database-config.yml");
         if (!file.exists()) {
@@ -154,6 +164,12 @@ public class DataBaseManager implements StorageManager {
         getCache(BlockHistory.class).add(blockHistory);
     }
 
+    @Override
+    public void upsertEntityHistory(@NotNull EntityHistory entityHistory) {
+        if (!this.isEnabled) return;
+        getCache(EntityHistory.class).add(entityHistory);
+    }
+
     /**
      * Forces immediate save of all cached objects.
      * Should be called during plugin shutdown.
@@ -180,6 +196,21 @@ public class DataBaseManager implements StorageManager {
             schema.where("reverted", false);
             if (blockHistory.getId() != null) {
                 schema.where("id", blockHistory.getId());
+            }
+        });
+    }
+
+    @Override
+    public void markEntityAsReverted(@NotNull EntityHistory entityHistory) {
+        if (!this.isEnabled) return;
+
+        this.requestHelper.update("world_entity_converter_historical", schema -> {
+            schema.bool("reverted", true);
+            schema.where("location", entityHistory.getLocationString());
+            schema.where("nbt", entityHistory.getNbt());
+            schema.where("reverted", false);
+            if (entityHistory.getId() != null) {
+                schema.where("id", entityHistory.getId());
             }
         });
     }
@@ -263,6 +294,15 @@ public class DataBaseManager implements StorageManager {
         if (!this.isEnabled) return java.util.Collections.emptyList();
         
         return this.requestHelper.select("world_block_converter_historical", BlockHistory.class, table -> {
+            table.where("reverted", false);
+        });
+    }
+
+    @Override
+    public @NonNull List<EntityHistory> getAllActiveEntityConversions() {
+        if (!this.isEnabled) return java.util.Collections.emptyList();
+
+        return this.requestHelper.select("world_entity_converter_historical", EntityHistory.class, table -> {
             table.where("reverted", false);
         });
     }

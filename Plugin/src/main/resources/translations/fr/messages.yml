@@ -65,17 +65,17 @@ command:
       description: "Efface le cache des chunks traités pour le convertisseur de monde."
       complete: "§aEffacé §e%chunks%§a chunks traités du cache en §c%time%§a."
     restore:
-      description: "Restaure les blocs convertis à leur état d'origine."
-      start: "§aDébut de la restauration des blocs..."
+      description: "Restaure les blocs et entités convertis à leur état d'origine."
+      start: "§aDébut de la restauration de §e%count%§a blocs/entités..."
       single:
-        success: "§aBloc restauré à §e%x%§a, §e%y%§a, §e%z%§a à son état d'origine."
-        not-found: "§cAucun historique de conversion trouvé pour le bloc à §e%x%§a, §e%y%§a, §e%z%§a."
-        already-reverted: "§eBloc à §e%x%§a, §e%y%§a, §e%z%§a déjà restauré."
+        success: "§aBloc/entité restauré à §e%x%§a, §e%y%§a, §e%z%§a à son état d'origine."
+        not-found: "§cAucun historique de conversion trouvé pour le bloc/l'entité à §e%x%§a, §e%y%§a, §e%z%§a."
+        already-reverted: "§eBloc/entité à §e%x%§a, §e%y%§a, §e%z%§a déjà restauré."
       all:
-        confirm: "§eCeci restaurera §c%blocks%§e blocs convertis. Utilisez §a--confirm§e pour continuer."
-        start: "§aDébut de la restauration de §e%blocks%§a blocs..."
-        complete: "§aRestauré §e%restored%§a/§e%total%§a blocs en §c%time%§a."
-      database-disabled: "§cLa base de données n'est pas activée. La restauration des blocs nécessite l'historique en base de données."
+        confirm: "§eCeci restaurera §c%count%§e blocs/entités convertis. Utilisez §a--confirm§e pour continuer."
+        start: "§aDébut de la restauration de §e%count%§a blocs/entités..."
+        complete: "§aRestauré §e%restored%§a/§e%total%§a blocs/entités en §c%time%§a."
+      database-disabled: "§cLa base de données n'est pas activée. La restauration nécessite l'historique en base de données."
 
 
 messages:

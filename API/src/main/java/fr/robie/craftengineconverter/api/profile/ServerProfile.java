@@ -5,6 +5,7 @@
 package fr.robie.craftengineconverter.api.profile;
 
 import fr.robie.craftengineconverter.api.BlockHistory;
+import fr.robie.craftengineconverter.api.EntityHistory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -20,6 +21,8 @@ public interface ServerProfile {
      */
     void addBlockHistory(@NotNull BlockHistory blockHistory);
 
+    void addEntityHistory(@NotNull EntityHistory entityHistory);
+
     /**
      * Checks if a block at the given world and coordinates is converted.
      * 
@@ -31,7 +34,11 @@ public interface ServerProfile {
      */
     boolean isBlockConverted(@NotNull String worldName, int blockX, int blockY, int blockZ);
 
+    boolean isEntityConverted(@NotNull String locationString);
+
     int getActiveBlockCount();
+
+    int getActiveEntityCount();
 
     void clearBlockHistory();
 
@@ -42,6 +49,8 @@ public interface ServerProfile {
      */
     void markBlockAsReverted(@NotNull BlockHistory history);
 
+    void markEntityAsReverted(@NotNull EntityHistory history);
+
     /**
      * Gets all active (non-reverted) block conversions from the cache.
      *
@@ -49,5 +58,8 @@ public interface ServerProfile {
      */
     @NotNull
     Collection<BlockHistory> getAllActiveConversions();
+
+    @NotNull
+    Collection<EntityHistory> getAllActiveEntityConversions();
 
 }
