@@ -93,6 +93,7 @@ public class TypedCache<T> {
      */
     public void flush() {
         while (!this.cache.isEmpty()) {
+            Logger.info("Flushing " + this.cache.size() + " remaining " + this.type.getSimpleName() + " objects from cache...");
             List<T> all = new ArrayList<>(this.cache.values());
             List<String> allKeys = new ArrayList<>(this.cache.keySet());
             int size = all.size();
@@ -115,6 +116,7 @@ public class TypedCache<T> {
                     }
                 }
             }
+            Logger.info("Finished flushing " + this.type.getSimpleName() + " cache.");
         }
     }
 

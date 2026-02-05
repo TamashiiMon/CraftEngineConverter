@@ -67,7 +67,7 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
     private PacketLoader packetLoader;
 
     public CraftEngineConverter() {
-        new Logger(this.foliaCompatibilityManager.isPaper() ? this.getPluginMeta().getName() + " "+ this.getPluginMeta().getVersion() :this.getDescription().getFullName());
+        new Logger(this.foliaCompatibilityManager.isPaper() ? this.getPluginMeta().getName() + " "+ this.getPluginMeta().getVersion() : this.getDescription().getFullName());
     }
 
     @Override
@@ -190,6 +190,7 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
         }
 
         this.metrics.shutdown();
+
 
         this.commandManager.disableCommands();
 

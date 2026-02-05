@@ -5,8 +5,6 @@ import fr.robie.craftengineconverter.api.BlockHistory;
 import fr.robie.craftengineconverter.api.EntityHistory;
 import fr.robie.craftengineconverter.api.database.StorageManager;
 import fr.robie.craftengineconverter.api.profile.ServerProfile;
-import fr.robie.craftengineconverter.common.logger.LogType;
-import fr.robie.craftengineconverter.common.logger.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
@@ -39,9 +37,6 @@ public class ServerProfileManager implements ServerProfile {
         if (!this.storageManager.isEnabled()) {
             return;
         }
-
-        long startTime = System.currentTimeMillis();
-
         List<BlockHistory> allBlockHistories = this.storageManager.getAllActiveConversions();
         
         for (BlockHistory history : allBlockHistories) {
@@ -60,17 +55,10 @@ public class ServerProfileManager implements ServerProfile {
 
         List<EntityHistory> allActiveEntityConversions = this.storageManager.getAllActiveEntityConversions();
         for (EntityHistory entityHistory : allActiveEntityConversions) {
-            if (Boolean.FALSE.equals(entityHistory.isReverted())) {
+            if (!entityHistory.isReverted()) {
                 this.activeEntityCache.put(entityHistory.getLocationString(), entityHistory);
             }
         }
-
-        long loadTime = System.currentTimeMillis() - startTime;
-        Logger.info(
-            String.format("Loaded %d active block conversions into cache in %dms", 
-                this.activeBlockCache.size(), loadTime),
-            LogType.SUCCESS
-        );
     }
 
     /**
@@ -113,7 +101,7 @@ public class ServerProfileManager implements ServerProfile {
 
     @Override
     public void addEntityHistory(@NotNull EntityHistory entityHistory) {
-        if (Boolean.FALSE.equals(entityHistory.isReverted())) {
+        if (!entityHistory.isReverted()) {
             this.activeEntityCache.put(entityHistory.getLocationString(), entityHistory);
         }
         this.storageManager.upsertEntityHistory(entityHistory);
