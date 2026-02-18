@@ -1000,9 +1000,7 @@ public class NexoConverter extends Converter {
                 }
 
                 int height = imageSection.getInt("height", 0);
-                if (height != 0) {
-                    section.set("height", height);
-                }
+                section.set("height", height < ascent && height == 0 ? ascent : height);
 
                 String font = imageSection.getString("font");
                 if (isValidString(font)) {

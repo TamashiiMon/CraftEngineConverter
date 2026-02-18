@@ -191,6 +191,15 @@ public class IAConverter extends Converter {
             return;
         }
 
+        if (outputBase.exists()) {
+            deleteDirectory(outputBase);
+        }
+        if (!outputBase.mkdirs()) {
+            Logger.debug("Failed to create output folder: " + outputBase.getAbsolutePath(), LogType.ERROR);
+            return;
+        }
+
+
         Queue<ConfigFile> toConvert = new LinkedList<>();
         int totalFontImage = populateQueueIA(inputFolder, inputFolder, toConvert, "font_images");
 
@@ -245,9 +254,7 @@ public class IAConverter extends Converter {
             int scaleRatio = imageSection.getInt("scale_ratio", 0);
             int yPosition = imageSection.getInt("y_position", 0);
 
-            if (scaleRatio != 0){
-                ceImageSection.set("height", scaleRatio);
-            }
+            ceImageSection.set("height", scaleRatio < yPosition && scaleRatio == 0 ? yPosition : scaleRatio);
             if (yPosition != 0){
                 ceImageSection.set("ascent", yPosition);
             }
@@ -612,20 +619,37 @@ public class IAConverter extends Converter {
             }
         } else {
             ceRecipe.set("type", "shaped");
-            ceRecipe.set("pattern", iaRecipe.getStringList("pattern"));
+            List<String> pattern = iaRecipe.getStringList("pattern");
 
             ConfigurationSection ingredients = iaRecipe.getConfigurationSection("ingredients");
+            Map<String, String> ceIngredients = new HashMap<>();
+
+            Set<String> definedKeys = new HashSet<>();
             if (isNotNull(ingredients)) {
-                Map<String, String> ceIngredients = new HashMap<>();
                 for (String key : ingredients.getKeys(false)) {
                     String ingredientName = ingredients.getString(key);
                     String convertedIngredient = convertItemReference(ingredientName, recipeId, fileName);
                     if (isValidString(convertedIngredient)) {
                         ceIngredients.put(key, convertedIngredient);
+                        definedKeys.add(key);
                     }
                 }
-                ceRecipe.set("ingredients", ceIngredients);
             }
+            List<String> cleanedPattern = new ArrayList<>();
+            for (String row : pattern) {
+                StringBuilder cleanedRow = new StringBuilder();
+                for (char c : row.toCharArray()) {
+                    if (definedKeys.contains(String.valueOf(c))) {
+                        cleanedRow.append(c);
+                    } else {
+                        cleanedRow.append(' ');
+                    }
+                }
+                cleanedPattern.add(cleanedRow.toString());
+            }
+
+            ceRecipe.set("pattern", cleanedPattern);
+            ceRecipe.set("ingredients", ceIngredients);
         }
 
         convertRecipeResult(iaRecipe, ceRecipe, recipeId, fileName);
