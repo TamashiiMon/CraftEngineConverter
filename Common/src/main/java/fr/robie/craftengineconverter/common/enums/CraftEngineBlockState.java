@@ -26,13 +26,19 @@ public enum CraftEngineBlockState {
      * NON_TINTABLE_LEAVES (234 slots)
      *   └─ WATERLOGGED_NON_TINTABLE_LEAVES (234 slots)
      *
-     * LEAVES (143 slots)
-     *   └─ WATERLOGGED_LEAVES (143 slots)
+     * LEAVES (dynamic: leafCount * 13, max 143 on >= 1.21.2)
+     *   └─ WATERLOGGED_LEAVES (dynamic: leafCount * 13, max 143 on >= 1.21.2)
      *
      * Independent blocks (no shared pool):
      *   - CACTUS (15), SUGAR_CANE (15)
      *   - WEEPING_VINE (50), TWISTING_VINE (50), CAVE_VINE (100)
-     *   - SAPLING (8), KELP (25), CHORUS (0)
+     *   - SAPLING (dynamic: saplingCount * 1, max 8 on >= 1.21.2), KELP (25), CHORUS (0)
+     *
+     * VERSION-GATED BLOCKS:
+     *   - PALE_OAK_LEAVES / PALE_OAK_SAPLING: requires >= 1.21.2
+     *   - CHERRY_LEAVES / CHERRY_SAPLING:     requires >= 1.20.0
+     *   - MANGROVE_LEAVES:                    requires >= 1.19.0
+     *   - AZALEA_LEAVES / FLOWERING_AZALEA_LEAVES: requires >= 1.17.0
      */
 
     // Leaves group (tintable variants) - 65 slots shared
@@ -43,9 +49,9 @@ public enum CraftEngineBlockState {
     NON_TINTABLE_LEAVES(234),
     WATERLOGGED_NON_TINTABLE_LEAVES(234),  // Shares NON_TINTABLE_LEAVES pool
 
-    // Leaves group (generic) - 143 slots shared
-    LEAVES(143),
-    WATERLOGGED_LEAVES(143),  // Shares LEAVES pool
+    // Leaves group
+    LEAVES(computeLeavesLimit()),
+    WATERLOGGED_LEAVES(computeLeavesLimit()),  // Shares LEAVES pool
 
     // Tripwire group - 126 slots shared (63*2)
     LOWER_TRIPWIRE(63),
@@ -73,7 +79,7 @@ public enum CraftEngineBlockState {
     CAVE_VINE(100),
 
     // Other plants
-    SAPLING(8),
+    SAPLING(computeSaplingLimit()),
     KELP(25),
     CHORUS(0);
 
@@ -81,12 +87,11 @@ public enum CraftEngineBlockState {
     private final List<CraftEngineBlockState> contains = new ArrayList<>();
     private final List<CraftEngineBlockState> equivalents = new ArrayList<>();
     private final Set<BlockType> blocks = new HashSet<>();
-    private final int limit;
+    private int limit;
     private int start = 0;
-    private CraftEngineBlockState parent = null;  // Reference to parent pool
+    private CraftEngineBlockState parent = null;
 
     static {
-        // Setup parent-child relationships for shared pools
 
         // Mushroom blocks share the MUSHROOM pool (189 = 63*3)
         RED_MUSHROOM_BLOCK.parent = MUSHROOM;
@@ -168,10 +173,37 @@ public enum CraftEngineBlockState {
         KELP.equivalents.add(NOTE_BLOCK);
         CHORUS.equivalents.add(LEAVES); // Transparent fallback
 
-        Set<BlockType> leaves = Set.of(BlockType.OAK_LEAVES, BlockType.SPRUCE_LEAVES, BlockType.BIRCH_LEAVES,
-                BlockType.JUNGLE_LEAVES, BlockType.ACACIA_LEAVES, BlockType.DARK_OAK_LEAVES,
-                BlockType.MANGROVE_LEAVES, BlockType.CHERRY_LEAVES, BlockType.PALE_OAK_LEAVES,
-                BlockType.AZALEA_LEAVES, BlockType.FLOWERING_AZALEA_LEAVES);
+        // ── Leaves blocks ──────────────────────────────────────────────────────────
+        Set<BlockType> leaves = new HashSet<>(Set.of(
+                BlockType.OAK_LEAVES,
+                BlockType.SPRUCE_LEAVES,
+                BlockType.BIRCH_LEAVES,
+                BlockType.JUNGLE_LEAVES,
+                BlockType.ACACIA_LEAVES,
+                BlockType.DARK_OAK_LEAVES
+        ));
+
+        // AZALEA_LEAVES / FLOWERING_AZALEA_LEAVES
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_17)) {
+            leaves.add(BlockType.AZALEA_LEAVES);
+            leaves.add(BlockType.FLOWERING_AZALEA_LEAVES);
+        }
+
+        // MANGROVE_LEAVES
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_19)) {
+            leaves.add(BlockType.MANGROVE_LEAVES);
+        }
+
+        // CHERRY_LEAVES
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_20)) {
+            leaves.add(BlockType.CHERRY_LEAVES);
+        }
+
+        // PALE_OAK_LEAVES
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_21_2)) {
+            leaves.add(BlockType.PALE_OAK_LEAVES);
+        }
+
         TINTABLE_LEAVES.addAllBlocks(leaves);
         WATERLOGGED_TINTABLE_LEAVES.addAllBlocks(leaves);
         NON_TINTABLE_LEAVES.addAllBlocks(leaves);
@@ -179,10 +211,12 @@ public enum CraftEngineBlockState {
         LEAVES.addAllBlocks(leaves);
         WATERLOGGED_LEAVES.addAllBlocks(leaves);
 
+        // ── Tripwire ───────────────────────────────────────────────────────────────
         LOWER_TRIPWIRE.addBlock(BlockType.TRIPWIRE);
         HIGHER_TRIPWIRE.addBlock(BlockType.TRIPWIRE);
         TRIPWIRE.addBlock(BlockType.TRIPWIRE);
 
+        // ── Mushroom blocks ────────────────────────────────────────────────────────
         MUSHROOM_STEM.addBlock(BlockType.MUSHROOM_STEM);
         RED_MUSHROOM_BLOCK.addBlock(BlockType.RED_MUSHROOM_BLOCK);
         BROWN_MUSHROOM_BLOCK.addBlock(BlockType.BROWN_MUSHROOM_BLOCK);
@@ -191,20 +225,76 @@ public enum CraftEngineBlockState {
         NOTE_BLOCK.addBlock(BlockType.NOTE_BLOCK);
         SOLID.addAllBlocks(Set.of(BlockType.MUSHROOM_STEM, BlockType.RED_MUSHROOM_BLOCK, BlockType.BROWN_MUSHROOM_BLOCK, BlockType.NOTE_BLOCK));
 
+        // ── Plant blocks ───────────────────────────────────────────────────────────
         CACTUS.addBlock(BlockType.CACTUS);
         SUGAR_CANE.addBlock(BlockType.SUGAR_CANE);
         WEEPING_VINE.addBlock(BlockType.WEEPING_VINES);
         TWISTING_VINE.addBlock(BlockType.TWISTING_VINES);
         CAVE_VINE.addBlock(BlockType.CAVE_VINES);
-        SAPLING.addAllBlocks(Set.of(BlockType.OAK_SAPLING, BlockType.SPRUCE_SAPLING, BlockType.BIRCH_SAPLING,
-                BlockType.JUNGLE_SAPLING, BlockType.ACACIA_SAPLING, BlockType.DARK_OAK_SAPLING,
-                BlockType.CHERRY_SAPLING, BlockType.PALE_OAK_SAPLING));
+
+        // ── Saplings ───────────────────────────────────────────────────────────────
+        Set<BlockType> saplings = new HashSet<>(Set.of(
+                BlockType.OAK_SAPLING,
+                BlockType.SPRUCE_SAPLING,
+                BlockType.BIRCH_SAPLING,
+                BlockType.JUNGLE_SAPLING,
+                BlockType.ACACIA_SAPLING,
+                BlockType.DARK_OAK_SAPLING
+        ));
+
+        // CHERRY_SAPLING
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_20)) {
+            saplings.add(BlockType.CHERRY_SAPLING);
+        }
+
+        // PALE_OAK_SAPLING
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_21_2)) {
+            saplings.add(BlockType.PALE_OAK_SAPLING);
+        }
+
+        SAPLING.addAllBlocks(saplings);
+
+        // ── Other ──────────────────────────────────────────────────────────────────
         KELP.addBlock(BlockType.KELP);
         CHORUS.addBlock(BlockType.CHORUS_PLANT);
     }
 
     CraftEngineBlockState(int limit) {
         this.limit = limit;
+    }
+
+    /**
+     * Computes the LEAVES / WATERLOGGED_LEAVES limit based on the running server version.
+     * Each leaf block type contributes 13 custom block states.
+     * Base (all versions): oak, spruce, birch, jungle, acacia, dark_oak = 6
+     * + azalea, flowering_azalea (>= 1.17) = +2
+     * + mangrove (>= 1.19)                 = +1
+     * + cherry (>= 1.20)                   = +1
+     * + pale_oak (>= 1.21.2)               = +1
+     * Max = 11 types * 13 = 143
+     */
+    private static int computeLeavesLimit() {
+        int count = 6; // oak, spruce, birch, jungle, acacia, dark_oak
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_17))   count += 2; // azalea, flowering_azalea
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_19))   count += 1; // mangrove
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_20))   count += 1; // cherry
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_21_2)) count += 1; // pale_oak
+        return count * 13;
+    }
+
+    /**
+     * Computes the SAPLING limit based on the running server version.
+     * Each sapling type contributes 1 custom block state.
+     * Base (all versions): oak, spruce, birch, jungle, acacia, dark_oak = 6
+     * + cherry (>= 1.20)     = +1
+     * + pale_oak (>= 1.21.2) = +1
+     * Max = 8 types * 1 = 8
+     */
+    private static int computeSaplingLimit() {
+        int count = 6; // oak, spruce, birch, jungle, acacia, dark_oak
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_20))   count += 1; // cherry
+        if (NmsVersion.nmsVersion.isAtLeast(NmsVersion.V_1_21_2)) count += 1; // pale_oak
+        return count;
     }
 
     /**
@@ -507,4 +597,3 @@ public enum CraftEngineBlockState {
         this.blocks.add(blockType);
     }
 }
-
