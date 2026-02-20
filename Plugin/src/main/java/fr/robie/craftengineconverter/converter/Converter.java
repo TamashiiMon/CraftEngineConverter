@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 
 public abstract class Converter extends YamlUtils {
     protected final CraftEngineConverter plugin;
-    protected final FileCacheManager fileCache;
     protected final Plugins pluginType;
     protected final String converterName;
     protected final ConverterSettings settings;
@@ -44,7 +43,6 @@ public abstract class Converter extends YamlUtils {
     public Converter(CraftEngineConverter plugin, String converterName, Plugins pluginType) {
         super(plugin);
         this.plugin = plugin;
-        this.fileCache = plugin.getFileCache();
         this.converterName = converterName;
         this.pluginType = pluginType;
         this.settings = new BasicConverterSettings();
@@ -122,7 +120,8 @@ public abstract class Converter extends YamlUtils {
                 continue;
             }
 
-            Optional<FileCacheEntry<YamlConfiguration>> entry = this.fileCache.getEntry(itemFile.toPath());
+
+            Optional<FileCacheEntry<YamlConfiguration>> entry = FileCacheManager.getYamlCache().getEntryFile(itemFile.toPath());
             if (entry.isPresent()) {
                 FileCacheEntry<YamlConfiguration> fileCacheEntry = entry.get();
                 toConvert.add(new ConfigFile(itemFile, baseDir, fileCacheEntry.getData()));
@@ -373,13 +372,6 @@ public abstract class Converter extends YamlUtils {
         if (!directory.delete()){
             Logger.debug(Message.WARNING__FOLDER__DELETE_FAILURE, LogType.ERROR, "folder", directory.getName(), "path", directory.getAbsolutePath());
         }
-    }
-
-
-
-    @FunctionalInterface
-    public interface JsonFileVisitor {
-        void visit(File namespaceDir, File jsonFile) throws Exception;
     }
 
     public record PackMapping(String namespaceSource, String originalPath, String namespaceTarget, String targetPath, String newName){

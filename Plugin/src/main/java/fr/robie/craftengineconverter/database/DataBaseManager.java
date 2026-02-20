@@ -10,6 +10,7 @@ import fr.robie.craftengineconverter.api.database.StorageManager;
 import fr.robie.craftengineconverter.api.database.StorageType;
 import fr.robie.craftengineconverter.common.CraftEngineConverterPlugin;
 import fr.robie.craftengineconverter.common.logger.LogType;
+import fr.robie.craftengineconverter.common.manager.FileCacheManager;
 import fr.robie.craftengineconverter.database.migrations.WorldBlockConverterHistorical;
 import fr.robie.craftengineconverter.database.migrations.WorldEntityConverterHistorical;
 import fr.robie.craftengineconverter.utils.TypedCache;
@@ -84,7 +85,7 @@ public class DataBaseManager implements StorageManager {
         if (!file.exists()) {
             this.plugin.saveResource("database-config.yml", false);
         }
-        Optional<YamlConfiguration> optionalDatabaseConfiguration = this.plugin.getFileCache().getConfiguration(file.toPath());
+        Optional<YamlConfiguration> optionalDatabaseConfiguration = FileCacheManager.getYamlCache().getData(file.toPath());
         if (optionalDatabaseConfiguration.isEmpty()) {
             fr.robie.craftengineconverter.common.logger.Logger.info("Cannot load database configuration file.", LogType.WARNING);
             this.isEnabled = false;

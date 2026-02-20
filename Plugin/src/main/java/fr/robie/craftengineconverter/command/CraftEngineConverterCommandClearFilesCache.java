@@ -21,13 +21,12 @@ public class CraftEngineConverterCommandClearFilesCache extends VCommand {
     protected CommandType perform(CraftEngineConverter plugin) {
         boolean clearAll = this.containFlag("--all");
         long startTime = System.currentTimeMillis();
-        FileCacheManager fileCache = this.plugin.getFileCache();
-        int clearedFiles;
+        long clearedFiles;
         if (clearAll){
-            clearedFiles = fileCache.size();
-            fileCache.clearAll();
+            clearedFiles = FileCacheManager.getTotalSize();
+            FileCacheManager.invalidateAllCaches();
         } else {
-            clearedFiles = fileCache.cleanStaleEntries();
+            clearedFiles = FileCacheManager.cleanStaleEntries();
         }
         message(this.plugin, sender, Message.COMMAND__CLEAR_FILES_CACHE__COMPLETE, "cleared_files", clearedFiles, "time", TimerBuilder.formatTimeAuto(System.currentTimeMillis() - startTime));
         return CommandType.SUCCESS;

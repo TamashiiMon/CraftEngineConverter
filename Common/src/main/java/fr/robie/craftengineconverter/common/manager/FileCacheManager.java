@@ -47,6 +47,10 @@ public class FileCacheManager {
     });
     private final Map<Path, FileCacheEntry<YamlConfiguration>> cache = new HashMap<>();
 
+    public static long getTotalSize() {
+        return yamlCache.size() + jsonCache.size();
+    }
+
     /**
      * Retrieves the cache entry for the specified path.
      *
@@ -113,30 +117,16 @@ public class FileCacheManager {
         return this.cache.size();
     }
 
-
-    /**
-     * Cleans stale entries from the cache.
-     *
-     * @return The number of entries removed.
-     */
-    public int cleanStaleEntries() {
-        int removed = 0;
-        var iterator = this.cache.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            var entry = iterator.next();
-            if (!entry.getValue().isUpToDate() || !entry.getValue().getFile().exists()) {
-                iterator.remove();
-                removed++;
-            }
-        }
-
-        return removed;
-    }
-
     public static void invalidateAllCaches() {
         yamlCache.clearCache();
         jsonCache.clearCache();
+    }
+
+    public static long cleanStaleEntries() {
+        long totalRemoved = 0;
+        totalRemoved += yamlCache.cleanStaleEntries();
+        totalRemoved += jsonCache.cleanStaleEntries();
+        return totalRemoved;
     }
 
     public static FileCache<YamlConfiguration> getYamlCache() {

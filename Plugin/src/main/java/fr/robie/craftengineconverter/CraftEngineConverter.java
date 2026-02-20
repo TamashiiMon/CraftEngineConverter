@@ -61,7 +61,6 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
     private final WorldConverterManager worldConverterManager = new WorldConverterManager(this);
     private final ITagResolver tagResolver = new TagResolver();
     private final MessageLoader messageLoader = new MessageLoader(this);
-    private final FileCacheManager fileCache = new FileCacheManager();
     private MessageFormatter messageFormatter = new ClassicMeta();
     private Metrics metrics;
     private PacketLoader packetLoader;
@@ -177,6 +176,8 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
         long startTime = System.currentTimeMillis();
         Logger.info(Message.MESSAGE__PLUGIN__SHUTDOWN);
 
+        this.foliaCompatibilityManager.cancelAllTasks();
+
         if (this.packetLoader != null){
             this.packetLoader.onDisable();
         }
@@ -190,7 +191,6 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
         }
 
         this.metrics.shutdown();
-
 
         this.commandManager.disableCommands();
 
@@ -210,11 +210,6 @@ public final class CraftEngineConverter extends CraftEngineConverterPlugin {
 
     private void registerListener(@NotNull Listener listener){
         this.getServer().getPluginManager().registerEvents(listener,this);
-    }
-
-    @Override
-    public FileCacheManager getFileCache() {
-        return this.fileCache;
     }
 
     public CommandManager getCommandManager() {

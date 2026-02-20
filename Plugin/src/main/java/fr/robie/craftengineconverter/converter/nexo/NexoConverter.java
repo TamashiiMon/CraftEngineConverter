@@ -8,6 +8,7 @@ import fr.robie.craftengineconverter.common.enums.Plugins;
 import fr.robie.craftengineconverter.common.format.Message;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.common.logger.Logger;
+import fr.robie.craftengineconverter.common.manager.FileCacheManager;
 import fr.robie.craftengineconverter.common.progress.BukkitProgressBar;
 import fr.robie.craftengineconverter.common.records.ImageConversion;
 import fr.robie.craftengineconverter.common.utils.CraftEngineImageUtils;
@@ -599,7 +600,7 @@ public class NexoConverter extends Converter {
             if (file.isDirectory()) {
                 populateRecipeQueue(baseDir, file, toConvert);
             } else if (file.isFile() && file.getName().endsWith(".yml")) {
-                Optional<FileCacheEntry<YamlConfiguration>> entry = this.fileCache.getEntry(file.toPath());
+                Optional<FileCacheEntry<YamlConfiguration>> entry = FileCacheManager.getYamlCache().getEntryFile(file.toPath());
                 if (entry.isPresent()){
                     RecipeType recipeType = determineRecipeType(file, baseDir);
                     if (recipeType != null) {

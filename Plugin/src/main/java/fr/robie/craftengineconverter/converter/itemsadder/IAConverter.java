@@ -11,6 +11,7 @@ import fr.robie.craftengineconverter.common.enums.Plugins;
 import fr.robie.craftengineconverter.common.format.Message;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.common.logger.Logger;
+import fr.robie.craftengineconverter.common.manager.FileCacheManager;
 import fr.robie.craftengineconverter.common.progress.BukkitProgressBar;
 import fr.robie.craftengineconverter.common.records.ImageConversion;
 import fr.robie.craftengineconverter.common.utils.CraftEngineImageUtils;
@@ -993,7 +994,7 @@ public class IAConverter extends Converter {
                 if (f.isDirectory()) {
                     count += addAllYmlFilesRecursively(f, baseDir, toConvert, requiredSectionName);
                 } else if (f.isFile() && f.getName().endsWith(".yml")) {
-                    Optional<FileCacheEntry<YamlConfiguration>> entry = this.fileCache.getEntry(f.toPath());
+                    Optional<FileCacheEntry<YamlConfiguration>> entry = FileCacheManager.getYamlCache().getEntryFile(f.toPath());
                     if (entry.isPresent()){
                         YamlConfiguration config = entry.get().getData();
                         ConfigurationSection itemsSection = config.getConfigurationSection(requiredSectionName);

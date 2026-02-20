@@ -66,4 +66,14 @@ public class FileCache<T> {
     public void clearCache() {
         this.cache.invalidateAll();
     }
+
+    public long cleanStaleEntries() {
+        long initialSize = this.cache.size();
+        this.cache.cleanUp();
+        return initialSize - this.cache.size();
+    }
+
+    public long size() {
+        return this.cache.size();
+    }
 }
