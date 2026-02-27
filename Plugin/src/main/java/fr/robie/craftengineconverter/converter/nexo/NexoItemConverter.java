@@ -926,6 +926,36 @@ public class NexoItemConverter extends ItemConverter {
     }
 
     @Override
+    public void convertProfileComponent() {
+        ConfigurationSection profileSection = this.nexoItemSection.getConfigurationSection("Components.profile");
+        if (isNull(profileSection)) return;
+
+        String name = profileSection.getString("name");
+        String uuid = profileSection.getString("uuid");
+
+        List<PlayerProfileConfiguration.Property> properties = new ArrayList<>();
+        ConfigurationSection propertiesSection = profileSection.getConfigurationSection("properties");
+        if (propertiesSection != null) {
+            String propName = propertiesSection.getString("name");
+            String propValue = propertiesSection.getString("value");
+            String propSignature = propertiesSection.getString("signature");
+            if (isValidString(propName) && isValidString(propValue)) {
+                properties.add(new PlayerProfileConfiguration.Property(propName, propValue, propSignature));
+            }
+        }
+
+        this.craftEngineItemsConfiguration.addItemConfiguration(new PlayerProfileConfiguration(
+                name,
+                uuid,
+                properties,
+                profileSection.getString("texture"),
+                profileSection.getString("cape"),
+                profileSection.getString("elytra"),
+                profileSection.getString("model")
+        ));
+    }
+
+    @Override
     public void convertItemTexture() {
         ConfigurationSection packSection = this.nexoItemSection.getConfigurationSection("Pack");
         if (packSection == null) return;
