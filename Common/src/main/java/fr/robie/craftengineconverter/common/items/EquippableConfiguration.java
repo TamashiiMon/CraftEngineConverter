@@ -66,7 +66,7 @@ public class EquippableConfiguration implements ItemConfigurationSerializable {
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection ceEquippableSection = this.assetId != null && !this.assetId.isBlank()
                 ? getOrCreateSection(getOrCreateSection(itemSection, "settings"), "equippable")
                 : getOrCreateSection(getOrCreateSection(itemSection, "data"), "equippable");

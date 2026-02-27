@@ -15,7 +15,7 @@ public class CecProjectileSettingConfiguration implements ItemConfigurationSeria
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection settings = getOrCreateSection(itemSection, "settings");
         settings.set("projectile", this.settings);
     }

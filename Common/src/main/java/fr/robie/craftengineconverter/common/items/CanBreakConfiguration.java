@@ -15,7 +15,7 @@ public class CanBreakConfiguration implements ItemConfigurationSerializable {
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
-        this.delegate.serialize(yamlConfiguration, path, itemSection);
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
+        this.delegate.serialize(yamlConfiguration, path, itemSection, itemId);
     }
 }

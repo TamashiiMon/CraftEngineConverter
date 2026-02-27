@@ -20,7 +20,7 @@ public class DropDisplayConfiguration implements ItemConfigurationSerializable {
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection settings = getOrCreateSection(itemSection, "settings");
         if (this.enabled && this.displayName != null && !this.displayName.isEmpty()) {
             settings.set("drop-display", this.displayName);

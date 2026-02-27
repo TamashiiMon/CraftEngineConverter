@@ -13,7 +13,7 @@ public class EnchantmentGlintOverrideConfiguration implements ItemConfigurationS
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         getOrCreateSection(itemSection, "components").set("minecraft:enchantment_glint_override", this.enchantGlintOverride);
     }
 }

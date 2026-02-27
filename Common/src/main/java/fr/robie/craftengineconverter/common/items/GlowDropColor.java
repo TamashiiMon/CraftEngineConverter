@@ -14,7 +14,7 @@ public class GlowDropColor implements ItemConfigurationSerializable {
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         getOrCreateSection(itemSection, "settings").set("glow-color", this.color.name().toLowerCase());
     }
 }

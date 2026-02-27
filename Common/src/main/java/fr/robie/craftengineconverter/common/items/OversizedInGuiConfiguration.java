@@ -13,7 +13,7 @@ public class OversizedInGuiConfiguration implements ItemConfigurationSerializabl
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         if (!this.isOversizedInGui) return;
         itemSection.set("oversized-in-gui", true);
     }

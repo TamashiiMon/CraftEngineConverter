@@ -33,7 +33,7 @@ public class PlayerProfileConfiguration implements ItemConfigurationSerializable
     public record Property(String name, String value, String signature) {}
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection components = getOrCreateSection(itemSection, "components");
         ConfigurationSection profileSection = getOrCreateSection(components, "minecraft:profile");
 

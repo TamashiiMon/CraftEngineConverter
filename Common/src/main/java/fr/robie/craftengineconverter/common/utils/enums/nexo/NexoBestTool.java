@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.utils.enums.nexo;
+package fr.robie.craftengineconverter.common.utils.enums.nexo;
 
 public enum NexoBestTool {
     AXE,

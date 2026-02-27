@@ -14,5 +14,5 @@ public interface ItemConfigurationSerializable {
         return parent.createSection(key);
     }
 
-    void serialize(@NotNull YamlConfiguration yamlConfiguration,@NotNull String path,@NotNull ConfigurationSection itemSection);
+    void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId);
 }

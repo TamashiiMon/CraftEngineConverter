@@ -19,7 +19,7 @@ public class AttributeModifiersConfiguration implements ItemConfigurationSeriali
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection data = getOrCreateSection(itemSection, "data");
         List<Map<String, Object>> serializedModifiers = new ArrayList<>();
         for (CecAttributeModifier modifier : this.attributeModifiers) {

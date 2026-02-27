@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.utils.enums;
+package fr.robie.craftengineconverter.common.utils.enums;
 
 public enum Template {
     MODEL_CUBE("templates/model/cube", TemplateType.BLOCK),

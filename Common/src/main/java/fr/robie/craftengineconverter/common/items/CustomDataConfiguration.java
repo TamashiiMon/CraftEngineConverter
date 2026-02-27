@@ -16,7 +16,7 @@ public class CustomDataConfiguration implements ItemConfigurationSerializable {
 
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection components = getOrCreateSection(itemSection, "components");
         ConfigurationSection customDataComponent = getOrCreateSection(components, "minecraft:custom_data");
         for (CustomDataEntry entry : this.customDataEntries) {

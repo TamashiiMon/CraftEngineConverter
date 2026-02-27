@@ -16,7 +16,7 @@ public class ComponentFlagsConfiguration implements ItemConfigurationSerializabl
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         List<String> flagNames = new ArrayList<>();
         for (ComponentFlag flag : this.flags) {
             flagNames.add(flag.getKey());

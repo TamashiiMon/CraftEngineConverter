@@ -39,7 +39,7 @@ public class BlockPredicateConfiguration implements ItemConfigurationSerializabl
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         if (predicates == null || predicates.isEmpty()) return;
 
         ConfigurationSection components = getOrCreateSection(itemSection, "components");

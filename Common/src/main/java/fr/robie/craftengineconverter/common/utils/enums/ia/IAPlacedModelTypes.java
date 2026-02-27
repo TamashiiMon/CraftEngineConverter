@@ -1,4 +1,4 @@
-package fr.robie.craftengineconverter.utils.enums.ia;
+package fr.robie.craftengineconverter.common.utils.enums.ia;
 
 public enum IAPlacedModelTypes {
     REAL_NOTE,

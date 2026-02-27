@@ -15,7 +15,7 @@ public class TooltipDisplayConfiguration implements ItemConfigurationSerializabl
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         if (this.hiddenComponents.isEmpty()) return;
         ConfigurationSection components = getOrCreateSection(itemSection, "components");
         ConfigurationSection tooltipDisplayComponent = getOrCreateSection(components, "minecraft:tooltip_display");

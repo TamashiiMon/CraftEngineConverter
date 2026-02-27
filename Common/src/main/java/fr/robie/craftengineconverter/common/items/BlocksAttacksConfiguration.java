@@ -32,7 +32,7 @@ public class BlocksAttacksConfiguration implements ItemConfigurationSerializable
     public record DamageReduction(double base, double factor, double horizontalBlockingAngle, List<String> types) {}
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection components = getOrCreateSection(itemSection, "components");
         ConfigurationSection blocksAttacksSection = getOrCreateSection(components, "minecraft:blocks_attacks");
 

@@ -8,14 +8,17 @@ import fr.robie.craftengineconverter.common.format.Message;
 import fr.robie.craftengineconverter.common.items.*;
 import fr.robie.craftengineconverter.common.logger.Logger;
 import fr.robie.craftengineconverter.common.utils.CecAttributeModifier;
+import fr.robie.craftengineconverter.common.utils.enums.Billboard;
+import fr.robie.craftengineconverter.common.utils.enums.BlockParent;
+import fr.robie.craftengineconverter.common.utils.enums.FurniturePlacement;
+import fr.robie.craftengineconverter.common.utils.enums.ItemDisplayType;
+import fr.robie.craftengineconverter.common.utils.enums.ia.IADirectionalMode;
+import fr.robie.craftengineconverter.common.utils.enums.ia.IAEntityTypes;
+import fr.robie.craftengineconverter.common.utils.enums.ia.IAModelsKeys;
+import fr.robie.craftengineconverter.common.utils.enums.ia.IAPlacedModelTypes;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.converter.ItemConverter;
 import fr.robie.craftengineconverter.utils.FloatsUtils;
-import fr.robie.craftengineconverter.utils.enums.*;
-import fr.robie.craftengineconverter.utils.enums.ia.IADirectionalMode;
-import fr.robie.craftengineconverter.utils.enums.ia.IAEntityTypes;
-import fr.robie.craftengineconverter.utils.enums.ia.IAModelsKeys;
-import fr.robie.craftengineconverter.utils.enums.ia.IAPlacedModelTypes;
 import fr.robie.craftengineconverter.utils.manager.InternalTemplateManager;
 import net.momirealms.craftengine.core.attribute.AttributeModifier;
 import net.momirealms.craftengine.core.entity.EquipmentSlot;
@@ -424,13 +427,13 @@ public class IAItemsConverter extends ItemConverter {
             texturePath = namespaced(texturePath, this.namespace);
             ConfigurationSection blockSection = this.iaItemSection.getConfigurationSection("specific_properties.block");
             if (isNotNull(blockSection)){
-                this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(Template.MODEL_ITEM_DEFAULT, "%model_path%", texturePath));
+                this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_ITEM_DEFAULT, "%model_path%", texturePath));
                 handleBlockItem(resourceSection, blockSection);
 
                 return;
             }
             Map<String, Object> parsedTemplate = InternalTemplateManager.parseTemplate(
-                    Template.MODEL_ITEM_GENERATED,
+                    fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_ITEM_GENERATED,
                     "%model_path%", texturePath,
                     "%texture_path%", texturePath
             );
@@ -450,7 +453,7 @@ public class IAItemsConverter extends ItemConverter {
 
         ConfigurationSection stateSection = setupLogBlockState(behaviorSection);
         stateSection.set("appearances", InternalTemplateManager.parseTemplate(
-                Template.BLOCK_STATE_LOG_APPEARANCE,
+                fr.robie.craftengineconverter.common.utils.enums.Template.BLOCK_STATE_LOG_APPEARANCE,
                 "%model%", parsedTemplate,
                 "%auto-state-x%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
                 "%auto-state-y%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
@@ -474,7 +477,7 @@ public class IAItemsConverter extends ItemConverter {
 
         setupFurnaceFacingProperty(stateSection);
         stateSection.set("appearances", InternalTemplateManager.parseTemplate(
-                Template.BLOCK_STATE_4_DIRECTIONS_APPEARANCE,
+                fr.robie.craftengineconverter.common.utils.enums.Template.BLOCK_STATE_4_DIRECTIONS_APPEARANCE,
                 "%model%", parsedTemplate,
                 "%auto-state-east%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
                 "%auto-state-west%", getAutoStateForPlacedModelType(IAPlacedModelTypes.REAL),
@@ -529,7 +532,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private Map<String, Object> createCubeModelTemplate(Map<BlockFace, String> faceTextureMap) {
         return InternalTemplateManager.parseTemplate(
-                Template.MODEL_CUBE,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_CUBE,
                 "%model_path%", faceTextureMap.get(BlockFace.NORTH),
                 "%texture_down_path%", faceTextureMap.get(BlockFace.DOWN),
                 "%texture_up_path%", faceTextureMap.get(BlockFace.UP),
@@ -731,7 +734,7 @@ public class IAItemsConverter extends ItemConverter {
 
         stateSection.set("auto-state", autoState);
         stateSection.set("model", InternalTemplateManager.parseTemplate(
-                Template.BLOCK_MODEL,
+                fr.robie.craftengineconverter.common.utils.enums.Template.BLOCK_MODEL,
                 "%model_path%", modelPath
         ));
     }
@@ -745,7 +748,7 @@ public class IAItemsConverter extends ItemConverter {
         }
         stateSection.set("auto-state", autoState);
         stateSection.set("model", InternalTemplateManager.parseTemplate(
-                Template.MODEL_CUBE_ALL,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_CUBE_ALL,
                 "%model_path%", texturePath,
                 "%texture_path%", texturePath
         ));
@@ -770,7 +773,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleSimpleModelPath(@NotNull String namespacedModelPath) {
         Map<String, Object> parsedTemplate = InternalTemplateManager.parseTemplate(
-                Template.MODEL_ITEM_DEFAULT,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_ITEM_DEFAULT,
                 "%model_path%", namespacedModelPath
         );
         this.setSavedModelTemplates(parsedTemplate);
@@ -801,7 +804,7 @@ public class IAItemsConverter extends ItemConverter {
         if (isValidString(modelPath)) {
             modelPath = namespaced(modelPath, this.namespace);
             Map<String, Object> parsedTemplate = InternalTemplateManager.parseTemplate(
-                    Template.MODEL_ITEM_DEFAULT,
+                    fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_ITEM_DEFAULT,
                     "%model_path%", modelPath
             );
             this.craftEngineItemUtils.getGeneralSection().createSection("model", parsedTemplate);
@@ -813,7 +816,7 @@ public class IAItemsConverter extends ItemConverter {
     private void handleSimpleTexture(String texturePath) {
         texturePath = namespaced(texturePath, this.namespace);
         Map<String, Object> parsedTemplate = InternalTemplateManager.parseTemplate(
-                Template.MODEL_ITEM_GENERATED,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_ITEM_GENERATED,
                 "%model_path%", texturePath,
                 "%texture_path%", texturePath
         );
@@ -834,7 +837,7 @@ public class IAItemsConverter extends ItemConverter {
         } else if (isValidString(texturePath)) {
             texturePath = namespaced(texturePath, this.namespace);
             this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                    Template.MODEL_CUBE_ALL,
+                    fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_CUBE_ALL,
                     "%model_path%", texturePath,
                     "%texture_path%", texturePath
             ));
@@ -856,7 +859,7 @@ public class IAItemsConverter extends ItemConverter {
             iconPath = namespaced(iconPath, this.namespace);
             this.craftEngineItemUtils.getGeneralSection().createSection("model",
                     InternalTemplateManager.parseTemplate(
-                            Template.MODEL_ITEM_GENERATED,
+                            fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_ITEM_GENERATED,
                             "%model_path%", iconPath,
                             "%texture_path%", iconPath
                     )
@@ -875,11 +878,11 @@ public class IAItemsConverter extends ItemConverter {
         ConfigurationSection blockSection = getOrCreateSection(behaviorSection, "block");
 
         ConfigurationSection stateSection = getOrCreateSection(blockSection, "state");
-        stateSection.set("properties", InternalTemplateManager.parseTemplate(Template.BLOCK_STATE_PROPERTIES_STAGE));
+        stateSection.set("properties", InternalTemplateManager.parseTemplate(fr.robie.craftengineconverter.common.utils.enums.Template.BLOCK_STATE_PROPERTIES_STAGE));
         stateSection.set("appearances", InternalTemplateManager.parseTemplate(
-                Template.BLOCK_STATE_SAPLING_APPEARANCE,
+                fr.robie.craftengineconverter.common.utils.enums.Template.BLOCK_STATE_SAPLING_APPEARANCE,
                 "%model%", InternalTemplateManager.parseTemplate(
-                        Template.MODEL_CROSS,
+                        fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_CROSS,
                         "%model_path%", crossTexture,
                         "%texture_path%", crossTexture
                 )
@@ -935,7 +938,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleBow2D(ConfigurationSection texturesSection) {
         this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                Template.MODEL_2D_BOW_SIMPLIFIED,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_2D_BOW_SIMPLIFIED,
                 "%default_texture_path%", namespaced(texturesSection.getString("normal"), this.namespace),
                 "%pulling_0_texture_path%", namespaced(texturesSection.getString("pulling_0"), this.namespace),
                 "%pulling_1_texture_path%", namespaced(texturesSection.getString("pulling_1"), this.namespace),
@@ -945,7 +948,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleFishingRod2D(ConfigurationSection texturesSection) {
         this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                Template.MODEL_2D_FISHING_ROD_SIMPLIFIED,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_2D_FISHING_ROD_SIMPLIFIED,
                 "%default_texture_path%", namespaced(texturesSection.getString("normal"), this.namespace),
                 "%cast_texture_path%", namespaced(texturesSection.getString("cast"), this.namespace)
         ));
@@ -953,7 +956,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleCrossbow2D(ConfigurationSection texturesSection) {
         this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                Template.MODEL_2D_CROSSBOW_SIMPLIFIED,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_2D_CROSSBOW_SIMPLIFIED,
                 "%default_texture_path%", namespaced(texturesSection.getString("normal"), this.namespace),
                 "%pulling_0_texture_path%", namespaced(texturesSection.getString("pulling_0"), this.namespace),
                 "%pulling_1_texture_path%", namespaced(texturesSection.getString("pulling_1"), this.namespace),
@@ -965,7 +968,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleBow3D(String defaultModelPath, String pulling0ModelPath, String pulling1ModelPath, String pulling2ModelPath) {
         this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                Template.MODEL_3D_BOW,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_3D_BOW,
                 "%default_model_path%", defaultModelPath,
                 "%pulling_0_model_path%", pulling0ModelPath,
                 "%pulling_1_model_path%", pulling1ModelPath,
@@ -975,7 +978,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleFishingRod3D(String defaultModelPath, String castingModelPath) {
         this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                Template.MODEL_3D_FISHING_ROD,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_3D_FISHING_ROD,
                 "%default_model_path%", defaultModelPath,
                 "%casting_model_path%", castingModelPath
         ));
@@ -983,7 +986,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleCrossbow3D(ConfigurationSection modelsSection) {
         this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                Template.MODEL_3D_CROSSBOW,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_3D_CROSSBOW,
                 "%default_model_path%", namespaced(modelsSection.getString("normal"), this.namespace),
                 "%pulling_0_model_path%", namespaced(modelsSection.getString("pulling_0"), this.namespace),
                 "%pulling_1_model_path%", namespaced(modelsSection.getString("pulling_1"), this.namespace),
@@ -995,7 +998,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleTrident3D(ConfigurationSection modelsSection) {
         this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                Template.MODEL_TRIDENT,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_TRIDENT,
                 "%model_path%", namespaced(modelsSection.getString("normal"), this.namespace),
                 "%throwing_model_path%", namespaced(modelsSection.getString("throwing"), this.namespace)
         ));
@@ -1003,7 +1006,7 @@ public class IAItemsConverter extends ItemConverter {
 
     private void handleShield3D(String defaultModelPath, String blockingModelPath) {
         this.craftEngineItemUtils.setModel(InternalTemplateManager.parseTemplate(
-                Template.MODEL_3D_SHIELD,
+                fr.robie.craftengineconverter.common.utils.enums.Template.MODEL_3D_SHIELD,
                 "%default_model_path%", defaultModelPath,
                 "%blocking_model_path%", blockingModelPath
         ));
@@ -1153,7 +1156,7 @@ public class IAItemsConverter extends ItemConverter {
                 }
             }
 
-            ceFurnitureSection.set("loot", InternalTemplateManager.parseTemplate(Template.LOOT_TABLE_BASIC_DROP, "%type%","furniture_item","%item%", this.itemId));
+            ceFurnitureSection.set("loot", InternalTemplateManager.parseTemplate(fr.robie.craftengineconverter.common.utils.enums.Template.LOOT_TABLE_BASIC_DROP, "%type%","furniture_item","%item%", this.itemId));
 
         }
     }

@@ -20,7 +20,7 @@ public class EnchantmentConfiguration implements ItemConfigurationSerializable {
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection data = getOrCreateSection(itemSection, "data");
         ConfigurationSection enchantment = getOrCreateSection(data, "enchantment");
         for (Map.Entry<String, Integer> entry : enchantments.entrySet()) {

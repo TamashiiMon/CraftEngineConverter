@@ -13,11 +13,11 @@ import fr.robie.craftengineconverter.common.manager.FileCacheManager;
 import fr.robie.craftengineconverter.common.progress.BukkitProgressBar;
 import fr.robie.craftengineconverter.common.records.ImageConversion;
 import fr.robie.craftengineconverter.common.utils.CraftEngineImageUtils;
+import fr.robie.craftengineconverter.common.utils.enums.RecipeType;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.utils.ConfigFile;
 import fr.robie.craftengineconverter.utils.JsonFileValidator;
 import fr.robie.craftengineconverter.utils.SnakeUtils;
-import fr.robie.craftengineconverter.utils.enums.RecipeType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -132,7 +132,7 @@ public class NexoConverter extends Converter {
                 );
 
                 nexoItemConverter.convertItem();
-                nexoItemConverter.getCraftEngineItemsConfiguration().serialize(convertedConfig, "items." + finalItemId, getOrCreateSection(items, finalItemId));
+                nexoItemConverter.getCraftEngineItemsConfiguration().serialize(convertedConfig, "items." + finalItemId, getOrCreateSection(items, finalItemId), finalItemId);
 
                 if (nexoItemConverter.isIncludeInsideInventory()) {
                     itemsIds.add(finalItemId);

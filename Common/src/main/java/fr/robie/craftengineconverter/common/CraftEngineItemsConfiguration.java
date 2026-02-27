@@ -30,10 +30,10 @@ public class CraftEngineItemsConfiguration {
     }
 
 
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         itemSection.set("material", (this.material == null ? Configuration.defaultMaterial : this.material).name().toLowerCase());
         for (ItemConfigurationSerializable itemConfiguration : this.itemsConfigurations) {
-            itemConfiguration.serialize(yamlConfiguration, path, itemSection);
+            itemConfiguration.serialize(yamlConfiguration, path, itemSection, itemId);
         }
     }
 }

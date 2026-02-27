@@ -16,11 +16,11 @@ import fr.robie.craftengineconverter.common.manager.FileCacheManager;
 import fr.robie.craftengineconverter.common.progress.BukkitProgressBar;
 import fr.robie.craftengineconverter.common.records.ImageConversion;
 import fr.robie.craftengineconverter.common.utils.CraftEngineImageUtils;
+import fr.robie.craftengineconverter.common.utils.enums.ia.IARecipesTypes;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.utils.ConfigFile;
 import fr.robie.craftengineconverter.utils.JsonFileValidator;
 import fr.robie.craftengineconverter.utils.SnakeUtils;
-import fr.robie.craftengineconverter.utils.enums.ia.IARecipesTypes;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -122,7 +122,7 @@ public class IAConverter extends Converter {
                         namespace
                 );
                 iaItemsConverter.convertItem();
-                iaItemsConverter.getCraftEngineItemsConfiguration().serialize(convertedConfig, "items." + finalItemId, getOrCreateSection(items, finalItemId));
+                iaItemsConverter.getCraftEngineItemsConfiguration().serialize(convertedConfig, "items." + finalItemId, getOrCreateSection(items, finalItemId), finalItemId);
 
                 if (iaItemsConverter.isIncludeInsideInventory()) {
                     itemsIds.add(finalItemId);

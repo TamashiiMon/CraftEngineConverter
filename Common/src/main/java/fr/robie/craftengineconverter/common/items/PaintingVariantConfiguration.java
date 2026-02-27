@@ -13,7 +13,7 @@ public class PaintingVariantConfiguration implements ItemConfigurationSerializab
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         if (this.variant.isEmpty()) return;
         ConfigurationSection components = getOrCreateSection(itemSection, "components");
         components.set("minecraft:painting/variant", this.variant);

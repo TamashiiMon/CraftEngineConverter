@@ -24,7 +24,7 @@ public class ToolConfiguration implements ItemConfigurationSerializable {
     }
 
     @Override
-    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection) {
+    public void serialize(@NotNull YamlConfiguration yamlConfiguration, @NotNull String path, @NotNull ConfigurationSection itemSection, @NotNull String itemId) {
         ConfigurationSection components = getOrCreateSection(itemSection, "components");
         ConfigurationSection toolComponent = getOrCreateSection(components, "minecraft:tool");
 
