@@ -287,104 +287,104 @@ public class NexoItemConverter extends ItemConverter {
     public void convertTool() {
         ConfigurationSection nexoToolSection = this.nexoItemSection.getConfigurationSection("Components.tool");
         if (isNotNull(nexoToolSection)) {
-            double defaultMiningSpeed = nexoToolSection.getDouble("default_mining_speed", 1);
-            ConfigurationSection ceToolSection = this.craftEngineItemUtils.getComponentsSection().createSection("minecraft:tool");
-            if (defaultMiningSpeed != 1.0){
-                ceToolSection.set("default_mining_speed",defaultMiningSpeed);
-            }
+            float defaultMiningSpeed = (float) nexoToolSection.getDouble("default_mining_speed", 1.0);
             int damagePerBlock = nexoToolSection.getInt("damage_per_block", 1);
-            if (damagePerBlock != 1){
-                ceToolSection.set("damage_per_block",damagePerBlock);
-            }
-            // can_destroy_blocks_in_creative not supported in Nexo
+            // can_destroy_blocks_in_creative not supported in Nexo, defaults to false
+            boolean canDestroyBlocksInCreative = false;
+
+            List<ToolConfiguration.Rule> ceRulesList = new ArrayList<>();
             var rulesList = nexoToolSection.getMapList("rules");
+
             if (!rulesList.isEmpty()) {
+                //noinspection unchecked
                 List<Map<String, Object>> nexoRulesList = (List<Map<String, Object>>) (Object) rulesList;
-                List<Map<String, Object>> ceRulesList = new ArrayList<>();
-                for (var nexoRule : nexoRulesList){
-                    Double speed = null;
+
+                for (var nexoRule : nexoRulesList) {
+                    float speed = 0f;
                     Object speedObj = nexoRule.get("speed");
-                    if (isNotNull(speedObj) && speedObj instanceof Double speedDouble) {
-                        speed = speedDouble;
+                    if (isNotNull(speedObj) && speedObj instanceof Number speedNum) {
+                        speed = speedNum.floatValue();
                     }
-                    Boolean correctForDrops = null;
+
+                    boolean correctForDrops = false;
                     Object correctForDropsObj = nexoRule.get("correct_for_drops");
                     if (isNotNull(correctForDropsObj) && correctForDropsObj instanceof Boolean correctForDropsBool) {
                         correctForDrops = correctForDropsBool;
                     }
 
+                    // --- Blocks (material / materials) ---
                     List<String> materialBlocks = new ArrayList<>();
                     Object material = nexoRule.get("material");
                     if (isNotNull(material) && material instanceof String materialStr && !materialStr.isEmpty()) {
                         String normalized = materialStr.toLowerCase(Locale.ROOT);
-                        if (!normalized.contains(":")) {
-                            normalized = "minecraft:" + normalized;
-                        }
+                        if (!normalized.contains(":")) normalized = "minecraft:" + normalized;
                         materialBlocks.add(normalized);
                     }
                     Object materials = nexoRule.get("materials");
-                    if (isNotNull(materials) && materials instanceof @NotNull List<?> materialsList && !materialsList.isEmpty()) {
+                    if (isNotNull(materials) && materials instanceof List<?> materialsList && !materialsList.isEmpty()) {
+                        //noinspection unchecked
                         for (String mat : (List<String>) materialsList) {
                             String normalized = mat.toLowerCase(Locale.ROOT);
-                            if (!normalized.contains(":")) {
-                                normalized = "minecraft:" + normalized;
-                            }
+                            if (!normalized.contains(":")) normalized = "minecraft:" + normalized;
                             materialBlocks.add(normalized);
                         }
                     }
 
                     if (!materialBlocks.isEmpty()) {
-                        Map<String, Object> ceRule = new HashMap<>();
-                        if (isNotNull(speed)) ceRule.put("speed", speed);
-                        if (isNotNull(correctForDrops)) ceRule.put("correct_for_drops", correctForDrops);
-                        ceRule.put("blocks", materialBlocks);
-                        ceRulesList.add(ceRule);
+                        ceRulesList.add(new ToolConfiguration.Rule(speed, correctForDrops, materialBlocks));
                     }
 
+                    // --- Tags (tag / tags) ---
                     List<String> tagsList = new ArrayList<>();
                     Object tag = nexoRule.get("tag");
                     if (isNotNull(tag) && tag instanceof String tagStr && !tagStr.isEmpty()) {
                         tagsList.add(tagStr);
                     }
                     Object tags = nexoRule.get("tags");
-                    if (isNotNull(tags) && tags instanceof @NotNull List<?> tagsListObj && !tagsListObj.isEmpty()) {
+                    if (isNotNull(tags) && tags instanceof List<?> tagsListObj && !tagsListObj.isEmpty()) {
                         tagsList.addAll((List<String>) tagsListObj);
                     }
 
                     for (String tagStr : tagsList) {
                         String normalized = tagStr.toLowerCase(Locale.ROOT);
-                        if (!normalized.startsWith("#")) {
-                            normalized = "#" + normalized;
-                        }
-                        if (!normalized.contains(":")) {
-                            normalized = normalized.replace("#", "#minecraft:");
-                        }
-
-                        Map<String, Object> ceRule = new HashMap<>();
-                        if (isNotNull(speed)) ceRule.put("speed", speed);
-                        if (isNotNull(correctForDrops)) ceRule.put("correct_for_drops", correctForDrops);
-                        ceRule.put("blocks", normalized);
-                        ceRulesList.add(ceRule);
+                        if (!normalized.startsWith("#")) normalized = "#" + normalized;
+                        if (!normalized.contains(":")) normalized = normalized.replace("#", "#minecraft:");
+                        ceRulesList.add(new ToolConfiguration.Rule(speed, correctForDrops, normalized));
                     }
                 }
-                if (!ceRulesList.isEmpty()) {
-                    ceToolSection.set("rules", ceRulesList);
-                } else {
+
+                if (ceRulesList.isEmpty()) {
                     Logger.info("No valid blocks found for tool rules in item '" + this.itemId + "'. Skipping tool rules conversion.", LogType.WARNING);
                 }
             }
+
+            this.craftEngineItemsConfiguration.addItemConfiguration(new ToolConfiguration(defaultMiningSpeed, damagePerBlock, canDestroyBlocksInCreative, ceRulesList));
         }
     }
 
     @Override
     public void convertCustomData() {
-        copyComponentSection("custom_data", "minecraft:custom_data");
+        ConfigurationSection customDataSection = this.nexoItemSection.getConfigurationSection("Components.custom_data");
+        if (customDataSection != null) {
+            List<CustomDataConfiguration.CustomDataEntry> customDataEntries = new ArrayList<>();
+            for (String key : customDataSection.getKeys(false)) {
+                Object value = customDataSection.get(key);
+                if (isNotNull(value)) {
+                    customDataEntries.add(new CustomDataConfiguration.CustomDataEntry(key, value));
+                }
+            }
+            if (!customDataEntries.isEmpty()) {
+                this.craftEngineItemsConfiguration.addItemConfiguration(new CustomDataConfiguration(customDataEntries));
+            }
+        }
     }
 
     @Override
     public void convertJukeboxPlayable() {
         String song = this.nexoItemSection.getString("Components.jukebox_playable.song_key");
-        this.craftEngineItemUtils.setJukeboxPlayable(song);
+        if (isValidString(song)) {
+            this.craftEngineItemsConfiguration.addItemConfiguration(new JukeboxPlayableConfiguration(song));
+        }
     }
 
     @Override
@@ -392,83 +392,67 @@ public class NexoItemConverter extends ItemConverter {
         ConfigurationSection consumableSection = this.nexoItemSection.getConfigurationSection("Components.consumable");
         if (consumableSection == null) return;
 
-        ConfigurationSection ceConsumableSection = this.craftEngineItemUtils.getComponentsSection()
-                .createSection("minecraft:consumable");
-        setConsumableBasicProperties(consumableSection, ceConsumableSection);
+        String sound = consumableSection.getString("sound", "entity.generic.eat");
+        boolean hasConsumeParticles = consumableSection.getBoolean("consume_particles", true);
+        double consumeSeconds = consumableSection.getDouble("consume_seconds", 1.6);
 
-        ConfigurationSection effectsSection = this.nexoItemSection.getConfigurationSection("effects");
-        if (effectsSection == null) return;
+        ConsumableConfiguration.Animation animation;
+        try {
+            animation = ConsumableConfiguration.Animation.valueOf(
+                    consumableSection.getString("animation", "eat").toUpperCase()
+            );
+        } catch (IllegalArgumentException e) {
+            animation = ConsumableConfiguration.Animation.EAT;
+        }
 
-        List<Map<String, Object>> consumeEffects = new ArrayList<>();
-        addApplyEffects(effectsSection, consumeEffects);
-        addRemoveEffects(effectsSection, consumeEffects);
-        addClearAllEffects(effectsSection, consumeEffects);
-        addTeleportEffect(consumableSection, consumeEffects);
-        addPlaySoundEffect(consumableSection, consumeEffects);
+        List<ConsumableConfiguration.ConsumeEffect> consumeEffects = new ArrayList<>();
+
+        ConfigurationSection effectsSection = consumableSection.getConfigurationSection("effects");
+        if (effectsSection != null) {
+            // Apply effects
+            ConfigurationSection applyEffectsSection = effectsSection.getConfigurationSection("APPLY_EFFECTS");
+            if (applyEffectsSection != null) {
+                List<ConsumableConfiguration.ApplyEffectsConsumeEffect.ApplyEffect> effects = new ArrayList<>();
+                for (String effectKey : applyEffectsSection.getKeys(false)) {
+                    effects.add(new ConsumableConfiguration.ApplyEffectsConsumeEffect.ApplyEffect(
+                            effectKey,
+                            applyEffectsSection.getInt(effectKey + ".amplifier", 0),
+                            applyEffectsSection.getInt(effectKey + ".duration", 1),
+                            applyEffectsSection.getBoolean(effectKey + ".ambient", false),
+                            applyEffectsSection.getBoolean(effectKey + ".show_particles", false),
+                            applyEffectsSection.getBoolean(effectKey + ".show_icon", false),
+                            applyEffectsSection.getDouble(effectKey + ".probability", 1.0)
+                    ));
+                }
+                consumeEffects.add(new ConsumableConfiguration.ApplyEffectsConsumeEffect(effects));
+            }
+
+            List<String> removeEffects = effectsSection.getStringList("REMOVE_EFFECTS");
+            if (!removeEffects.isEmpty()) {
+                consumeEffects.add(new ConsumableConfiguration.RemoveEffectsConsumeEffect(removeEffects));
+            }
+
+            if (effectsSection.get("CLEAR_ALL_EFFECTS") != null) {
+                consumeEffects.add(new ConsumableConfiguration.ClearAllEffectsConsumeEffect());
+            }
+
+            double diameter = effectsSection.getDouble("TELEPORT_RANDOMLY.diameter", -1.0);
+            if (diameter > 0) {
+                consumeEffects.add(new ConsumableConfiguration.TeleportRandomlyConsumeEffect(diameter));
+            }
+
+            ConfigurationSection playSoundSection = effectsSection.getConfigurationSection("PLAY_SOUND");
+            if (playSoundSection != null) {
+                consumeEffects.add(new ConsumableConfiguration.PlaySoundConsumeEffect(
+                        playSoundSection.getString("sound", "entity.player.levelup"),
+                        playSoundSection.getDouble("range", 16.0)
+                ));
+            }
+        }
 
         if (!consumeEffects.isEmpty()) {
-            ceConsumableSection.set("on_consume_effects", consumeEffects);
+            this.craftEngineItemsConfiguration.addItemConfiguration(new ConsumableConfiguration(sound, hasConsumeParticles, consumeSeconds, animation, consumeEffects));
         }
-    }
-
-    private void setConsumableBasicProperties(ConfigurationSection source, ConfigurationSection target) {
-        target.set("sound", source.getString("sound", "entity.generic.eat"));
-        target.set("has_consume_particles", source.getBoolean("consume_particles", true));
-        target.set("consume_seconds", source.getDouble("consume_seconds", 1.6));
-        target.set("animation", source.getString("animation", "eat").toLowerCase());
-    }
-
-    private void addApplyEffects(ConfigurationSection effectsSection, List<Map<String, Object>> consumeEffects) {
-        ConfigurationSection applyEffectsSection = effectsSection.getConfigurationSection("APPLY_EFFECTS");
-        if (applyEffectsSection == null) return;
-
-        List<Map<String, Object>> effects = new ArrayList<>();
-        for (String effectKey : applyEffectsSection.getKeys(false)) {
-            effects.add(Map.of(
-                    "id", effectKey,
-                    "amplifier", applyEffectsSection.getInt(effectKey + ".amplifier", 0),
-                    "duration", applyEffectsSection.getInt(effectKey + ".duration", 1),
-                    "ambient", applyEffectsSection.getBoolean(effectKey + ".ambient", false),
-                    "show_particles", applyEffectsSection.getBoolean(effectKey + ".show_particles", false),
-                    "show_icon", applyEffectsSection.getBoolean(effectKey + ".show_icon", false),
-                    "probability", applyEffectsSection.getDouble(effectKey + ".probability", 1.0)
-            ));
-        }
-
-        consumeEffects.add(Map.of("type", "apply_effects", "effects", effects));
-    }
-
-    private void addRemoveEffects(ConfigurationSection effectsSection, List<Map<String, Object>> consumeEffects) {
-        List<String> removeEffects = effectsSection.getStringList("REMOVE_EFFECTS");
-        if (!removeEffects.isEmpty()) {
-            consumeEffects.add(Map.of("type", "remove_effects", "effects", removeEffects));
-        }
-    }
-
-    private void addClearAllEffects(ConfigurationSection effectsSection, List<Map<String, Object>> consumeEffects) {
-        if (effectsSection.get("CLEAR_ALL_EFFECTS") != null) {
-            consumeEffects.add(Map.of("type", "clear_all_effects"));
-        }
-    }
-
-    private void addTeleportEffect(ConfigurationSection consumableSection, List<Map<String, Object>> consumeEffects) {
-        double diameter = consumableSection.getDouble("TELEPORT_RANDOMLY.diameter", -1.0);
-        if (diameter > 0) {
-            consumeEffects.add(Map.of("type", "teleport_randomly", "diameter", diameter));
-        }
-    }
-
-    private void addPlaySoundEffect(ConfigurationSection consumableSection, List<Map<String, Object>> consumeEffects) {
-        ConfigurationSection soundSection = consumableSection.getConfigurationSection("PLAY_SOUND");
-        if (soundSection == null) return;
-
-        consumeEffects.add(Map.of(
-                "type", "play_sound",
-                "sound", Map.of(
-                        "sound_id", soundSection.getString("sound", "entity.player.levelup"),
-                        "range", soundSection.getDouble("range", 16.0)
-                )
-        ));
     }
 
     @Override
