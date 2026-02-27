@@ -24,10 +24,7 @@ import fr.robie.craftengineconverter.utils.loots.MinecraftItemLoot;
 import fr.robie.craftengineconverter.utils.manager.InternalTemplateManager;
 import net.momirealms.craftengine.core.attribute.AttributeModifier;
 import net.momirealms.craftengine.core.entity.EquipmentSlot;
-import org.bukkit.Bukkit;
-import org.bukkit.Instrument;
-import org.bukkit.Material;
-import org.bukkit.Note;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
@@ -520,14 +517,14 @@ public class NexoItemConverter extends ItemConverter {
     public void convertEnchantableComponent() {
         int maxEnchantableLevel = this.nexoItemSection.getInt("Components.enchantable", -1);
         if (maxEnchantableLevel >= 0) {
-            this.craftEngineItemUtils.getComponentsSection().set("minecraft:enchantable", Map.of("value", maxEnchantableLevel));
+            this.craftEngineItemsConfiguration.addItemConfiguration(new EnchantableConfiguration(maxEnchantableLevel));
         }
     }
 
     @Override
     public void convertGliderComponent() {
         if (this.nexoItemSection.getBoolean("Components.glider", false)) {
-            this.craftEngineItemUtils.getComponentsSection().set("minecraft:glider", true);
+            this.craftEngineItemsConfiguration.addItemConfiguration(new GliderConfiguration(true));
         }
     }
 
@@ -535,7 +532,11 @@ public class NexoItemConverter extends ItemConverter {
     public void convertToolTipStyle() {
         String toolTipStyle = this.nexoItemSection.getString("Components.tooltip_style");
         if (isValidString(toolTipStyle)) {
-            this.craftEngineItemUtils.getComponentsSection().set("minecraft:tooltip_style", toolTipStyle);
+            try {
+                this.craftEngineItemsConfiguration.addItemConfiguration(new TooltipStyleConfiguration(NamespacedKey.fromString(toolTipStyle)));
+            } catch (IllegalArgumentException e) {
+                Logger.debug("Unknown tooltip style '" + toolTipStyle + "' for item '" + this.itemId + "'.", LogType.WARNING);
+            }
         }
     }
 
@@ -544,10 +545,14 @@ public class NexoItemConverter extends ItemConverter {
         ConfigurationSection useCooldownSection = this.nexoItemSection.getConfigurationSection("Components.use_cooldown");
         if (useCooldownSection == null) return;
 
-        ConfigurationSection ceUseCooldownSection = this.craftEngineItemUtils.getComponentsSection()
-                .createSection("minecraft:use_cooldown");
-        ceUseCooldownSection.set("seconds", useCooldownSection.getDouble("seconds", 1.0));
-        ceUseCooldownSection.set("cooldown_group", useCooldownSection.getString("group", "default"));
+        if (!useCooldownSection.contains("seconds")) return;
+        float seconds = (float) useCooldownSection.getDouble("seconds", 1.0);
+        if (seconds <= 0) {
+            seconds = 1.0f;
+            Logger.debug("Invalid use_cooldown seconds value '" + seconds + "' for item '" + this.itemId + "'. Defaulting to 1 second.", LogType.WARNING);
+        }
+        String cooldownGroup = useCooldownSection.getString("group");
+        this.craftEngineItemsConfiguration.addItemConfiguration(new UseCooldownConfiguration(seconds, cooldownGroup));
     }
 
     @Override
