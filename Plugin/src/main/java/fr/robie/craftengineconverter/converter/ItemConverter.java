@@ -56,7 +56,7 @@ public abstract class ItemConverter extends ObjectUtils {
         convertCustomData();
         convertJukeboxPlayable();
         convertConsumable();
-        convertEquipable();
+        convertEquippable();
         convertDamageResistance();
         convertEnchantableComponent();
         convertGliderComponent();
@@ -106,7 +106,7 @@ public abstract class ItemConverter extends ObjectUtils {
     public void convertCustomData(){}
     public void convertJukeboxPlayable(){}
     public void convertConsumable(){}
-    public void convertEquipable(){}
+    public void convertEquippable(){}
     public void convertDamageResistance(){}
     public void convertEnchantableComponent(){}
     public void convertGliderComponent(){}

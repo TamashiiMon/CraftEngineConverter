@@ -286,7 +286,7 @@ public class IAItemsConverter extends ItemConverter {
     }
 
     @Override
-    public void convertEquipable() {
+    public void convertEquippable() {
         convertEquipmentSection();
         convertSpecificPropertiesArmorSection();
     }
@@ -301,7 +301,7 @@ public class IAItemsConverter extends ItemConverter {
         assetId = namespaced(assetId, this.namespace);
         EquipmentSlot equipmentSlot = resolveEquipmentSlot(equipmentSection);
 
-        this.craftEngineItemsConfiguration.addItemConfiguration(new EquipableConfiguration(assetId, equipmentSlot));
+        this.craftEngineItemsConfiguration.addItemConfiguration(new EquippableConfiguration(assetId, equipmentSlot));
         applySlotAttributeModifiers(equipmentSection, equipmentSlot);
     }
 
@@ -365,7 +365,7 @@ public class IAItemsConverter extends ItemConverter {
         this.setAssetId(assetId);
 
         EquipmentSlot equipmentSlot = parseEquipmentSlot(armorSection.getString("slot"));
-        this.craftEngineItemsConfiguration.addItemConfiguration(new EquipableConfiguration(assetId, equipmentSlot));
+        this.craftEngineItemsConfiguration.addItemConfiguration(new EquippableConfiguration(assetId, equipmentSlot));
     }
 
     private EquipmentSlot parseEquipmentSlot(String slot) {

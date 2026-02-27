@@ -23,6 +23,7 @@ import fr.robie.craftengineconverter.utils.loots.ItemLoot;
 import fr.robie.craftengineconverter.utils.loots.MinecraftItemLoot;
 import fr.robie.craftengineconverter.utils.manager.InternalTemplateManager;
 import net.momirealms.craftengine.core.attribute.AttributeModifier;
+import net.momirealms.craftengine.core.entity.EquipmentSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -456,57 +457,62 @@ public class NexoItemConverter extends ItemConverter {
     }
 
     @Override
-    public void convertEquipable() {
+    public void convertEquippable() {
         ConfigurationSection equipableSection = this.nexoItemSection.getConfigurationSection("Components.equippable");
         if (equipableSection == null) return;
 
         String assetId = equipableSection.getString("asset_id");
-        ConfigurationSection ceEquipableSection = isValidString(assetId) ? getOrCreateSection(this.craftEngineItemUtils.getSettingsSection(),"equippable") : getOrCreateSection(this.craftEngineItemUtils.getDataSection(),"equippable");
         String slot = equipableSection.getString("slot");
-        if (isValidString(slot)) {
-            ceEquipableSection.set("slot", slot.toLowerCase());
-        }
-        if (isValidString(assetId)) {
-            if (this.craftEngineItemsConfiguration.getMaterial() == Material.ELYTRA){
-                if (assetId.contains(":")) {
-                    assetId = assetId.split(":",2)[1];
-                }
-                for (String keyToCheck : new String[]{"_elytra"}){
-                    if (assetId.endsWith(keyToCheck)){
-                        assetId = assetId.substring(0,assetId.length()-keyToCheck.length());
-                    }
-                }
-                if (!isValidString(slot))
-                    ceEquipableSection.set("slot", "chest");
-            }
-            ceEquipableSection.set("asset-id", assetId);
-            this.setAssetId(assetId);
-        }
-        setIfNotEmpty(ceEquipableSection, "camera-overlay", equipableSection.getString("camera_overlay"));
+        String equipSound = equipableSection.getString("equip_sound", "item.armor.equip_generic");
+        String cameraOverlay = equipableSection.getString("camera_overlay");
         boolean dispensable = equipableSection.getBoolean("dispensable", true);
-        if (!dispensable) {
-            ceEquipableSection.set("dispensable", false);
+        boolean swappable = equipableSection.getBoolean("swappable", true);
+        boolean damageOnHurt = equipableSection.getBoolean("damage_on_hurt", true);
+        boolean equipOnInteract = equipableSection.getBoolean("equip_on_interact", false);
+        boolean canBeSheared = equipableSection.getBoolean("can_be_sheared", false);
+        String shearingSound = equipableSection.getString("shearing_sound", "item.shears.snip");
+
+        Object allowedEntities = null;
+        List<String> allowedEntityTypes = equipableSection.getStringList("allowed_entity_types");
+        if (!allowedEntityTypes.isEmpty()) {
+            allowedEntities = allowedEntityTypes.size() == 1 ? allowedEntityTypes.getFirst() : allowedEntityTypes;
         }
 
-        boolean swappable = equipableSection.getBoolean("swappable", true);
-        if (!swappable) {
-            ceEquipableSection.set("swappable", false);
+        if (isValidString(assetId) && this.craftEngineItemsConfiguration.getMaterial() == Material.ELYTRA) {
+            if (assetId.contains(":")) {
+                assetId = assetId.split(":", 2)[1];
+            }
+            for (String keyToCheck : new String[]{"_elytra"}) {
+                if (assetId.endsWith(keyToCheck)) {
+                    assetId = assetId.substring(0, assetId.length() - keyToCheck.length());
+                }
+            }
+            if (!isValidString(slot)) {
+                slot = "chest";
+            }
         }
-        boolean damageOnHurt = equipableSection.getBoolean("damage_on_hurt", false);
-        if (damageOnHurt) {
-            ceEquipableSection.set("damage-on-hurt", true);
+
+        EquipmentSlot equipmentSlot = null;
+        if (isValidString(slot)) {
+            try {
+                equipmentSlot = EquipmentSlot.valueOf(slot.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                Logger.debug("Unknown equipment slot '" + slot + "' for item '" + this.itemId + "'.", LogType.WARNING);
+            }
         }
+
+        if (isValidString(assetId)) {
+            this.setAssetId(assetId);
+        }
+
+        this.craftEngineItemsConfiguration.addItemConfiguration(new EquippableConfiguration(equipmentSlot, assetId, equipSound, allowedEntities, dispensable, swappable, damageOnHurt, equipOnInteract, cameraOverlay, canBeSheared, shearingSound));
     }
 
     @Override
     public void convertDamageResistance() {
         String damageResistance = this.nexoItemSection.getString("Components.damage_resistant");
         if (isValidString(damageResistance)) {
-            this.craftEngineItemUtils.getComponentsSection().set("minecraft:damage_resistant", damageResistance);
-        }
-        List<String> damageResistances = this.nexoItemSection.getStringList("Components.damage_resistant");
-        if (!damageResistances.isEmpty()) {
-            this.craftEngineItemUtils.getComponentsSection().set("minecraft:damage_resistant", damageResistances);
+            this.craftEngineItemsConfiguration.addItemConfiguration(new DamageResistantConfiguration(damageResistance));
         }
     }
 
