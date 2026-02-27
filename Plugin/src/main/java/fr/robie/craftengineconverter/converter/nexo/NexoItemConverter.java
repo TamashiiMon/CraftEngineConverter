@@ -9,6 +9,7 @@ import fr.robie.craftengineconverter.common.enums.ComponentFlag;
 import fr.robie.craftengineconverter.common.items.*;
 import fr.robie.craftengineconverter.common.logger.LogType;
 import fr.robie.craftengineconverter.common.logger.Logger;
+import fr.robie.craftengineconverter.common.utils.AbstractEffectsConfiguration;
 import fr.robie.craftengineconverter.common.utils.CecAttributeModifier;
 import fr.robie.craftengineconverter.converter.Converter;
 import fr.robie.craftengineconverter.converter.ItemConverter;
@@ -683,67 +684,41 @@ public class NexoItemConverter extends ItemConverter {
     public void convertBlocksAttackComponent() {
         ConfigurationSection nexoBlocksAttacksSection = this.nexoItemSection.getConfigurationSection("Components.blocks_attacks");
         if (isNull(nexoBlocksAttacksSection)) return;
-        ConfigurationSection ceBlocksAttacksSection = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(), "minecraft:blocks_attacks");
+
         double blockDelay = nexoBlocksAttacksSection.getDouble("block_delay", 0);
-        if (blockDelay != 0) {
-            ceBlocksAttacksSection.set("block_delay_seconds",blockDelay);
-        }
         double disableCooldownScale = nexoBlocksAttacksSection.getDouble("disable_cooldown_scale", 1);
-        if (disableCooldownScale != 0) {
-            ceBlocksAttacksSection.set("disable_cooldown_scale",disableCooldownScale);
-        }
         String blockSound = nexoBlocksAttacksSection.getString("block_sound");
-        if (isValidString(blockSound)) {
-            ceBlocksAttacksSection.set("block_sound",blockSound);
-        }
         String disabledSound = nexoBlocksAttacksSection.getString("disabled_sound");
-        if (isValidString(disabledSound)) {
-            ceBlocksAttacksSection.set("disabled_sound",disabledSound);
-        }
         String bypassedBy = nexoBlocksAttacksSection.getString("bypassed_by");
-        if (isValidString(bypassedBy)) {
-            ceBlocksAttacksSection.set("bypassed_by",bypassedBy);
-        }
-        ConfigurationSection ceItemDamageSection = ceBlocksAttacksSection.createSection("item_damage");
-        ceItemDamageSection.set("threshold",nexoBlocksAttacksSection.getDouble("item_damage.threshold",0));
-        ceItemDamageSection.set("base",nexoBlocksAttacksSection.getDouble("item_damage.base",0));
-        ceItemDamageSection.set("factor",nexoBlocksAttacksSection.getDouble("item_damage.factor",0));
-        var damageReductionsArray = nexoBlocksAttacksSection.getMapList("damage_reductions");
-        if (!damageReductionsArray.isEmpty()) {
-            List<Map<String,Object>> ceDamageReductionArray = new ArrayList<>();
-            for (var damageReductionMap : damageReductionsArray){
-                Map<String,Object> ceDamageReductionMap = new HashMap<>();
-                Object base = damageReductionMap.get("base");
-                if (isNotNull(base) && base instanceof Double baseDouble){
-                    ceDamageReductionMap.put("base",baseDouble);
-                }
-                Object factor = damageReductionMap.get("factor");
-                if (isNotNull(factor) && factor instanceof Double factorDouble){
-                    ceDamageReductionMap.put("factor",factorDouble);
-                }
-                Object horizontalBlockingAngle = damageReductionMap.get("horizontal_blocking");
-                if (isNotNull(horizontalBlockingAngle) && horizontalBlockingAngle instanceof Double horizontalBlockingAngleDouble){
-                    ceDamageReductionMap.put("horizontal_blocking_angle",horizontalBlockingAngleDouble);
-                } else {
-                    ceDamageReductionMap.put("horizontal_blocking_angle",90);
-                }
-                List<String> ceTypes = new ArrayList<>();
-                Object objects = damageReductionMap.get("types");
-                if (isNotNull(objects)) {
-                    if (objects instanceof List<?> nexoTypesString){
-                        ceTypes.addAll((List<String>) nexoTypesString);
-                    } else if (objects instanceof String nexoTypeString){
-                        ceTypes.add(nexoTypeString);
-                    }
-                }
-                if (!ceTypes.isEmpty()){
-                    ceDamageReductionMap.put("type",ceTypes);
-                    ceDamageReductionArray.add(ceDamageReductionMap);
-                }
+
+        BlocksAttacksConfiguration.ItemDamage itemDamage = new BlocksAttacksConfiguration.ItemDamage(
+                nexoBlocksAttacksSection.getDouble("item_damage.threshold", 0),
+                nexoBlocksAttacksSection.getDouble("item_damage.base", 0),
+                nexoBlocksAttacksSection.getDouble("item_damage.factor", 1.5)
+        );
+
+        List<BlocksAttacksConfiguration.DamageReduction> damageReductions = new ArrayList<>();
+        for (var dr : nexoBlocksAttacksSection.getMapList("damage_reductions")) {
+            Object baseObj = dr.get("base");
+            Object factorObj = dr.get("factor");
+            if (!(baseObj instanceof Double base) || !(factorObj instanceof Double factor)) continue;
+
+            double horizontalBlockingAngle = 90;
+            Object angleObj = dr.get("horizontal_blocking");
+            if (angleObj instanceof Double angleDouble) horizontalBlockingAngle = angleDouble;
+
+            List<String> types = new ArrayList<>();
+            Object typesObj = dr.get("types");
+            if (typesObj instanceof List<?> list) {
+                types.addAll((List<String>) list);
+            } else if (typesObj instanceof String str) {
+                types.add(str);
             }
-            ceItemDamageSection.set("damage_reductions",ceDamageReductionArray);
+
+            damageReductions.add(new BlocksAttacksConfiguration.DamageReduction(base, factor, horizontalBlockingAngle, types));
         }
 
+        this.craftEngineItemsConfiguration.addItemConfiguration(new BlocksAttacksConfiguration(blockDelay, disableCooldownScale, blockSound, disabledSound, bypassedBy, itemDamage, damageReductions));
     }
 
     @Override
@@ -760,38 +735,31 @@ public class NexoItemConverter extends ItemConverter {
         ConfigurationSection nexoSection = this.nexoItemSection.getConfigurationSection("Components." + componentName);
         if (isNull(nexoSection)) return;
 
-
-        List<Map<String,Object>> predicateItems = new ArrayList<>();
         List<String> blockArray = new ArrayList<>();
         List<String> tagsArray = new ArrayList<>();
 
         String block = nexoSection.getString("block");
-        if (isValidString(block)) {
-            processBlockOrTag(block, blockArray, tagsArray);
+        if (isValidString(block)) processBlockOrTag(block, blockArray, tagsArray);
+
+        for (String blockItem : nexoSection.getStringList("blocks")) {
+            if (isValidString(blockItem)) processBlockOrTag(blockItem, blockArray, tagsArray);
         }
 
-        List<String> blocks = nexoSection.getStringList("blocks");
-        for (String blockItem : blocks) {
-            if (!isValidString(blockItem)) continue;
-            processBlockOrTag(blockItem, blockArray, tagsArray);
-        }
+        List<BlockPredicateConfiguration.BlockPredicate> predicates = new ArrayList<>();
 
-        if (!blockArray.isEmpty()) {
-            Map<String, Object> blocksMap = new HashMap<>();
-            blocksMap.put("blocks", blockArray);
-            predicateItems.add(blocksMap);
-        }
+        if (!blockArray.isEmpty())
+            predicates.add(new BlockPredicateConfiguration.BlockPredicate(blockArray));
 
-        for (String tag : tagsArray) {
-            Map<String, Object> tagMap = new HashMap<>();
-            tagMap.put("blocks", tag);
-            predicateItems.add(tagMap);
-        }
+        for (String tag : tagsArray)
+            predicates.add(new BlockPredicateConfiguration.BlockPredicate(tag));
 
-        if (!predicateItems.isEmpty()) {
-            ConfigurationSection predicate = getOrCreateSection(this.craftEngineItemUtils.getComponentsSection(), "minecraft:" + componentName);
-            predicate.set("predicates", predicateItems);
-        }
+        if (predicates.isEmpty()) return;
+
+        BlockPredicateConfiguration.Type type = componentName.equals("can_place_on")
+                ? BlockPredicateConfiguration.Type.CAN_PLACE_ON
+                : BlockPredicateConfiguration.Type.CAN_BREAK;
+
+        this.craftEngineItemsConfiguration.addItemConfiguration(new BlockPredicateConfiguration(type, predicates));
     }
 
     private void processBlockOrTag(String input, List<String> blockArray, List<String> tagsArray) {
@@ -813,7 +781,6 @@ public class NexoItemConverter extends ItemConverter {
             tagsArray.add(normalized);
         }
     }
-
 
     @Override
     public void convertOversizedInGui() {

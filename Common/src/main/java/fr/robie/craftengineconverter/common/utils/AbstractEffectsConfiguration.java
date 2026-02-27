@@ -1,6 +1,4 @@
-package fr.robie.craftengineconverter.common.items;
-
-import fr.robie.craftengineconverter.common.utils.ItemConfigurationSerializable;
+package fr.robie.craftengineconverter.common.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
