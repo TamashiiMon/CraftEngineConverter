@@ -344,7 +344,7 @@ public class NexoItemConverter extends ItemConverter {
                 }
 
                 if (ceRulesList.isEmpty()) {
-                    Logger.info("No valid blocks found for tool rules in item '" + this.itemId + "'. Skipping tool rules conversion.", LogType.WARNING);
+                    Logger.info(Message.WARNING__CONVERTER__NEXO__TOOL__NO_BLOCKS_FOUND, "item", this.itemId);
                 }
             }
 
@@ -482,7 +482,7 @@ public class NexoItemConverter extends ItemConverter {
             try {
                 equipmentSlot = EquipmentSlot.valueOf(slot.toUpperCase());
             } catch (IllegalArgumentException e) {
-                Logger.debug("Unknown equipment slot '" + slot + "' for item '" + this.itemId + "'.", LogType.WARNING);
+                Logger.debug(Message.WARNING__CONVERTER__NEXO__EQUIPPABLE__UNKNOWN_SLOT, LogType.WARNING, "slot", slot, "item", this.itemId);
             }
         }
 
@@ -523,7 +523,7 @@ public class NexoItemConverter extends ItemConverter {
             try {
                 this.craftEngineItemsConfiguration.addItemConfiguration(new TooltipStyleConfiguration(NamespacedKey.fromString(toolTipStyle)));
             } catch (IllegalArgumentException e) {
-                Logger.debug("Unknown tooltip style '" + toolTipStyle + "' for item '" + this.itemId + "'.", LogType.WARNING);
+                Logger.debug(Message.WARNING__CONVERTER__NEXO__TOOLTIP_STYLE__UNKNOWN_STYLE, LogType.WARNING, "style", toolTipStyle, "item", this.itemId);
             }
         }
     }
@@ -537,7 +537,7 @@ public class NexoItemConverter extends ItemConverter {
         float seconds = (float) useCooldownSection.getDouble("seconds", 1.0);
         if (seconds <= 0) {
             seconds = 1.0f;
-            Logger.debug("Invalid use_cooldown seconds value '" + seconds + "' for item '" + this.itemId + "'. Defaulting to 1 second.", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__USE_COOLDOWN__INVALID_SECONDS, LogType.WARNING, "seconds", seconds, "item", this.itemId);
         }
         String cooldownGroup = useCooldownSection.getString("group");
         this.craftEngineItemsConfiguration.addItemConfiguration(new UseCooldownConfiguration(seconds, cooldownGroup));
@@ -836,14 +836,14 @@ public class NexoItemConverter extends ItemConverter {
                         minReach = Double.parseDouble(parts[0].trim());
                         maxReach = Double.parseDouble(parts[1].trim());
                     } catch (NumberFormatException e) {
-                        Logger.debug("Invalid reach format '" + reach + "' for item '" + this.itemId + "'. Using defaults.", LogType.WARNING);
+                        Logger.debug(Message.WARNING__CONVERTER__NEXO__ATTACK_RANGE__INVALID_REACH_FORMAT, LogType.WARNING, "reach", reach, "item", this.itemId);
                     }
                 }
             } else {
                 try {
                     maxReach = Double.parseDouble(reach.trim());
                 } catch (NumberFormatException e) {
-                    Logger.debug("Invalid reach value '" + reach + "' for item '" + this.itemId + "'. Using defaults.", LogType.WARNING);
+                    Logger.debug(Message.WARNING__CONVERTER__NEXO__ATTACK_RANGE__INVALID_REACH_VALUE, LogType.WARNING, "reach", reach, "item", this.itemId);
                 }
             }
         }
@@ -872,13 +872,13 @@ public class NexoItemConverter extends ItemConverter {
                     swingAnimationSection.getString("type", "whack").toUpperCase()
             );
         } catch (IllegalArgumentException e) {
-            Logger.debug("Invalid type value for swing_animation in item '" + this.itemId + "'. Using default (whack).", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__SWING_ANIMATION__INVALID_TYPE, LogType.WARNING, "item", this.itemId);
             type = SwingAnimationConfiguration.AnimationType.WHACK;
         }
 
         long durationTicks = TimerBuilder.parseTimeToTicks(swingAnimationSection.getString("duration", "6t"));
         if (durationTicks <= 0) {
-            Logger.debug("Invalid duration value '" + durationTicks + "' for swing_animation in item '" + this.itemId + "'. Must be positive. Using default (6).", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__SWING_ANIMATION__INVALID_DURATION, LogType.WARNING, "duration", durationTicks, "item", this.itemId);
             durationTicks = 6;
         }
 
@@ -1115,7 +1115,7 @@ public class NexoItemConverter extends ItemConverter {
 
         modelPath = cleanPath(modelPath);
         if (isNull(modelPath)) {
-            Logger.debug("Failed to process model path for item '" + this.itemId + "'. Skipping texture conversion.", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__MODEL__PROCESS_FAILURE, LogType.WARNING, "item", this.itemId);
             return;
         }
 
@@ -1126,7 +1126,7 @@ public class NexoItemConverter extends ItemConverter {
 
         String namespacedPath = namespaced(modelPath);
         if (isNull(namespacedPath)) {
-            Logger.debug("Failed to namespace model path for item '" + this.itemId + "'. Skipping texture conversion.", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__MODEL__NAMESPACE_FAILURE, LogType.WARNING, "item", this.itemId);
             return;
         }
         Map<String, Object> parsedTemplate = InternalTemplateManager.parseTemplate(Template.MODEL_ITEM_DEFAULT, "%model_path%", namespacedPath);
@@ -1219,7 +1219,7 @@ public class NexoItemConverter extends ItemConverter {
             case "block/cube_top" -> buildCubeTopModel(packSection);
             case "item/handheld" -> buildGeneratedModel(packSection, "minecraft:item/handheld", Template.MODEL_ITEM_HANDHELD);
 
-            default -> Logger.info(parentModel+" parent_model for item '"+this.itemId+"' is not supported yet. Skipping texture conversion. Please report to the developer to add support for this parent_model.", LogType.WARNING);
+            default -> Logger.info(Message.WARNING__CONVERTER__NEXO__MODEL__PARENT_NOT_SUPPORTED, LogType.WARNING, "parent", parentModel, "item", this.itemId);
         }
     }
 
@@ -1242,7 +1242,7 @@ public class NexoItemConverter extends ItemConverter {
                 generalSection.createSection("model", parsedTemplate);
             }
         } else {
-            Logger.debug("No texture path found for item '" + this.itemId + "' despite parent_model being '" + parent + "'. Skipping texture conversion.", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__MODEL__GENERATED__MISSING_TEXTURE, LogType.WARNING, "item", this.itemId, "parent", parent);
         }
 
     }
@@ -1263,10 +1263,10 @@ public class NexoItemConverter extends ItemConverter {
                 ConfigurationSection ceModelSection = this.craftEngineItemUtils.getGeneralSection().createSection("model");
                 ceModelSection.set("path", modelPath);
             } else {
-                Logger.debug("Failed to process textures for item '" + this.itemId + "'. Skipping texture conversion.", LogType.WARNING);
+                Logger.debug(Message.WARNING__CONVERTER__NEXO__MODEL__CUBE_TOP__PROCESS_FAILURE, LogType.WARNING, "item", this.itemId);
             }
         } else {
-            Logger.debug("Missing side or top texture for item '" + this.itemId + "' despite parent_model being 'block/cube_top'. Skipping texture conversion.", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__MODEL__CUBE_TOP__MISSING_TEXTURE, LogType.WARNING, "item", this.itemId);
         }
     }
 
@@ -1316,7 +1316,7 @@ public class NexoItemConverter extends ItemConverter {
         if (isNotNull(baseModel) && isNotNull(pulling0) && isNotNull(pulling1) && isNotNull(pulling2)) {
             this.craftEngineItemUtils.getGeneralSection().createSection("model",InternalTemplateManager.parseTemplate(Template.MODEL_3D_BOW, "%default_model_path%",baseModel,"%pulling_0_model_path%",pulling0,"%pulling_1_model_path%",pulling1,"%pulling_2_model_path%",pulling2));
         } else {
-            Logger.debug("Failed to process bow model paths for item '" + this.itemId + "'. Skipping bow model conversion.", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__MODEL__BOW__PROCESS_FAILURE, LogType.WARNING, "item", this.itemId);
         }
     }
 
@@ -1333,7 +1333,7 @@ public class NexoItemConverter extends ItemConverter {
         if (isNotNull(baseModel) && isNotNull(pulling0) && isNotNull(pulling1) && isNotNull(pulling2)){
             this.craftEngineItemUtils.getGeneralSection().createSection("model",InternalTemplateManager.parseTemplate(Template.MODEL_3D_CROSSBOW,"%charged_arrow_model_path%",arrowModel==null?pulling2:arrowModel,"%charged_rocket_model_path%",fireworkModel==null?pulling2:fireworkModel,"%default_model_path%",baseModel,"%pulling_0_model_path%",pulling0,"%pulling_1_model_path%",pulling1,"%pulling_2_model_path%",pulling2));
         } else {
-            Logger.debug("Failed to process crossbow model paths for item '" + this.itemId + "'. Skipping crossbow model conversion.", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__MODEL__CROSSBOW__PROCESS_FAILURE, LogType.WARNING, "item", this.itemId);
         }
     }
 
@@ -1449,7 +1449,7 @@ public class NexoItemConverter extends ItemConverter {
                     BlockData blockData = Bukkit.createBlockData(Material.NOTE_BLOCK, dataString);
                     BlockStatesMapper.getInstance().storeMapping(this.getConverter().getPluginType(), blockData, this.itemId);
                 } catch (IllegalArgumentException e) {
-                    Logger.debug("Failed to create BlockData for custom_variation '" + customVariation + "' for custom block item '" + this.itemId + "'. Skipping custom_variation conversion.", LogType.WARNING);
+                    Logger.debug(Message.WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__BLOCK_DATA_FAILURE, LogType.WARNING, "variation", customVariation, "item", this.itemId);
                     e.printStackTrace();
                 }
             }
@@ -1489,11 +1489,11 @@ public class NexoItemConverter extends ItemConverter {
         }
         ConfigurationSection nexoSaplingSection = nexoCustomBlockSection.getConfigurationSection("sapling");
         if (isNotNull(nexoSaplingSection)){
-            Logger.debug("Sapling behavior conversion for custom block item '"+this.itemId+"' is not supported yet. Skipping sapling behavior.", LogType.WARNING);
+            Logger.debug(Message.WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__SAPLING_NOT_SUPPORTED, LogType.WARNING, "item", this.itemId);
             // TODO implement sapling behavior conversion
             boolean growsNaturally = nexoSaplingSection.getBoolean("grows_naturally",true);
             if (!growsNaturally){
-                Logger.info("CraftEngine only supports naturally growing saplings. The sapling for custom block item '"+this.itemId+"' will grow naturally.", LogType.INFO);
+                Logger.info(Message.WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__SAPLING_NATURAL_ONLY, LogType.INFO, "item", this.itemId);
             }
         }
         ConfigurationSection nexoDropSection = nexoCustomBlockSection.getConfigurationSection("drop");
@@ -1507,7 +1507,7 @@ public class NexoItemConverter extends ItemConverter {
                 try {
                     nexoMinimalType = NexoMinimalType.valueOf(minimalType.toUpperCase());
                 } catch (IllegalArgumentException e){
-                    Logger.debug("Unknown minimal_type '"+minimalType+"' for custom block item '"+this.itemId+"'. Skipping minimal_type conversion.", LogType.WARNING);
+                    Logger.debug(Message.WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__UNKNOWN_MINIMAL_TYPE, LogType.WARNING, "type", minimalType, "item", this.itemId);
                 }
                 if (isNotNull(nexoMinimalType)){
                     ConfigurationSection ceBlockSettings = getOrCreateSection(ceBlockSection, "settings");
@@ -1520,7 +1520,7 @@ public class NexoItemConverter extends ItemConverter {
                 try {
                     nexoBestTool = NexoBestTool.valueOf(bestTool.toUpperCase());
                 } catch (IllegalArgumentException e){
-                    Logger.debug("Unknown best_tool '"+bestTool+"' for custom block item '"+this.itemId+"'. Skipping best_tool conversion.", LogType.WARNING);
+                    Logger.debug(Message.WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__UNKNOWN_BEST_TOOL, LogType.WARNING, "tool", bestTool, "item", this.itemId);
                 }
                 if (isNotNull(nexoBestTool)){
                     ConfigurationSection ceBlockSettings = getOrCreateSection(ceBlockSection, "settings");

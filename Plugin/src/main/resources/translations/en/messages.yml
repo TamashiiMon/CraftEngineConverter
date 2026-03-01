@@ -105,6 +105,64 @@ warning:
   folder:
     delete-failure: "Failed to delete folder §e%folder% (%path%)§c!"
 
+  converter:
+    nexo:
+      tool:
+        no-blocks-found: "No valid blocks found for tool rules in item §e%item%§c. Skipping tool rules conversion."
+      equippable:
+        unknown-slot: "Unknown equipment slot §e%slot%§c for item §e%item%§c."
+      tooltip-style:
+        unknown-style: "Unknown tooltip style §e%style%§c for item §e%item%§c."
+      use-cooldown:
+        invalid-seconds: "Invalid use_cooldown seconds value §e%seconds%§c for item §e%item%§c. Defaulting to 1 second."
+      attack-range:
+        invalid-reach-format: "Invalid reach format §e%reach%§c for item §e%item%§c. Using defaults."
+        invalid-reach-value: "Invalid reach value §e%reach%§c for item §e%item%§c. Using defaults."
+      swing-animation:
+        invalid-type: "Invalid type value for swing_animation in item §e%item%§c. Using default (whack)."
+        invalid-duration: "Invalid duration value §e%duration%§c for swing_animation in item §e%item%§c. Must be positive. Using default (6)."
+      model:
+        process-failure: "Failed to process model path for item §e%item%§c. Skipping texture conversion."
+        namespace-failure: "Failed to namespace model path for item §e%item%§c. Skipping texture conversion."
+        parent-not-supported: "§e%parent%§c parent_model for item §e%item%§c is not supported yet. Skipping texture conversion. Please report to the developer to add support for this parent_model."
+        generated:
+          missing-texture: "No texture path found for item §e%item%§c despite parent_model being §e%parent%§c. Skipping texture conversion."
+        cube-top:
+          process-failure: "Failed to process textures for item §e%item%§c. Skipping texture conversion."
+          missing-texture: "Missing side or top texture for item §e%item%§c despite parent_model being 'block/cube_top'. Skipping texture conversion."
+        bow:
+          process-failure: "Failed to process bow model paths for item §e%item%§c. Skipping bow model conversion."
+        crossbow:
+          process-failure: "Failed to process crossbow model paths for item §e%item%§c. Skipping crossbow model conversion."
+      custom-block:
+        sapling-not-supported: "Sapling behavior conversion for custom block item §e%item%§c is not supported yet. Skipping sapling behavior."
+        block-data-failure: "Failed to create BlockData for custom_variation §e%variation%§c for custom block item §e%item%§c. Skipping custom_variation conversion."
+        unknown-minimal-type: "Unknown minimal_type §e%type%§c for custom block item §e%item%§c. Skipping minimal_type conversion."
+        unknown-best-tool: "Unknown best_tool §e%tool%§c for custom block item §e%item%§c. Skipping best_tool conversion."
+        sapling-natural-only: "CraftEngine only supports naturally growing saplings. The sapling for custom block item §e%item%§c will grow naturally."
+    ia:
+      items:
+        no-section: "No 'items' section found in: §e%file%§c"
+        skipped-no-section: "Skipped item (no section): §e%item%§c in file: §e%file%§c"
+      images:
+        none-found: "No ItemsAdder font images found to convert"
+      languages:
+        none-found: "No ItemsAdder language files found to convert"
+      sounds:
+        no-section: "No 'sounds' section found in: §e%file%§c"
+        skipped-no-section: "Skipped sound (no section): §e%sound%§c in file: §e%file%§c"
+      recipes:
+        no-section: "No 'recipes' section found in: §e%file%§c"
+        skipped-unknown-type: "Skipped recipe (unknown type): §e%type%§c for recipe: §e%recipe%§c in file: §e%file%§c"
+        skipped-no-section: "Skipped recipe (no section): §e%recipe%§c in file: §e%file%§c"
+        anvil-repair-not-implemented: "Anvil Repair recipe conversion not implemented yet for recipe: §e%recipe%§c"
+        unsupported-type: "Unsupported recipe type: §e%type%§c for recipe: §e%recipe%§c"
+        unknown-machine-type: "Unknown machine type: §e%machine%§c for recipe: §e%recipe%§c"
+        smithing-missing-base: "Missing required 'base' for smithing recipe: §e%recipe%§c in file: §e%file%§c"
+        unknown-item-reference: "Unknown ItemsAdder item: §e%item%§c for recipe: §e%recipe%§c in file: §e%file%§c"
+        item-reference-conversion-failure: "Could not convert item reference: §e%item%§c for recipe: §e%recipe%§c in file: §e%file%§c"
+      furniture:
+        unknown-display-transform: "§cUnknown furniture display transform type §e%transform%§c for item §e%item%§c."
   furniture:
     invalid-seat-format: "§cInvalid seat format for furniture item §e%item%§c, expected 3 comma-separated float values but got §e%value%§c. Defaulting to (0,0,0)."
     unknown-display-transform: "§cUnknown display_transform §e%transform%§c for furniture item §e%item%§c, defaulting to NONE."
@@ -125,11 +183,30 @@ warning:
     invalid-barrier-range: "§cInvalid range §e%range%§c in barrier entry §e%entry%§c."
     non-numeric-barrier-range-bounds: "§cNon-numeric range bounds §e%range%§c in barrier entry §e%entry%§c."
     non-numeric-barrier-value: "§cNon-numeric value §e%value%§c in barrier entry §e%entry%§c."
-  ia:
-    furniture:
-      unknown-display-transform: "§cUnknown furniture display transform type §e%transform%§c for item §e%item%§c."
 
 error:
+  converter:
+    invalid-glow-drop-color: "[%converter%] §c'%color%' is not a valid glow drop color for item §e%item%§c. Allowed colors: §e%valid_colors%§c"
+    ia:
+      contents-folder-not-found: "ItemsAdder contents folder not found: §e%path%§c"
+      output-folder-creation-failed: "Failed to create output folder: §e%path%§c"
+      item-conversion-exception: "An error occurred during ItemsAdder item conversion"
+      items:
+        conversion-failure: "Failed to convert ItemsAdder item: §e%item%§c in file: §e%file%§c"
+      languages:
+        count-failure: "Failed to count entries in: §e%file%§c"
+        conversion-exception: "An error occurred during ItemsAdder language conversion"
+        key-conversion-failure: "Failed to convert ItemsAdder translation key: §e%key%§c for language: §e%lang%§c in file: §e%file%§c"
+        file-conversion-failure: "Failed to convert ItemsAdder language file: §e%file%§c"
+      images:
+        conversion-exception: "An error occurred during ItemsAdder font image conversion"
+      sounds:
+        conversion-failure: "Failed to convert ItemsAdder sound: §e%sound%§c in file: §e%file%§c"
+        conversion-exception: "An error occurred during ItemsAdder sound conversion"
+      recipes:
+        conversion-exception: "An error occurred during ItemsAdder recipe conversion"
+        conversion-failure: "Failed to convert ItemsAdder recipe: §e%recipe%§c in file: §e%file%§c"
+
   mkdir-failure: "Failed to create directory §e%directory% (%path%)§c!"
   file-operations:
     timeout: "Timeout waiting for file operations to complete"
@@ -137,3 +214,5 @@ error:
   file:
     copy-exception: "An error occurred while copying file §e%file%§c: §e%message%§c"
     load-failure: "Unable to load file '%file%': file not found or invalid YAML format"
+  pack-conversion:
+    exception: "An error occurred during pack conversion for plugin §e%plugin%§c"

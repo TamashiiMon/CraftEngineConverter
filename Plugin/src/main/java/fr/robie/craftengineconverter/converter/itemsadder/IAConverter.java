@@ -46,7 +46,7 @@ public class IAConverter extends Converter {
         File inputFolder = new File("plugins/"+this.converterName+"/contents");
         File outputFolder = new File(this.plugin.getDataFolder(), "converted/"+converterName+"/CraftEngine/resources/craftengineconverter/configuration/items");
         if (!inputFolder.exists() || !inputFolder.isDirectory()) {
-            Logger.debug("ItemsAdder contents folder not found: " + inputFolder.getAbsolutePath());
+            Logger.debug(Message.ERROR__CONVERTER__IA__CONTENTS_FOLDER_NOT_FOUND, "path", inputFolder.getAbsolutePath());
             return;
         }
 
@@ -55,7 +55,7 @@ public class IAConverter extends Converter {
         }
 
         if (!outputFolder.mkdirs()) {
-            Logger.debug("Failed to create output folder: " + outputFolder.getAbsolutePath(), LogType.ERROR);
+            Logger.debug(Message.ERROR__CONVERTER__IA__OUTPUT_FOLDER_CREATION_FAILED, LogType.ERROR, "path", outputFolder.getAbsolutePath());
             return;
         }
 
@@ -75,7 +75,7 @@ public class IAConverter extends Converter {
         try {
             processItemFiles(toConvert, outputFolder, progressBar);
         } catch (Exception e) {
-            Logger.showException("An error occurred during ItemsAdder item conversion", e);
+            Logger.showException(Message.ERROR__CONVERTER__IA__ITEM_CONVERSION_EXCEPTION, e);
         } finally {
             progressBar.stop();
         }
@@ -99,7 +99,7 @@ public class IAConverter extends Converter {
         ConfigurationSection items = convertedConfig.createSection("items");
         ConfigurationSection originalItems = config.getConfigurationSection("items");
         if (isNull(originalItems)) {
-            Logger.debug("[ItemsAdderConverter] No 'items' section found in: " + fileName);
+            Logger.debug(Message.WARNING__CONVERTER__IA__ITEMS__NO_SECTION, "file", fileName);
             return;
         }
 
@@ -107,7 +107,7 @@ public class IAConverter extends Converter {
         for (String itemId : originalItems.getKeys(false)) {
             ConfigurationSection section = originalItems.getConfigurationSection(itemId);
             if (isNull(section)) {
-                Logger.debug("[ItemsAdderConverter] Skipped item (no section): " + itemId + " in file: " + fileName);
+                Logger.debug(Message.WARNING__CONVERTER__IA__ITEMS__SKIPPED_NO_SECTION, "item", itemId, "file", fileName);
                 progressBar.increment();
                 continue;
             }
@@ -131,7 +131,7 @@ public class IAConverter extends Converter {
                 pluginNameMapper.storeMapping(Plugins.ITEMS_ADDER, itemId, finalItemId);
                 pluginNameMapper.storeMapping(Plugins.ITEMS_ADDER, finalItemId, finalItemId);
             } catch (Exception e) {
-                Logger.showException("Failed to convert ItemsAdder item: " + itemId + " in file: " + fileName, e);
+                Logger.showException(Message.ERROR__CONVERTER__IA__ITEMS__CONVERSION_FAILURE, e, "item", itemId, "file", fileName);
             }
             progressBar.increment();
         }
@@ -208,7 +208,7 @@ public class IAConverter extends Converter {
         File inputFolder = new File("plugins/"+this.converterName+"/contents");
         File outputBase = new File(this.plugin.getDataFolder(), "converted/" + converterName + "/CraftEngine/resources/craftengineconverter/configuration/images");
         if (!inputFolder.exists() || !inputFolder.isDirectory()) {
-            Logger.debug("ItemsAdder contents folder not found: " + inputFolder.getAbsolutePath());
+            Logger.debug(Message.ERROR__CONVERTER__IA__CONTENTS_FOLDER_NOT_FOUND, "path", inputFolder.getAbsolutePath());
             return;
         }
 
@@ -216,7 +216,7 @@ public class IAConverter extends Converter {
             deleteDirectory(outputBase);
         }
         if (!outputBase.mkdirs()) {
-            Logger.debug("Failed to create output folder: " + outputBase.getAbsolutePath(), LogType.ERROR);
+            Logger.debug(Message.ERROR__CONVERTER__IA__OUTPUT_FOLDER_CREATION_FAILED, LogType.ERROR, "path", outputBase.getAbsolutePath());
             return;
         }
 
@@ -225,7 +225,7 @@ public class IAConverter extends Converter {
         int totalFontImage = populateQueueIA(inputFolder, inputFolder, toConvert, "font_images");
 
         if (toConvert.isEmpty()) {
-            Logger.debug("No ItemsAdder font images found to convert");
+            Logger.debug(Message.WARNING__CONVERTER__IA__IMAGES__NONE_FOUND);
             return;
         }
 
@@ -239,7 +239,7 @@ public class IAConverter extends Converter {
                 convertFontImageFile(configFile, outputBase, progressBar);
             }
         } catch (Exception e) {
-            Logger.showException("An error occurred during ItemsAdder font image conversion", e);
+            Logger.showException(Message.ERROR__CONVERTER__IA__IMAGES__CONVERSION_EXCEPTION, e);
         } finally {
             progressBar.stop();
         }
@@ -300,7 +300,7 @@ public class IAConverter extends Converter {
         File outputFolder = new File(this.plugin.getDataFolder(), "converted/"+converterName+"/CraftEngine/resources/craftengineconverter/configuration/languages/languages.yml");
 
         if (!inputFolder.exists() || !inputFolder.isDirectory()) {
-            Logger.debug("ItemsAdder contents folder not found: " + inputFolder.getAbsolutePath());
+            Logger.debug(Message.ERROR__CONVERTER__IA__CONTENTS_FOLDER_NOT_FOUND, "path", inputFolder.getAbsolutePath());
             return;
         }
 
@@ -308,7 +308,7 @@ public class IAConverter extends Converter {
         populateQueueIA(inputFolder, inputFolder, toConvert, "minecraft_lang_overwrite");
 
         if (toConvert.isEmpty()) {
-            Logger.debug("No ItemsAdder language files found to convert");
+            Logger.debug(Message.WARNING__CONVERTER__IA__LANGUAGES__NONE_FOUND);
             return;
         }
 
@@ -330,12 +330,12 @@ public class IAConverter extends Converter {
                     }
                 }
             } catch (Exception e) {
-                Logger.debug("Failed to count entries in: " + configFile.sourceFile().getName(), LogType.ERROR);
+                Logger.debug(Message.ERROR__CONVERTER__IA__LANGUAGES__COUNT_FAILURE, LogType.ERROR, "file", configFile.sourceFile().getName());
             }
         }
 
         if (totalEntries == 0) {
-            Logger.info("No translations found in ItemsAdder files.");
+            Logger.info(Message.INFO__IA__LANGUAGES__NONE_FOUND);
             return;
         }
 
@@ -358,7 +358,7 @@ public class IAConverter extends Converter {
                 }
             }
         } catch (Exception e) {
-            Logger.showException("An error occurred during ItemsAdder language conversion", e);
+            Logger.showException(Message.ERROR__CONVERTER__IA__LANGUAGES__CONVERSION_EXCEPTION, e);
         } finally {
             progressBar.stop();
         }
@@ -388,15 +388,14 @@ public class IAConverter extends Converter {
                             String translationKey = "translations\\n" + ceLangKey + "\\n" + entry.getKey();
                             ceTranslation.addData(translationKey, entry.getValue(), "\\n");
                         } catch (Exception e) {
-                            Logger.debug("Failed to convert ItemsAdder translation key: " + entry.getKey()
-                                    + " for language: " + ceLangKey + " in file: " + configFile.sourceFile().getName(), LogType.ERROR);
+                            Logger.debug(Message.ERROR__CONVERTER__IA__LANGUAGES__KEY_CONVERSION_FAILURE, LogType.ERROR, "key", entry.getKey(), "lang", ceLangKey, "file", configFile.sourceFile().getName());
                         }
                         progressBar.increment();
                     }
                 }
             }
         } catch (Exception e) {
-            Logger.showException("Failed to convert ItemsAdder language file: " + configFile.sourceFile().getName(), e);
+            Logger.showException(Message.ERROR__CONVERTER__IA__LANGUAGES__FILE_CONVERSION_FAILURE, e, "file", configFile.sourceFile().getName());
         }
     }
 
@@ -409,7 +408,7 @@ public class IAConverter extends Converter {
         File inputFolder = new File("plugins/"+this.converterName+"/contents");
         File outputFolder = new File(this.plugin.getDataFolder(), "converted/"+converterName+"/CraftEngine/resources/craftengineconverter/configuration/sounds");
         if (!inputFolder.exists() || !inputFolder.isDirectory()) {
-            Logger.debug("ItemsAdder contents folder not found: " + inputFolder.getAbsolutePath());
+            Logger.debug(Message.ERROR__CONVERTER__IA__CONTENTS_FOLDER_NOT_FOUND, "path", inputFolder.getAbsolutePath());
             return;
         }
 
@@ -418,7 +417,7 @@ public class IAConverter extends Converter {
         }
 
         if (!outputFolder.mkdirs()) {
-            Logger.debug("Failed to create output folder: " + outputFolder.getAbsolutePath(), LogType.ERROR);
+            Logger.debug(Message.ERROR__CONVERTER__IA__OUTPUT_FOLDER_CREATION_FAILED, LogType.ERROR, "path", outputFolder.getAbsolutePath());
             return;
         }
 
@@ -438,7 +437,7 @@ public class IAConverter extends Converter {
                 convertSoundsFile(configFile, outputFolder, progressBar);
             }
         } catch (Exception e) {
-            Logger.showException("An error occurred during ItemsAdder sound conversion", e);
+            Logger.showException(Message.ERROR__CONVERTER__IA__SOUNDS__CONVERSION_EXCEPTION, e);
         } finally {
             progressBar.stop();
         }
@@ -455,14 +454,14 @@ public class IAConverter extends Converter {
         ConfigurationSection sounds = convertedConfig.createSection("sounds");
         ConfigurationSection originalSounds = config.getConfigurationSection("sounds");
         if (isNull(originalSounds)) {
-            Logger.debug("[ItemsAdderConverter] No 'sounds' section found in: " + fileName);
+            Logger.debug(Message.WARNING__CONVERTER__IA__SOUNDS__NO_SECTION, "file", fileName);
             return;
         }
 
         for (String soundId : originalSounds.getKeys(false)){
             ConfigurationSection section = originalSounds.getConfigurationSection(soundId);
             if (isNull(section)){
-                Logger.debug("[ItemsAdderConverter] Skipped sound (no section): " + soundId + " in file: " + fileName);
+                Logger.debug(Message.WARNING__CONVERTER__IA__SOUNDS__SKIPPED_NO_SECTION, "sound", soundId, "file", fileName);
                 progressBar.increment();
                 continue;
             }
@@ -488,7 +487,7 @@ public class IAConverter extends Converter {
                     }
                 }
             } catch (Exception e) {
-                Logger.showException("Failed to convert ItemsAdder sound: " + soundId + " in file: " + fileName, e);
+                Logger.showException(Message.ERROR__CONVERTER__IA__SOUNDS__CONVERSION_FAILURE, e, "sound", soundId, "file", fileName);
             }
             progressBar.increment();
         }
@@ -505,14 +504,14 @@ public class IAConverter extends Converter {
         File inputFolder = new File("plugins/"+this.converterName+"/contents");
         File outputFolder = new File(this.plugin.getDataFolder(), "converted/"+converterName+"/CraftEngine/resources/craftengineconverter/configuration/recipes");
         if (!inputFolder.exists() || !inputFolder.isDirectory()) {
-            Logger.debug("ItemsAdder contents folder not found: " + inputFolder.getAbsolutePath());
+            Logger.debug(Message.ERROR__CONVERTER__IA__CONTENTS_FOLDER_NOT_FOUND, "path", inputFolder.getAbsolutePath());
             return;
         }
         if (outputFolder.exists()){
             deleteDirectory(outputFolder);
         }
         if (!outputFolder.mkdirs()) {
-            Logger.debug("Failed to create output folder: " + outputFolder.getAbsolutePath(), LogType.ERROR);
+            Logger.debug(Message.ERROR__CONVERTER__IA__OUTPUT_FOLDER_CREATION_FAILED, LogType.ERROR, "path", outputFolder.getAbsolutePath());
             return;
         }
 
@@ -543,7 +542,7 @@ public class IAConverter extends Converter {
                 convertRecipesFile(configFile, outputFolder, progressBar);
             }
         } catch (Exception e) {
-            Logger.showException("An error occurred during ItemsAdder recipe conversion", e);
+            Logger.showException(Message.ERROR__CONVERTER__IA__RECIPES__CONVERSION_EXCEPTION, e);
         } finally {
             progressBar.stop();
         }
@@ -561,7 +560,7 @@ public class IAConverter extends Converter {
         ConfigurationSection originalRecipes = config.getConfigurationSection("recipes");
 
         if (isNull(originalRecipes)) {
-            Logger.debug("[ItemsAdderConverter] No 'recipes' section found in: " + fileName);
+            Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__NO_SECTION, "file", fileName);
             return;
         }
 
@@ -574,14 +573,14 @@ public class IAConverter extends Converter {
                 try {
                     iaRecipesType = IARecipesTypes.valueOf(craftingType.toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    Logger.debug("[ItemsAdderConverter] Skipped recipe (unknown type): " + craftingType + " for recipe: " + recipeId + " in file: " + fileName);
+                    Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__SKIPPED_UNKNOWN_TYPE, "type", craftingType, "recipe", recipeId, "file", fileName);
                     progressBar.increment();
                     continue;
                 }
 
                 ConfigurationSection recipeSection = craftingSection.getConfigurationSection(recipeId);
                 if (isNull(recipeSection)){
-                    Logger.debug("[ItemsAdderConverter] Skipped recipe (no section): " + recipeId + " in file: " + fileName);
+                    Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__SKIPPED_NO_SECTION, "recipe", recipeId, "file", fileName);
                     progressBar.increment();
                     continue;
                 }
@@ -590,7 +589,7 @@ public class IAConverter extends Converter {
                 try {
                     convertRecipe(iaRecipesType, recipeSection, recipes, baseRecipeId, recipeId, fileName);
                 } catch (Exception e) {
-                    Logger.showException("Failed to convert ItemsAdder recipe: " + recipeId + " in file: " + fileName, e);
+                    Logger.showException(Message.ERROR__CONVERTER__IA__RECIPES__CONVERSION_FAILURE, e, "recipe", recipeId, "file", fileName);
                 }
                 progressBar.increment();
             }
@@ -610,12 +609,12 @@ public class IAConverter extends Converter {
             }
             case COOKING -> convertCookingRecipes(iaRecipe, recipesSection, baseRecipeId, recipeId, fileName);
             case ANVIL_REPAIR -> //TODO: Implement Anvil Repair conversion
-                Logger.debug("[ItemsAdderConverter] Anvil Repair recipe conversion not implemented yet for recipe: " + recipeId);
+                Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__ANVIL_REPAIR_NOT_IMPLEMENTED, "recipe", recipeId);
             case SMITHING -> {
                 ConfigurationSection ceRecipe = recipesSection.createSection(baseRecipeId);
                 convertSmithingRecipe(iaRecipe, ceRecipe, recipeId, fileName);
             }
-            default -> Logger.debug("[ItemsAdderConverter] Unsupported recipe type: " + type + " for recipe: " + recipeId);
+            default -> Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__UNSUPPORTED_TYPE, "type", type, "recipe", recipeId);
         }
     }
 
@@ -689,7 +688,7 @@ public class IAConverter extends Converter {
             String cookingType = getCookingTypeFromMachine(machine);
 
             if (cookingType == null) {
-                Logger.debug("[ItemsAdderConverter] Unknown machine type: " + machine + " for recipe: " + recipeId);
+                Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__UNKNOWN_MACHINE_TYPE, "machine", machine, "recipe", recipeId);
                 continue;
             }
 
@@ -757,7 +756,7 @@ public class IAConverter extends Converter {
                 ceRecipe.set("base", convertedBase);
             }
         } else {
-            Logger.debug("[ItemsAdderConverter] Missing required 'base' for smithing recipe: " + recipeId + " in file: " + fileName);
+            Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__SMITHING_MISSING_BASE, "recipe", recipeId, "file", fileName);
         }
 
         String addition = iaRecipe.getString("addition");
@@ -810,7 +809,7 @@ public class IAConverter extends Converter {
             if (isValidString(mappedId)) {
                 return mappedId;
             } else {
-                Logger.debug("[ItemsAdderConverter] Unknown ItemsAdder item: " + itemReference + " for recipe: " + recipeId + " in file: " + fileName);
+                Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__UNKNOWN_ITEM_REFERENCE, "item", itemReference, "recipe", recipeId, "file", fileName);
                 return null;
             }
         }
@@ -825,7 +824,7 @@ public class IAConverter extends Converter {
             return "minecraft:chain";
         }
 
-        Logger.debug("[ItemsAdderConverter] Could not convert item reference: " + itemReference + " for recipe: " + recipeId + " in file: " + fileName);
+        Logger.debug(Message.WARNING__CONVERTER__IA__RECIPES__ITEM_REFERENCE_CONVERSION_FAILURE, "item", itemReference, "recipe", recipeId, "file", fileName);
         return itemReferenceLowerCase;
     }
 
@@ -860,7 +859,7 @@ public class IAConverter extends Converter {
             File outputPackFile = new File(this.plugin.getDataFolder(), "converted/"+converterName+"/CraftEngine/resources/craftengineconverter/resourcepack");
 
             if (!inputFolder.exists() || !inputFolder.isDirectory()) {
-                Logger.debug("ItemsAdder contents folder not found: " + inputFolder.getAbsolutePath());
+                Logger.debug(Message.ERROR__CONVERTER__IA__CONTENTS_FOLDER_NOT_FOUND, "path", inputFolder.getAbsolutePath());
                 return;
             }
 
@@ -869,7 +868,7 @@ public class IAConverter extends Converter {
             }
 
             if (!outputPackFile.mkdirs()) {
-                Logger.debug("Failed to create output folder: " + outputPackFile.getAbsolutePath(), LogType.ERROR);
+                Logger.debug(Message.ERROR__CONVERTER__IA__OUTPUT_FOLDER_CREATION_FAILED, LogType.ERROR, "path", outputPackFile.getAbsolutePath());
                 return;
             }
 

@@ -92,6 +92,28 @@ public enum Message {
     WARNING__FILE__DELETE_FAILURE("Failed to delete file §e%file% (%path%)§c!"),
     WARNING__FOLDER__DELETE_FAILURE("Failed to delete folder §e%folder% (%path%)§c!"),
 
+    WARNING__CONVERTER__NEXO__TOOL__NO_BLOCKS_FOUND("No valid blocks found for tool rules in item §e%item%§c. Skipping tool rules conversion."),
+    WARNING__CONVERTER__NEXO__EQUIPPABLE__UNKNOWN_SLOT("Unknown equipment slot §e%slot%§c for item §e%item%§c."),
+    WARNING__CONVERTER__NEXO__TOOLTIP_STYLE__UNKNOWN_STYLE("Unknown tooltip style §e%style%§c for item §e%item%§c."),
+    WARNING__CONVERTER__NEXO__USE_COOLDOWN__INVALID_SECONDS("Invalid use_cooldown seconds value §e%seconds%§c for item §e%item%§c. Defaulting to 1 second."),
+    WARNING__CONVERTER__NEXO__ATTACK_RANGE__INVALID_REACH_FORMAT("Invalid reach format §e%reach%§c for item §e%item%§c. Using defaults."),
+    WARNING__CONVERTER__NEXO__ATTACK_RANGE__INVALID_REACH_VALUE("Invalid reach value §e%reach%§c for item §e%item%§c. Using defaults."),
+    WARNING__CONVERTER__NEXO__SWING_ANIMATION__INVALID_TYPE("Invalid type value for swing_animation in item §e%item%§c. Using default (whack)."),
+    WARNING__CONVERTER__NEXO__SWING_ANIMATION__INVALID_DURATION("Invalid duration value §e%duration%§c for swing_animation in item §e%item%§c. Must be positive. Using default (6)."),
+    WARNING__CONVERTER__NEXO__MODEL__PROCESS_FAILURE("Failed to process model path for item §e%item%§c. Skipping texture conversion."),
+    WARNING__CONVERTER__NEXO__MODEL__NAMESPACE_FAILURE("Failed to namespace model path for item §e%item%§c. Skipping texture conversion."),
+    WARNING__CONVERTER__NEXO__MODEL__PARENT_NOT_SUPPORTED("§e%parent%§c parent_model for item §e%item%§c is not supported yet. Skipping texture conversion. Please report to the developer to add support for this parent_model."),
+    WARNING__CONVERTER__NEXO__MODEL__GENERATED__MISSING_TEXTURE("No texture path found for item §e%item%§c despite parent_model being §e%parent%§c. Skipping texture conversion."),
+    WARNING__CONVERTER__NEXO__MODEL__CUBE_TOP__PROCESS_FAILURE("Failed to process textures for item §e%item%§c. Skipping texture conversion."),
+    WARNING__CONVERTER__NEXO__MODEL__CUBE_TOP__MISSING_TEXTURE("Missing side or top texture for item §e%item%§c despite parent_model being 'block/cube_top'. Skipping texture conversion."),
+    WARNING__CONVERTER__NEXO__MODEL__BOW__PROCESS_FAILURE("Failed to process bow model paths for item §e%item%§c. Skipping bow model conversion."),
+    WARNING__CONVERTER__NEXO__MODEL__CROSSBOW__PROCESS_FAILURE("Failed to process crossbow model paths for item §e%item%§c. Skipping crossbow model conversion."),
+    WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__SAPLING_NOT_SUPPORTED("Sapling behavior conversion for custom block item §e%item%§c is not supported yet. Skipping sapling behavior."),
+    WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__SAPLING_NATURAL_ONLY("CraftEngine only supports naturally growing saplings. The sapling for custom block item §e%item%§c will grow naturally."),
+    WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__BLOCK_DATA_FAILURE("Failed to create BlockData for custom_variation §e%variation%§c for custom block item §e%item%§c. Skipping custom_variation conversion."),
+    WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__UNKNOWN_MINIMAL_TYPE("Unknown minimal_type §e%type%§c for custom block item §e%item%§c. Skipping minimal_type conversion."),
+    WARNING__CONVERTER__NEXO__CUSTOM_BLOCK__UNKNOWN_BEST_TOOL("Unknown best_tool §e%tool%§c for custom block item §e%item%§c. Skipping best_tool conversion."),
+
     WARNING__FURNITURE__INVALID_SEAT_FORMAT("§cInvalid seat format for furniture item §e%item%§c, expected 3 comma-separated float values but got §e%value%§c. Defaulting to (0,0,0)."),
     WARNING__FURNITURE__UNKNOWN_DISPLAY_TRANSFORM("§cUnknown display_transform §e%transform%§c for furniture item §e%item%§c, defaulting to NONE."),
     WARNING__FURNITURE__UNKNOWN_TRACKING_ROTATION("§cUnknown tracking_rotation §e%rotation%§c for furniture item §e%item%§c, defaulting to FIXED."),
@@ -111,8 +133,49 @@ public enum Message {
     WARNING__FURNITURE__INVALID_BARRIER_RANGE("§cInvalid range §e%range%§c in barrier entry §e%entry%§c."),
     WARNING__FURNITURE__NON_NUMERIC_BARRIER_RANGE_BOUNDS("§cNon-numeric range bounds §e%range%§c in barrier entry §e%entry%§c."),
     WARNING__FURNITURE__NON_NUMERIC_BARRIER_VALUE("§cNon-numeric value §e%value%§c in barrier entry §e%entry%§c."),
-    WARNING__IA__FURNITURE__UNKNOWN_DISPLAY_TRANSFORM("§cUnknown furniture display transform type §e%transform%§c for item §e%item%§c."),
 
+
+    WARNING__CONVERTER__IA__FURNITURE__UNKNOWN_DISPLAY_TRANSFORM("§cUnknown furniture display transform type §e%transform%§c for item §e%item%§c."),
+
+    WARNING__CONVERTER__IA__ITEMS__NO_SECTION("No 'items' section found in: §e%file%§c"),
+    WARNING__CONVERTER__IA__ITEMS__SKIPPED_NO_SECTION("Skipped item (no section): §e%item%§c in file: §e%file%§c"),
+
+    WARNING__CONVERTER__IA__IMAGES__NONE_FOUND("No ItemsAdder font images found to convert"),
+
+    WARNING__CONVERTER__IA__LANGUAGES__NONE_FOUND("No ItemsAdder language files found to convert"),
+
+    WARNING__CONVERTER__IA__SOUNDS__NO_SECTION("No 'sounds' section found in: §e%file%§c"),
+    WARNING__CONVERTER__IA__SOUNDS__SKIPPED_NO_SECTION("Skipped sound (no section): §e%sound%§c in file: §e%file%§c"),
+
+    WARNING__CONVERTER__IA__RECIPES__NO_SECTION("No 'recipes' section found in: §e%file%§c"),
+    WARNING__CONVERTER__IA__RECIPES__SKIPPED_UNKNOWN_TYPE("Skipped recipe (unknown type): §e%type%§c for recipe: §e%recipe%§c in file: §e%file%§c"),
+    WARNING__CONVERTER__IA__RECIPES__SKIPPED_NO_SECTION("Skipped recipe (no section): §e%recipe%§c in file: §e%file%§c"),
+    WARNING__CONVERTER__IA__RECIPES__ANVIL_REPAIR_NOT_IMPLEMENTED("Anvil Repair recipe conversion not implemented yet for recipe: §e%recipe%§c"),
+    WARNING__CONVERTER__IA__RECIPES__UNSUPPORTED_TYPE("Unsupported recipe type: §e%type%§c for recipe: §e%recipe%§c"),
+    WARNING__CONVERTER__IA__RECIPES__UNKNOWN_MACHINE_TYPE("Unknown machine type: §e%machine%§c for recipe: §e%recipe%§c"),
+    WARNING__CONVERTER__IA__RECIPES__SMITHING_MISSING_BASE("Missing required 'base' for smithing recipe: §e%recipe%§c in file: §e%file%§c"),
+    WARNING__CONVERTER__IA__RECIPES__UNKNOWN_ITEM_REFERENCE("Unknown ItemsAdder item: §e%item%§c for recipe: §e%recipe%§c in file: §e%file%§c"),
+    WARNING__CONVERTER__IA__RECIPES__ITEM_REFERENCE_CONVERSION_FAILURE("Could not convert item reference: §e%item%§c for recipe: §e%recipe%§c in file: §e%file%§c"),
+
+
+    ERROR__CONVERTER__IA__CONTENTS_FOLDER_NOT_FOUND("ItemsAdder contents folder not found: §e%path%§c"),
+    ERROR__CONVERTER__IA__OUTPUT_FOLDER_CREATION_FAILED("Failed to create output folder: §e%path%§c"),
+    ERROR__CONVERTER__IA__ITEM_CONVERSION_EXCEPTION("An error occurred during ItemsAdder item conversion"),
+
+    ERROR__CONVERTER__IA__ITEMS__CONVERSION_FAILURE("Failed to convert ItemsAdder item: §e%item%§c in file: §e%file%§c"),
+
+    ERROR__CONVERTER__IA__LANGUAGES__COUNT_FAILURE("Failed to count entries in: §e%file%§c"),
+    ERROR__CONVERTER__IA__LANGUAGES__CONVERSION_EXCEPTION("An error occurred during ItemsAdder language conversion"),
+    ERROR__CONVERTER__IA__LANGUAGES__KEY_CONVERSION_FAILURE("Failed to convert ItemsAdder translation key: §e%key%§c for language: §e%lang%§c in file: §e%file%§c"),
+    ERROR__CONVERTER__IA__LANGUAGES__FILE_CONVERSION_FAILURE("Failed to convert ItemsAdder language file: §e%file%§c"),
+
+    ERROR__CONVERTER__IA__IMAGES__CONVERSION_EXCEPTION("An error occurred during ItemsAdder font image conversion"),
+
+    ERROR__CONVERTER__IA__SOUNDS__CONVERSION_FAILURE("Failed to convert ItemsAdder sound: §e%sound%§c in file: §e%file%§c"),
+    ERROR__CONVERTER__IA__SOUNDS__CONVERSION_EXCEPTION("An error occurred during ItemsAdder sound conversion"),
+
+    ERROR__CONVERTER__IA__RECIPES__CONVERSION_EXCEPTION("An error occurred during ItemsAdder recipe conversion"),
+    ERROR__CONVERTER__IA__RECIPES__CONVERSION_FAILURE("Failed to convert ItemsAdder recipe: §e%recipe%§c in file: §e%file%§c"),
 
     ERROR__CACHE__NULL_RESULT("Cache returned null for path: §e%path%§c"),
     ERROR__CACHE__EXCEPTION("An error occurred while accessing the cache for path: §e%path%§c. Error: §e%message%§c"),

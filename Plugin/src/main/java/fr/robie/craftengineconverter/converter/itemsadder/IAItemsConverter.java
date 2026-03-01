@@ -1077,7 +1077,7 @@ public class IAItemsConverter extends ItemConverter {
             try {
                 displayType = ItemDisplayType.valueOf(displayTransformationSection.getString("transform", "FIXED").toUpperCase());
             } catch (Exception e) {
-                Logger.debug(Message.WARNING__IA__FURNITURE__UNKNOWN_DISPLAY_TRANSFORM, "item", this.itemId, "transform", displayTransformationSection.getString("transform"));
+                Logger.debug(Message.WARNING__CONVERTER__IA__FURNITURE__UNKNOWN_DISPLAY_TRANSFORM, "item", this.itemId, "transform", displayTransformationSection.getString("transform"));
             }
             ConfigurationSection translationSection = displayTransformationSection.getConfigurationSection("translation");
             if (isNotNull(translationSection)) {

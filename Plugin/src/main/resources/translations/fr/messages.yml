@@ -101,6 +101,66 @@ warning:
   folder:
     delete-failure: "Échec de la suppression du dossier §e%folder% (%path%)§c !"
 
+  converter:
+    nexo:
+      tool:
+        no-blocks-found: "Aucun bloc valide trouvé pour les règles d'outil dans l'item §e%item%§c. Conversion des règles d'outil ignorée."
+      equippable:
+        unknown-slot: "Slot d'équipement §e%slot%§c inconnu pour l'item §e%item%§c."
+      tooltip-style:
+        unknown-style: "Style d'infobulle §e%style%§c inconnu pour l'item §e%item%§c."
+      use-cooldown:
+        invalid-seconds: "Valeur de secondes use_cooldown §e%seconds%§c invalide pour l'item §e%item%§c. Par défaut 1 seconde."
+      attack-range:
+        invalid-reach-format: "Format de portée §e%reach%§c invalide pour l'item §e%item%§c. Utilisation des valeurs par défaut."
+        invalid-reach-value: "Valeur de portée §e%reach%§c invalide pour l'item §e%item%§c. Utilisation des valeurs par défaut."
+      swing-animation:
+        invalid-type: "Valeur de type invalide pour swing_animation dans l'item §e%item%§c. Utilisation de la valeur par défaut (whack)."
+        invalid-duration: "Valeur de durée §e%duration%§c invalide pour swing_animation dans l'item §e%item%§c. Doit être positive. Par défaut (6)."
+      model:
+        process-failure: "Échec du traitement du chemin du modèle pour l'item §e%item%§c. Conversion de texture ignorée."
+        namespace-failure: "Échec du nommage (namespace) du chemin du modèle pour l'item §e%item%§c. Conversion de texture ignorée."
+        parent-not-supported: "Le parent_model §e%parent%§c pour l'item §e%item%§c n'est pas encore supporté. Conversion de texture ignorée. Veuillez le signaler au développeur pour ajouter le support de ce parent_model."
+        generated:
+          missing-texture: "Aucun chemin de texture trouvé pour l'item §e%item%§c malgré un parent_model étant §e%parent%§c. Conversion de texture ignorée."
+        cube-top:
+          process-failure: "Échec du traitement des textures pour l'item §e%item%§c. Conversion de texture ignorée."
+          missing-texture: "Texture de côté ou du dessus manquante pour l'item §e%item%§c malgré un parent_model étant 'block/cube_top'. Conversion de texture ignorée."
+        bow:
+          process-failure: "Échec du traitement des chemins de modèle d'arc pour l'item §e%item%§c. Conversion de modèle d'arc ignorée."
+        crossbow:
+          process-failure: "Échec du traitement des chemins de modèle d'arbalète pour l'item §e%item%§c. Conversion de modèle d'arbalète ignorée."
+      custom-block:
+        sapling-not-supported: "La conversion du comportement de pousse pour l'item de bloc personnalisé §e%item%§c n'est pas encore supportée. Comportement de pousse ignoré."
+        block-data-failure: "Échec de la création de BlockData pour la custom_variation §e%variation%§c pour l'item de bloc personnalisé §e%item%§c. Conversion de custom_variation ignorée."
+        unknown-minimal-type: "minimal_type §e%type%§c inconnu pour l'item de bloc personnalisé §e%item%§c. Conversion minimal_type ignorée."
+        unknown-best-tool: "best_tool §e%tool%§c inconnu pour l'item de bloc personnalisé §e%item%§c. Conversion best_tool ignorée."
+        sapling-natural-only: "CraftEngine ne supporte que les pousses à croissance naturelle. La pousse pour l'item de bloc personnalisé §e%item%§c poussera naturellement."
+
+    ia:
+      items:
+        no-section: "Aucune section 'items' trouvée dans : §e%file%§c"
+        skipped-no-section: "Item ignoré (pas de section) : §e%item%§c dans le fichier : §e%file%§c"
+      images:
+        none-found: "Aucune image de police ItemsAdder trouvée à convertir"
+      languages:
+        none-found: "Aucun fichier de langue ItemsAdder trouvé à convertir"
+      sounds:
+        no-section: "Aucune section 'sounds' trouvée dans : §e%file%§c"
+        skipped-no-section: "Son ignoré (pas de section) : §e%sound%§c dans le fichier : §e%file%§c"
+      recipes:
+        no-section: "Aucune section 'recipes' trouvée dans : §e%file%§c"
+        skipped-unknown-type: "Recette ignorée (type inconnu) : §e%type%§c pour la recette : §e%recipe%§c dans le fichier : §e%file%§c"
+        skipped-no-section: "Recette ignorée (pas de section) : §e%recipe%§c dans le fichier : §e%file%§c"
+        anvil-repair-not-implemented: "La conversion de recette de réparation à l'enclume n'est pas encore implémentée pour la recette : §e%recipe%§c"
+        unsupported-type: "Type de recette non supporté : §e%type%§c pour la recette : §e%recipe%§c"
+        unknown-machine-type: "Type de machine inconnu : §e%machine%§c pour la recette : §e%recipe%§c"
+        smithing-missing-base: "Base requise manquante pour la recette de forge : §e%recipe%§c dans le fichier : §e%file%§c"
+        unknown-item-reference: "Item ItemsAdder inconnu : §e%item%§c pour la recette : §e%recipe%§c dans le fichier : §e%file%§c"
+        item-reference-conversion-failure: "Impossible de convertir la référence d'item : §e%item%§c pour la recette : §e%recipe%§c dans le fichier : §e%file%§c"
+      furniture:
+        unknown-display-transform: "§cType de transformation d'affichage de meuble inconnu §e%transform%§c pour l'item §e%item%§c."
+
   furniture:
     invalid-seat-format: "§cFormat de siège invalide pour le meuble §e%item%§c, 3 valeurs flottantes séparées par des virgules étaient attendues mais §e%value%§c a été reçu. Par défaut (0,0,0)."
     unknown-display-transform: "§cdisplay_transform inconnue §e%transform%§c pour le meuble §e%item%§c, par défaut NONE."
@@ -121,9 +181,6 @@ warning:
     invalid-barrier-range: "§cIntervalle invalide §e%range%§c dans l'entrée de barrière §e%entry%§c."
     non-numeric-barrier-range-bounds: "§cBornes d'intervalle non numériques §e%range%§c dans l'entrée de barrière §e%entry%§c."
     non-numeric-barrier-value: "§cValeur non numérique §e%value%§c dans l'entrée de barrière §e%entry%§c."
-  ia:
-    furniture:
-      unknown-display-transform: "§cType de transformation d'affichage de meuble inconnu §e%transform%§c pour l'item §e%item%§c."
 
 error:
   mkdir-failure: "Échec de la création du dossier §e%directory% (%path%)§c !"
@@ -133,3 +190,26 @@ error:
   file-operations:
     timeout: "Délai d'attente dépassé pour l'achèvement des opérations sur les fichiers"
     force-shutdown: "Arrêt forcé des threads d'opérations sur les fichiers"
+  pack-conversion:
+    exception: "Une erreur est survenue lors de la conversion du pack pour le plugin §e%plugin%§c"
+  converter:
+    invalid-glow-drop-color: "[%converter%] §c'%color%' n'est pas une couleur de drop lumineuse valide pour l'item §e%item%§c. Couleurs autorisées : §e%valid_colors%§c"
+    ia:
+      contents-folder-not-found: "Dossier de contenu ItemsAdder non trouvé : §e%path%§c"
+      output-folder-creation-failed: "Échec de la création du dossier de sortie : §e%path%§c"
+      item-conversion-exception: "Une erreur est survenue lors de la conversion des items ItemsAdder"
+      items:
+        conversion-failure: "Échec de la conversion de l'item ItemsAdder : §e%item%§c dans le fichier : §e%file%§c"
+      images:
+        conversion-exception: "Une erreur est survenue lors de la conversion des images de police ItemsAdder"
+      languages:
+        count-failure: "Échec du comptage des entrées dans : §e%file%§c"
+        conversion-exception: "Une erreur est survenue lors de la conversion des langues ItemsAdder"
+        key-conversion-failure: "Échec de la conversion de la clé de traduction ItemsAdder : §e%key%§c pour la langue : §e%lang%§c dans le fichier : §e%file%§c"
+        file-conversion-failure: "Échec de la conversion du fichier de langue ItemsAdder : §e%file%§c"
+      sounds:
+        conversion-failure: "Échec de la conversion du son ItemsAdder : §e%sound%§c dans le fichier : §e%file%§c"
+        conversion-exception: "Une erreur est survenue lors de la conversion des sons ItemsAdder"
+      recipes:
+        conversion-exception: "Une erreur est survenue lors de la conversion des recettes ItemsAdder"
+        conversion-failure: "Échec de la conversion de la recette ItemsAdder : §e%recipe%§c dans le fichier : §e%file%§c"
